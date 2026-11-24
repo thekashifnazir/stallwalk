@@ -16,7 +16,7 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 </div>
 
 <p align="center">
-  <a href="https://youtu.be/TyyTZYJPsbU"><img src="docs/demo-preview.gif" width="720" alt="Silent preview of the 60-second demo: the hook, the architecture diagram, and the live site next to a real voice-agent reply"></a>
+  <a href="https://youtu.be/TyyTZYJPsbU"><img src="docs/stallwalk-demo-preview.gif" width="720" alt="Silent preview of the 60-second demo: the hook, the architecture diagram, and the live site next to a real voice-agent reply"></a>
   <br>
   <sub>▶ Silent preview of the 60-second demo. <a href="https://youtu.be/TyyTZYJPsbU"><b>Watch the full video with sound</b></a> · <a href="https://stallwalk.kashifnazir.com"><b>Try the live site</b></a><br>The demo market's stalls and prices are made up.</sub>
 </p>
