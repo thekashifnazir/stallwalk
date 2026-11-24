@@ -35,14 +35,15 @@ PROMPT = (
     "Rules:\n"
     "- ALWAYS use a tool before answering anything about stock, stalls, prices, the stockroom, restocking "
     "or orders. Never say a price, stall or quantity that isn't in a tool's answer.\n"
-    "- Meal flow, when someone says what they want to cook: (1) use what_goes_with with the dish, and work "
-    "out the dish's staple ingredients and quantities for the number of people, and say them briefly; "
-    "(2) check_stockroom with the staples plus what what_goes_with suggested, first, "
-    "and only buy what it says is low or out; (3) split_order with just those items, as quantities, to "
-    "price them on the market; (4) for anything split_order says is not on any stock list, say it's not on "
-    "the market today and use web_find for those items.\n"
-    "- Other tools: find_item for one product, list_stalls for what stalls there are, whats_run_out for "
-    "the kitchen restock list.\n"
+    "- Meal flow, when someone says what they want to cook: (1) say ONE short line first, like 'Give me "
+    "a few seconds, I'm checking the stockroom and the market'; (2) work out the full ingredient list with "
+    "quantities for the number of people yourself (ask how many only if they haven't said; default to 4); "
+    "(3) call plan_meal ONCE with that list; (4) read back a short summary: what's already in the "
+    "stockroom, the market total and the top items, and what's a web estimate. Don't call other tools "
+    "for the dish unless they ask a follow-up.\n"
+    "- Follow-ups only: what_goes_with for ideas, find_item for one product, web_find for items no stall "
+    "has, check_stockroom or split_order for a changed list, list_stalls for what stalls there are, "
+    "whats_run_out for the office kitchen restock list.\n"
     "- If a tool's answer says web estimate or online price, say it's a web estimate, not a price from a "
     "stall. web_find can't see local shops: say to check the local store, and never say a shop is nearby, "
     "open, or has it in stock.\n"
@@ -54,13 +55,14 @@ PROMPT = (
 )
 
 
-def _tool(base: str, name: str, path: str, description: str, param: tuple[str, str] | None = None) -> dict:
+def _tool(base: str, name: str, path: str, description: str, param: tuple[str, str] | None = None,
+          **extra) -> dict:
     schema: dict = {"url": f"{base.rstrip('/')}{path}", "method": "GET"}
     if param:
         schema["query_params_schema"] = {"properties": {param[0]: {"type": "string", "description": param[1]}},
                                          "required": [param[0]]}
     return {"tool_config": {"type": "webhook", "name": name, "description": description,
-                            "response_timeout_secs": 20, "api_schema": schema}}
+                            "response_timeout_secs": 20, "api_schema": schema, **extra}}
 
 
 def tools(base: str) -> dict[str, dict]:
@@ -78,6 +80,13 @@ def tools(base: str) -> dict[str, dict]:
                              "Price a kitchen order across the markets: cheapest stall per line and line totals. "
                              "Returns `answer`.",
                              ("order", "The order as the person said it, e.g. '10kg potatoes, 2 dozen eggs'")),
+        "plan_meal": _tool(base, "plan_meal", "/api/agent/plan_meal",
+                           "One call for a whole dish: checks the stockroom, prices what's low or out on today's "
+                           "market, and gives web estimates for what the market doesn't have. Returns `answer`. "
+                           "Takes about 4 seconds.",
+                           ("ingredients", "The full ingredient list with quantities, comma-separated, e.g. "
+                                           "'2kg mussels, 1kg potatoes, 200g shallots, 1 bottle white wine'"),
+                           force_pre_tool_speech=True),
         "what_goes_with": _tool(base, "what_goes_with", "/api/agent/what_goes_with",
                                 "Suggest market items that go with a dish or ingredient (NVIDIA Agentic Commerce "
                                 "recommendation agent over today's market). Returns `answer` with stall and card "
