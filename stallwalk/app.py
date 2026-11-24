@@ -148,8 +148,21 @@ def api_enrich(stall: str = Form(...), name: str = Form(...), run: str | None = 
     item = next((i for s in stock["stalls"] if s["stall"] == stall for i in s["items"] if i["name"] == name), None)
     if not item:
         return JSONResponse({"error": "item not in stock list"}, status_code=404)
-    out = enrich_item(p.parent, stall, item)
-    out["run"] = p.parent.name
+    run_dir = p.parent
+    if not (run_dir / "readings.json").exists():
+        # A typed-in market (like the demo market) has no photos. Use the walked run's photo of the same item if there is one.
+        walked = RUNS / "synthetic_walk"
+        walked_stock = json.loads((walked / "stock.json").read_text()) if (walked / "stock.json").exists() else {"stalls": []}
+        if any(s["stall"] == stall and any(i["name"] == name for i in s["items"]) for s in walked_stock["stalls"]):
+            run_dir = walked
+        else:
+            return {"error": "A catalogue entry is made from a photo of the item. This stall in the demo market was typed in, "
+                             "not filmed, so there's no photo. Try an item from Billy's Fresh Fish or Patel's Fruit & Veg."}
+    try:
+        out = enrich_item(run_dir, stall, item)
+    except Exception as e:  # noqa: BLE001 - say what went wrong instead of a bare 500
+        return {"error": f"Couldn't make the catalogue entry: {e}"}
+    out["run"] = run_dir.name
     if "blueprint call failed" in (out.get("error") or ""):
         out["error"] = ("The catalogue entry comes from the NVIDIA Catalog Enrichment blueprint, which runs on the "
                         "local build only. Everything else works here.")
