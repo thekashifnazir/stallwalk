@@ -53,10 +53,10 @@
     },
     {
       "name": "Shallots",
-      "qty": 0,
+      "qty": 1,
       "unit": "kg",
       "par": 1,
-      "status": "out"
+      "status": "have"
     },
     {
       "name": "Flat-leaf parsley",

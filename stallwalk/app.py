@@ -314,18 +314,19 @@ def agent_stockroom(items: str):
     from .walk import _same_item
     room = json.loads((DEMO / "stockroom.json").read_text())
     asked = [x.strip() for x in re.split(r",|\band\b", items) if x.strip()]
-    said, need = [], []
+    said, need, have_names = [], [], []
     for a in asked:
         hit = next((i for i in room["items"] if _same_item(a, i["name"]) or _same_item(kitchen.clean_name(a), i["name"])), None)
         if not hit:
             said.append(f"{a}: not something we stock"); need.append(a)
         elif hit["status"] == "have":
             said.append(f'{hit["name"]}: have {hit["qty"]} {hit["unit"]}')
+            have_names.append(hit["name"].lower())
         else:
             said.append(f'{hit["name"]}: {hit["status"]}' + (f' ({hit["qty"]} {hit["unit"]} left)' if hit["qty"] else ""))
             need.append(hit["name"])
     return {"answer": "; ".join(said) + (f". Buy: {', '.join(need)}." if need else ". Nothing to buy.")
-                      + " Stockroom is made up for the demo.", "need": need}
+                      + " Stockroom is made up for the demo.", "need": need, "have": have_names}
 
 
 # official store finders (links only; we never claim a branch has stock or is open)
@@ -420,11 +421,14 @@ def agent_plan_meal(ingredients: str, run: str | None = None):
     from .walk import _same_item
     to_buy = [a for a in asked if any(_same_item(kitchen.clean_name(a), n) or n in a.lower() or
                                       kitchen.clean_name(a) in n for n in need_names)]
-    have = [a for a in asked if a not in to_buy]
+    have = room.get("have") or [a for a in asked if a not in to_buy]
     order = agent_order(", ".join(to_buy), run) if to_buy else {"answer": "Nothing to buy on the market.", "missing": []}
     web = agent_web_find(", ".join(order["missing"])) if order.get("missing") else None
+    low = [n for n in room["need"] if any(i["name"] == n and i["status"] == "low"
+                                          for i in json.loads((DEMO / "stockroom.json").read_text())["items"])]
     answer = " ".join(x for x in [
-        f"Already in the stockroom: {', '.join(have)}." if have else "",
+        f"You already have {' and '.join(have)} in the stockroom, so skip {'it' if len(have) == 1 else 'them'}." if have else "",
+        f"{' and '.join(x.lower() for x in low)} {'is' if len(low) == 1 else 'are'} low, so buy {'it' if len(low) == 1 else 'them'}." if low else "",
         f"From the market: {order['answer']}" if to_buy else "",
         web["answer"] if web else "",
     ] if x)
