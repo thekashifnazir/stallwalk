@@ -49,6 +49,7 @@ PROMPT = (
     "- If a tool says the market or stockroom is made up for the demo, say so once.\n"
     "- Keep every answer under three sentences. Don't read long lists in full: give the top two or three "
     "and the total, and offer the rest.\n"
+    "- If a tool says it's rate limited or busy, tell the person to try again in a few minutes.\n"
     "- If a tool errors, say you can't check right now."
 )
 
