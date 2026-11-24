@@ -14,6 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from . import walk
 from .ask import ask
+from .export import export_stock
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "out"
@@ -66,6 +67,15 @@ def api_ask(question: str = Form(...), run: str | None = Form(None)):
     if not p or not p.exists():
         return JSONResponse({"error": "no stock list yet"}, status_code=400)
     return ask(json.loads(p.read_text()), question)
+
+
+@app.get("/api/export")
+def api_export(run: str | None = None):
+    """The stock list in the agent-shopping formats (ACP and UCP), shaped like the Catalog Enrichment blueprint's export."""
+    p = RUNS / run / "stock.json" if run else _latest()
+    if not p or not p.exists():
+        return JSONResponse({"error": "no stock list yet"}, status_code=400)
+    return export_stock(json.loads(p.read_text()))
 
 
 @app.get("/api/frame/{run}/{frame}")

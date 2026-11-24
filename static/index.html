@@ -55,6 +55,11 @@
     <div id="answer"></div>
   </section>
 
+  <section class="panel">
+    <div class="row"><button type="button" id="exportbtn">Make it buyable by AI agents</button><span id="exportstatus"></span></div>
+    <pre id="exportout" style="display:none;max-height:260px;overflow:auto;font-size:12px;background:#f3efe8;padding:10px;border-radius:8px"></pre>
+  </section>
+
   <section class="stalls" id="stalls"></section>
 </main>
 <script>
@@ -119,6 +124,15 @@ $("livebtn").addEventListener("click", async () => {
       } finally { if (live) live.inflight--; }
     }, "image/jpeg", 0.8);
   }, 1200);
+});
+
+$("exportbtn").addEventListener("click", async () => {
+  const ex = await (await fetch("/api/export" + (run ? `?run=${encodeURIComponent(run)}` : ""))).json();
+  const acp = ex.acp || [];
+  const ok = acp.filter(x => (x.agent_actions || {}).buyable).length;
+  $("exportstatus").textContent = `${acp.length} listings in ACP and UCP format, ${ok} ready to buy, ${acp.length - ok} held for a check`;
+  $("exportout").style.display = "block";
+  $("exportout").textContent = JSON.stringify(acp.slice(0, 3), null, 2);
 });
 
 $("askform").addEventListener("submit", async (e) => {
