@@ -19,7 +19,8 @@ FRAME_PROMPT = """You are reading ONE frame from a phone video of someone walkin
 Return JSON only, in this shape:
 {"signs": [string],
  "items": [{"name": string, "stall_sign": string or null, "price_text": string or null,
-            "price_gbp": number or null, "unit": string or null, "deal": string or null,
+            "price_gbp": number or null, "currency": "GBP"|"EUR"|"USD"|"CAD"|"TWD"|other ISO code or null,
+            "unit": string or null, "deal": string or null,
             "stock_level": "full"|"low"|"empty"|"unknown", "confidence": "high"|"medium"|"low"}]}
 
 Rules:
@@ -27,7 +28,7 @@ Rules:
 - items: one entry per product whose label you can read. Skip any label cut off by the edge of the frame.
 - stall_sign: the sign the item sits under (the nearest sign above or behind it), else null.
 - price_text: the price exactly as written (e.g. "£1.50/kg", "3 for £2", "80p bunch").
-- price_gbp: the price in pounds as a number (80p -> 0.8; "3 for £2" -> 0.67; "£4 per 200g" -> 4), else null.
+- price_gbp: the price as a number in the currency shown (field name kept for history), and set currency (80p -> 0.8; "3 for £2" -> 0.67; "£4 per 200g" -> 4), else null.
 - unit: "kg", "each", "bunch", "punnet", "100g", "200g", "tub", "loaf", if written.
 - deal: multi-buy or offer text if written, else null.
 - If you can't read a price, set price_text and price_gbp to null. Never guess a price.
@@ -176,6 +177,7 @@ def merge(readings: list[dict], drop_one_offs: bool = True) -> dict:
                 "price_gbp": price,
                 "price_text": max((x["price_text"] for x in seen if x.get("price_text") and (price is None or round(x.get("price_gbp") or -1, 2) == price)), key=len, default=best.get("price_text")),
                 "unit": best.get("unit"),
+                "currency": next((x["currency"] for x in seen if x.get("currency")), None),
                 "deal": next((x["deal"] for x in seen if x.get("deal")), None),
                 "stock_level": Counter(x.get("stock_level") or "unknown" for x in seen).most_common(1)[0][0],
                 "seen_in_frames": len({x["frame"] for x in seen}),
