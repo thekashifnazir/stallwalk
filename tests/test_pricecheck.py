@@ -256,3 +256,10 @@ def test_stray_quote_trimmed():
     assert (rng["typical_low"], rng["typical_high"], rng["quotes"], rng["sources"]) == (3.65, 3.65, 1, ["https://b"])
     wide = [{"price": p, "unit": "kg", "source": 0} for p in (0.8, 1.5, 2.0, 3.0, 8.88)]
     assert pc.price_range(wide, ["https://a"], "kg")["quotes"] == 5  # a real wide range is kept
+
+
+def test_truncated_reply_keeps_complete_quotes():
+    cut = '{\n  "quotes": [\n    {\n      "price": 10.0,\n      "unit": "each",\n      "source": 0\n    },\n    {"price": 6.5, "unit": "each", "source": 2},\n    {"price": 7'
+    assert pc.parse_quotes(cut) == [{"price": 10.0, "unit": "each", "source": 0}, {"price": 6.5, "unit": "each", "source": 2}]
+    assert pc.parse_quotes('{"quotes": [{"price": 1, "unit": "kg", "source": 0}]}') == [{"price": 1, "unit": "kg", "source": 0}]
+    assert pc.parse_quotes("no json here") == []

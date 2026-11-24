@@ -45,7 +45,7 @@ Rules:
 - price: pounds as a number (80p -> 0.8).
 - unit: what that price is for, as written. A unit price like "£1.10/kg" is "kg"; "£0.83/100g" is "100g"; the shelf price of one pack, bag, bottle or tin is "each".
 - source: the snippet number.
-- Only prices written in the snippets. Never guess or convert. If there are none, return {{"quotes": []}}.
+- Only prices written in the snippets. Never guess or convert. At most 15 quotes. If there are none, return {{"quotes": []}}.
 
 Snippets:
 {snippets}
@@ -97,11 +97,25 @@ def extract_quotes(name: str, unit: str | None, results: list[dict]) -> list[dic
                          for n, r in enumerate(results[:5]))
     unit_clause = f" (the stall sells it per {unit})" if unit else ""
     prompt = EXTRACT_PROMPT.format(name=name, unit_clause=unit_clause, snippets=snippets or "(none)")
-    reply = tf.chat(tf.TEXT_MODEL, prompt, max_tokens=500, timeout=TIMEOUT,
+    reply = tf.chat(tf.TEXT_MODEL, prompt, max_tokens=1200, timeout=TIMEOUT,
                     extra={"chat_template_kwargs": {"enable_thinking": False}})
-    data = tf.parse_json(reply)
-    quotes = data.get("quotes") if isinstance(data, dict) else data
-    return quotes if isinstance(quotes, list) else []
+    return parse_quotes(reply)
+
+
+_QUOTE_RE = re.compile(r'\{\s*"price"\s*:\s*([\d.]+)\s*,\s*"unit"\s*:\s*"([^"]*)"\s*,\s*"source"\s*:\s*(\d+)\s*\}')
+
+
+def parse_quotes(reply: str) -> list[dict]:
+    """The quotes list from the model's reply. A reply cut off by the token limit still
+    gives every complete quote before the cut (white wine had 30+ quotes)."""
+    try:
+        data = tf.parse_json(reply)
+        quotes = data.get("quotes") if isinstance(data, dict) else data
+        if isinstance(quotes, list):
+            return quotes
+    except ValueError:
+        pass
+    return [{"price": float(p), "unit": u, "source": int(n)} for p, u, n in _QUOTE_RE.findall(reply or "")]
 
 
 # ── pure code: range and verdict ──
