@@ -50,7 +50,7 @@ _CACHE: dict[tuple[str, str], dict] = {}
 def _unit(u: str | None) -> str | None:
     if not u:
         return None
-    s = re.sub(r"^(per|a|an)\s+", "", u.strip().lower())
+    s = re.sub(r"^(/|per\s+|a\s+|an\s+)", "", u.strip().lower()).strip()
     s = re.sub(r"(\d+)\s*g$", r"\1g", s)
     if s not in _UNIT_ALIASES and s.endswith("s"):
         s = s[:-1]
@@ -99,10 +99,9 @@ def judge(price: float | None, unit: str | None, typical: dict) -> tuple[str, st
     return "usual", None
 
 
-def _check_one(name: str, unit: str | None, price: float | None) -> dict:
-    blank = {"typical_low": None, "typical_high": None, "unit": None, "verdict": "unknown", "sources": []}
-    if not unit or price is None:
-        return blank
+def _lookup(name: str, unit: str) -> dict | None:
+    """Web range for one item name + unit. Cached; the price is judged fresh each time,
+    so the same item at a different stall or a different price gets its own verdict."""
     key = (norm(name), _unit(unit) or "")
     if key in _CACHE:
         return _CACHE[key]
@@ -110,18 +109,27 @@ def _check_one(name: str, unit: str | None, price: float | None) -> dict:
         res = tavily_search(f"{name} price per {unit} UK").get("results") or []
         typical = extract_typical(name, unit, res)
     except Exception:  # noqa: BLE001 - a failed lookup is "unknown", never a guess
-        return blank  # not cached, so a later run can retry
-    verdict, flag = judge(price, unit, typical)
-    out = {
+        return None  # not cached, so a later run can retry
+    found = {
         "typical_low": _num(typical.get("typical_low")),
         "typical_high": _num(typical.get("typical_high")),
         "unit": typical.get("unit"),
-        "verdict": verdict,
         "sources": [r["url"] for r in res if r.get("url")][:3],
-        "_flag": flag,
     }
-    _CACHE[key] = out
-    return out
+    _CACHE[key] = found
+    return found
+
+
+def _check_one(name: str, unit: str | None, price: float | None) -> dict:
+    blank = {"typical_low": None, "typical_high": None, "unit": None, "verdict": "unknown", "sources": []}
+    if not unit or price is None:
+        return blank
+    found = _lookup(name, unit)
+    if found is None:
+        return blank
+    verdict, flag = judge(price, unit, found)
+    return {**{k: found[k] for k in ("typical_low", "typical_high", "unit", "sources")},
+            "verdict": verdict, "_flag": flag}
 
 
 def check_prices(stock: dict, max_items: int = 12, workers: int = 6,

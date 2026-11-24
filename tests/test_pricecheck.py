@@ -143,6 +143,20 @@ def test_hard_cap(offline, monkeypatch):
 
 
 @pytest.mark.parametrize("raw,want", [("per kg", "kg"), ("KG", "kg"), ("kgs", "kg"), ("200 g", "200g"),
-                                      ("each", "each"), ("500g pack", "500g pack"), (None, None)])
+                                      ("each", "each"), ("/KG", "kg"), ("500g pack", "500g pack"), (None, None)])
 def test_unit(raw, want):
     assert pc._unit(raw) == want
+
+
+def test_slash_unit():
+    assert pc._unit("/KG") == "kg"
+
+
+def test_cache_rejudges_new_price(offline):
+    first = pc.check_prices(STOCK)
+    cheaper = copy.deepcopy(STOCK)
+    _item(cheaper, "Salmon Fillet")["price_gbp"] = 20.0
+    second = pc.check_prices(cheaper)
+    assert _item(first, "Salmon Fillet")["price_check"]["verdict"] == "high"
+    assert _item(second, "Salmon Fillet")["price_check"]["verdict"] == "usual"
+    assert offline["tavily"].count("Salmon Fillet price per kg UK") == 1
