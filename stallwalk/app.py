@@ -421,6 +421,23 @@ def agent_what_goes_with(q: str, run: str = "meal_market"):
             "raw": r}
 
 
+def _pickup_line(web: dict) -> str:
+    """Where to pick up what the market doesn't sell, from the Tavily web search, said plainly."""
+    parts = []
+    for r in web.get("items", []):
+        if r.get("typical_low") is None:
+            parts.append(f"{r['name']}: no online price found")
+            continue
+        lo, hi = r["typical_low"], r["typical_high"]
+        rng = f"£{lo:.2f}" if abs(hi - lo) < 0.005 else f"£{lo:.2f} to £{hi:.2f}"
+        shops = [x for x in r.get("stores", []) if "comparison" not in x.lower()]
+        where = " or ".join(shops[:2]) if shops else "a supermarket"
+        parts.append(f"pick up {r['name']} from {where} (about {rng})")
+    finders = _finder_line(web.get("store_finders", []))
+    return ("For the rest, " + "; ".join(parts) + ". Source: Tavily web search of UK supermarket sites, "
+            "online prices, so check your local store." + finders)
+
+
 @app.get("/api/agent/plan_meal")
 def agent_plan_meal(ingredients: str, run: str | None = None):
     """One call for the whole meal flow, so the voice agent waits once instead of four times:
@@ -456,7 +473,7 @@ def agent_plan_meal(ingredients: str, run: str | None = None):
         (lambda t: t[:1].upper() + t[1:])(f"{' and '.join(x.lower() for x in low)} {'is' if len(low) == 1 else 'are'} low, so buy {'it' if len(low) == 1 else 'them'}.") if low else "",
         (f"Go to {'; then '.join(route)}. Market total £{market_total:.2f}." if route else "") if to_buy else "",
         (f"Not on the market today: {', '.join(order['missing'])}." if order.get("missing") else ""),
-        ("Tavily web check on UK supermarkets: " + web["answer"].replace("Web estimate, online prices: ", "")) if web else "",
+        _pickup_line(web) if web else "",
         "Stalls and prices are made up for the demo." if (stock or {}).get("made_up") and to_buy else "",
     ] if x)
     return {"answer": answer, "have": have, "buy": to_buy, "market_missing": order.get("missing", []),
