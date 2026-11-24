@@ -28,7 +28,9 @@ _SHELF_WORDS = r"\b(empty|emptied|low|nearly|almost|half|full|running|out|of|dis
 _UNITS = {"kg": "kg", "kilo": "kg", "kilos": "kg", "kgs": "kg", "each": "each", "item": "each",
           "items": "each", "bunch": "bunch", "bunches": "bunch", "punnet": "punnet", "punnets": "punnet",
           "dozen": "dozen", "pack": "pack", "packs": "pack", "box": "box", "boxes": "box",
-          "litre": "litre", "litres": "litre", "l": "litre"}
+          "litre": "litre", "litres": "litre", "l": "litre", "g": "g", "gram": "g", "grams": "g",
+          "ml": "ml", "millilitre": "ml", "millilitres": "ml", "bottle": "each", "bottles": "each",
+          "bulb": "each", "bulbs": "each", "head": "each", "heads": "each", "loaf": "loaf", "loaves": "loaf"}
 
 _LEVEL_RANK = {"empty": 2, "low": 1}
 MAX_SPREAD = 4  # web estimate high/low above this is too loose to show (a can vs a multipack)
@@ -47,15 +49,36 @@ def _unit(u) -> str | None:
     return _UNITS.get(s, s)
 
 
-_PER = {("dozen", "each"): 12.0, ("each", "dozen"): 1 / 12}
+_BASE = {"g": ("mass", 1.0), "kg": ("mass", 1000.0), "ml": ("vol", 1.0), "litre": ("vol", 1000.0),
+         "each": ("count", 1.0), "dozen": ("count", 12.0)}
+
+
+def _base(u) -> tuple[str, float] | None:
+    """A unit as (dimension, amount in grams / ml / items): "200g" -> ("mass", 200), "dozen" -> ("count", 12)."""
+    s = _unit(u)
+    if s is None:
+        return None
+    if s in _BASE:
+        return _BASE[s]
+    m = re.fullmatch(r"(\d+(?:\.\d+)?)\s*(kg|g|ml|l|litres?)", s)
+    if m:
+        dim, per = _BASE[_unit(m.group(2))]
+        return dim, float(m.group(1)) * per
+    return None
 
 
 def _factor(asked_unit, offer_unit) -> float | None:
-    """How many offer units make one asked unit (1 dozen = 12 each), or None if they don't convert."""
+    """How many offer units make one asked unit, or None if they don't convert.
+    1 dozen = 12 each, 200g = 0.2 kg, 250g = 1.25 of a 200g pack, 1 litre = 1000 ml."""
     a, o = _unit(asked_unit), _unit(offer_unit)
     if a is None or o is None:
         return None
-    return 1.0 if a == o else _PER.get((a, o))
+    if a == o:
+        return 1.0
+    ba, bo = _base(a), _base(o)
+    if ba and bo and ba[0] == bo[0]:
+        return ba[1] / bo[1]
+    return None
 
 
 def _market_name(stock: dict, n: int) -> str:
@@ -88,7 +111,7 @@ def restock_list(stocks: list[dict]) -> list[dict]:
 
 # ── order parsing (the only model call) ──
 
-_QTY_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(kg|kgs|kilos?|g|dozen|bunch(?:es)?|punnets?|packs?|box(?:es)?|litres?|l|each)?\b\s*(?:of\s+)?$")
+_QTY_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|box(?:es)?|bottles?|bulbs?|heads?|litres?|l|each)?\b\s*(?:of\s+)?$")
 
 
 def _qty_from_text(order_text: str, item: str) -> tuple[float | None, str | None] | None:
@@ -123,7 +146,27 @@ def parse_order(order_text: str) -> list[dict]:
             if written:  # the order text wins over the model's reading ("2 dozen", not "24 dozen")
                 line["qty"], line["unit"] = written[0], written[1] or line["unit"]
             out.append(line)
+    # the model sometimes drops items (white wine, butter): every part of the order text gets a line
+    for part in _order_parts(order_text):
+        if not any(_matches(ln["item"], part) or _matches(part, ln["item"]) for ln in out):
+            written = _qty_from_text(order_text, part)
+            out.append({"item": part, "qty": written[0] if written else None,
+                        "unit": written[1] if written else None})
     return out
+
+
+_LEAD_QTY = re.compile(r"^\s*\d+(?:\.\d+)?\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|"
+                       r"box(?:es)?|bottles?|bulbs?|heads?|litres?|l|each)?\b\s*(?:of\s+)?", re.I)
+
+
+def _order_parts(order_text: str) -> list[str]:
+    """"2kg mussels, 1 bottle white wine and 250g butter" -> ["mussels", "white wine", "butter"]."""
+    parts = []
+    for raw in re.split(r",|;|\n|\band\b", order_text or ""):
+        item = _LEAD_QTY.sub("", raw).strip(" .").lower()
+        if item and re.search(r"[a-z]", item):
+            parts.append(item)
+    return parts
 
 
 def _as_lines(order) -> list[dict]:

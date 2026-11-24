@@ -27,10 +27,15 @@ def test_cheapest_comparable_pick_across_markets():
 
 
 def test_unit_mismatch_not_picked():
-    out = kitchen.split_order([{"item": "king prawns", "qty": 1, "unit": "kg"}], MARKETS)
+    out = kitchen.split_order([{"item": "coriander", "qty": 1, "unit": "kg"}], MARKETS)
     line = out["lines"][0]
-    assert line["pick"] is None and line["note"] == "only sold per 200g"
-    assert "king prawns" not in out["unmatched"]  # it exists, just not per kg
+    assert line["pick"] is None and line["note"] == "only sold per bunch"
+    assert "coriander" not in out["unmatched"]  # it exists, just not per kg
+
+
+def test_kg_converts_to_200g_pack():
+    line = kitchen.split_order([{"item": "king prawns", "qty": 1, "unit": "kg"}], MARKETS)["lines"][0]
+    assert line["pick"]["price_text"] == "£4 per 200g" and line["line_total_gbp"] == 20.0
 
 
 def test_no_unit_means_any_unit_but_no_total():
@@ -189,3 +194,43 @@ def test_restock_spread_estimate_dropped(monkeypatch):
                                                                {"price": 2.9, "unit": "each", "source": 1}])
     out = kitchen.restock_with_estimates([_stock("k.mp4", [_i("Coca-Cola cans", "low")])])["lines"][0]
     assert out["estimate"] is None and out["estimate_note"] == "quotes too spread (can vs multipack?)"
+
+
+MEAL = json.loads((ROOT / "fixtures" / "demo" / "meal_market.json").read_text())
+MEAL_ORDER = "2kg mussels, 1kg potatoes, 200g shallots, 1 garlic, 1 bunch parsley, 1 bottle white wine, 250g butter"
+
+
+def test_meal_order_dropped_lines_come_back(monkeypatch):
+    """The model returned 5 lines and white wine and butter vanished. Every ordered item must come back."""
+    monkeypatch.setattr(kitchen.tf, "chat", lambda *a, **k: json.dumps({"lines": [
+        {"item": "mussels", "qty": 2, "unit": "kg"}, {"item": "potatoes", "qty": 1, "unit": "kg"},
+        {"item": "shallots", "qty": 200, "unit": "g"}, {"item": "garlic", "qty": 1, "unit": None},
+        {"item": "parsley", "qty": 1, "unit": "bunch"}]}))
+    out = kitchen.split_order(MEAL_ORDER, [MEAL])
+    by = {l["asked"].lower(): l for l in out["lines"]}
+    assert len(out["lines"]) == 7
+    for gone in ("white wine", "butter"):
+        assert by[gone]["pick"] is None and by[gone]["note"] == "not on any stock list"
+    assert set(out["unmatched"]) == {"white wine", "butter"}
+    assert by["butter"]["qty"] == 250 and by["butter"]["unit"] == "g"
+    assert by["mussels"]["line_total_gbp"] == 12.0
+    assert by["shallots"]["line_total_gbp"] == 0.48  # 200g against £2.40/kg
+    assert by["potatoes"]["line_total_gbp"] == 0.9
+    assert by["garlic"]["line_total_gbp"] == 0.5
+    assert by["parsley"]["line_total_gbp"] == 0.8
+
+
+@pytest.mark.parametrize("asked,offer,want", [("g", "kg", 0.001), ("kg", "g", 1000), ("g", "200g", 1 / 200),
+                                             ("kg", "200g", 5), ("ml", "litre", 0.001), ("litre", "300ml", 1000 / 300),
+                                             ("dozen", "each", 12), ("kg", "each", None), ("bunch", "kg", None),
+                                             ("bottle", "each", 1)])
+def test_factor(asked, offer, want):
+    got = kitchen._factor(asked, offer)
+    assert got == pytest.approx(want) if want is not None else got is None
+
+
+def test_250g_butter_matches_per_kg_offer():
+    market = {"market": "M", "stalls": [{"stall": "Dairy", "items": [
+        {"name": "Butter", "price_gbp": 8.0, "price_text": "£8/kg", "unit": "kg", "currency": "GBP"}]}]}
+    line = kitchen.split_order([{"item": "butter", "qty": 250, "unit": "g"}], [market])["lines"][0]
+    assert line["pick"]["name"] == "Butter" and line["line_total_gbp"] == 2.0
