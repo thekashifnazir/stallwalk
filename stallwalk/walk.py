@@ -41,6 +41,10 @@ def extract_frames(video: Path, out_dir: Path, fps: float = 1.0, width: int = 12
     out_dir.mkdir(parents=True, exist_ok=True)
     for old in out_dir.glob("f_*.jpg"):
         old.unlink()
+    if video.suffix.lower() in (".jpg", ".jpeg", ".png", ".heic", ".webp"):  # a single photo is a one-frame walk
+        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(video), "-vf", f"scale='min({width},iw)':-2",
+                        "-frames:v", "1", "-q:v", "3", str(out_dir / "f_0001.jpg")], check=True)
+        return sorted(out_dir.glob("f_*.jpg"))
     subprocess.run(
         ["ffmpeg", "-loglevel", "error", "-y", "-i", str(video),
          "-vf", f"fps={fps},scale={width}:-2", "-q:v", "3", str(out_dir / "f_%04d.jpg")],
