@@ -400,7 +400,7 @@ span.chip, li.chip { cursor: default; min-height: 0; padding: var(--ds-spacing-1
   padding: 0;
   list-style: none;
 }
-.stat {
+.stat, .stats > div {
   margin: 0;
   padding: var(--ds-spacing-4);
   background: var(--ds-color-highlight);
@@ -411,7 +411,7 @@ span.chip, li.chip { cursor: default; min-height: 0; padding: var(--ds-spacing-1
   font-weight: 600;
   line-height: 1.25;
 }
-.stat strong, .stat b, .stat .num {
+.stat strong, .stat b, .stat .num, .stats > div > b {
   display: block;
   font-family: var(--ds-font-display);
   font-size: var(--ds-font-size-4xl);
@@ -676,3 +676,9 @@ elevenlabs-convai { display: block; }
   }
   button:active, .btn:active { transform: none; }
 }
+
+/* Integration fixes (page markup): heading spans the strip, step titles on their own line,
+   the text already numbers the steps so the counter badge is hidden */
+.how > .section-title { grid-column: 1 / -1; }
+.how-step b { display: block; font-size: var(--ds-font-size-xl); margin-bottom: var(--ds-spacing-1); }
+.how-step::before { display: none; }
