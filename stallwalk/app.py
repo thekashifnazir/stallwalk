@@ -219,7 +219,7 @@ def agent_restock(folder: str = "real-frozen-v3"):
     for l in lines[:5]:
         e = l.get("estimate") or {}
         where = f' ({l["location"]})' if l.get("location") else ""
-        price = f', about {e["display"]} (web estimate)' if e.get("display") else ""
+        price = f', about {e["display"].replace("–", " to ")} (web estimate)' if e.get("display") else ""  # spoken: no dash
         level = "" if "(empty)" in l["display_name"] else f' is {l["stock_level"]}'
         said.append(f'{l["display_name"]}{where}{level}{price}')
     more = f", and {len(lines) - 5} more" if len(lines) > 5 else ""
