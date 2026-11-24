@@ -16,6 +16,7 @@ import copy
 import json
 import os
 import re
+import statistics
 import urllib.request
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -33,6 +34,7 @@ GROCERS = ["tesco.com", "sainsburys.co.uk", "asda.com", "morrisons.com", "ocado.
            "waitrose.com", "aldi.co.uk", "trolley.co.uk"]
 MAX_SEARCHES = 50   # hard cap per run, whatever max_items says, so a loop can't burn credits
 CACHE_VERSION = 3   # bump when the search or prompt changes, so old lookups are dropped
+FLAG_MARK = "the usual UK price"  # every flag this module adds contains this
 ESTIMATE_LABEL = "web estimate of the usual UK price, not read from a price card"
 
 EXTRACT_PROMPT = """Below are numbered web search snippets from UK supermarket sites.
@@ -114,6 +116,9 @@ def price_range(quotes: list[dict], urls: list[str], unit: str | None) -> dict:
         units = Counter(u for _, u, _ in clean)
         want = "each" if "each" in units else units.most_common(1)[0][0]
     used = [(p, s) for p, u, s in clean if u == want]
+    if len(used) >= 2:  # drop stray readings (8p halloumi, a per-gram price labelled each)
+        med = statistics.median(p for p, _ in used)
+        used = [(p, s) for p, s in used if med / 5 <= p <= med * 5]
     sources = []
     for _, s in used:
         if isinstance(s, int) and 0 <= s < len(urls) and urls[s] not in sources:
@@ -197,6 +202,10 @@ def check_prices(stock: dict, max_items: int = 12, workers: int = 6,
                 n, u = k.split("|", 1)
                 _CACHE.setdefault((n, u), v)
     items = [i for s in out.get("stalls", []) for i in s.get("items", []) if i.get("name")]
+    for i in items:  # re-running is safe: drop the last run's checks and flags first
+        i.pop("price_check", None)
+        if i.get("needs_check"):
+            i["needs_check"] = [f for f in i["needs_check"] if FLAG_MARK not in f]
 
     def carded(i):
         return _num(i.get("price_gbp")) is not None and bool(i.get("unit"))

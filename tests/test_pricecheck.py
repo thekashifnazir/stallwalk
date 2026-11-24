@@ -234,3 +234,25 @@ def test_halloumi_style_junk_quote_cannot_flag():
     """Last live run: one junk 8p quote made a false 'about 44x' flag. One quote can't flag now."""
     rng = pc.price_range([{"price": 0.08, "unit": "each", "source": 0}], ["https://x"], "each")
     assert pc.judge(3.5, "each", rng) == ("unknown", None)
+
+
+def test_rerun_is_idempotent():
+    once = pc.check_prices(STOCK)
+    twice = pc.check_prices(once)
+    assert _item(twice, "Salmon Fillet")["needs_check"] == _item(once, "Salmon Fillet")["needs_check"]
+    assert _item(twice, "Cod Fillet")["needs_check"] == ["price differs across frames: [4.99, 14.99]"]
+
+
+def test_stale_check_dropped_when_not_rechecked():
+    stale = copy.deepcopy(STOCK)
+    _item(stale, "Smoked Haddock")["price_check"] = {"verdict": "high"}
+    out = pc.check_prices(stale, max_items=1)
+    assert "price_check" not in _item(out, "Smoked Haddock")
+
+
+def test_stray_quote_trimmed():
+    q = [{"price": 0.08, "unit": "each", "source": 0}, {"price": 3.65, "unit": "each", "source": 1}]
+    rng = pc.price_range(q, ["https://a", "https://b"], None)
+    assert (rng["typical_low"], rng["typical_high"], rng["quotes"], rng["sources"]) == (3.65, 3.65, 1, ["https://b"])
+    wide = [{"price": p, "unit": "kg", "source": 0} for p in (0.8, 1.5, 2.0, 3.0, 8.88)]
+    assert pc.price_range(wide, ["https://a"], "kg")["quotes"] == 5  # a real wide range is kept
