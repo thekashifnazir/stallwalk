@@ -1,6 +1,6 @@
 # Voice agent
 
-An ElevenLabs Conversational AI agent called "stallwalk". Shoppers ask what's on the stalls, and a kitchen manager asks what's run out or what an order would cost. It answers only from the app, through four read-only webhook tools:
+An ElevenLabs Conversational AI agent called "stallwalk". Shoppers ask what's on the stalls, and a kitchen manager asks what's run out or what an order would cost. It answers only from the app, through five read-only webhook tools:
 
 | Tool | Endpoint | Query |
 |---|---|---|
@@ -8,6 +8,7 @@ An ElevenLabs Conversational AI agent called "stallwalk". Shoppers ask what's on
 | list_stalls | GET /api/agent/stalls | |
 | whats_run_out | GET /api/agent/restock | |
 | split_order | GET /api/agent/order | order |
+| web_find | GET /api/agent/web_find | items |
 
 Each endpoint answers `{"answer": "..."}`. The prompt makes the agent use a tool before any stock, price, restock or order answer. It never says a price that isn't in a tool answer, and it says "web estimate" when the tool does. Answers stay under three sentences.
 

@@ -35,11 +35,13 @@ PROMPT = (
     "Rules:\n"
     "- ALWAYS use a tool before answering anything about stock, stalls, prices, restocking or orders. "
     "find_item for one product, list_stalls for what stalls there are, whats_run_out for the kitchen "
-    "restock list, split_order to price an order across the markets.\n"
+    "restock list, split_order to price an order across the markets, web_find for items no stall has.\n"
     "- Never say a price, stall or quantity that isn't in the tool's answer. If the tool doesn't have it, "
     "say you didn't see it on the walk.\n"
     "- If the tool's answer says web estimate, say it's a web estimate, not a price from the stall.\n"
     "- If the tool says the market stock lists are made up for the demo, say so once.\n"
+    "- web_find gives online supermarket prices only. Say they're online prices and to check the local "
+    "store. Never say a shop is nearby, open, or has it in stock.\n"
     "- Keep every answer under three sentences. No lists read out in full: give the top two or three "
     "and offer the rest.\n"
     "- If a tool errors, say you can't check right now."
@@ -70,6 +72,11 @@ def tools(base: str) -> dict[str, dict]:
                              "Price a kitchen order across the markets: cheapest stall per line and line totals. "
                              "Returns `answer`.",
                              ("order", "The order as the person said it, e.g. '10kg potatoes, 2 dozen eggs'")),
+        "web_find": _tool(base, "web_find", "/api/agent/web_find",
+                          "Online UK supermarket prices for items that are NOT on any walked stall. Returns "
+                          "`answer`: a web estimate of the online price per item, with store names. It can't "
+                          "see local shops, stock or opening hours.",
+                          ("items", "Comma-separated items to look up, e.g. 'shallots, white wine, double cream'")),
     }
 
 
