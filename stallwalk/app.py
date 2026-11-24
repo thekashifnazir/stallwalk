@@ -3,6 +3,7 @@
   uv run uvicorn stallwalk.app:app --port 8787
 """
 import json
+import re
 import shutil
 import threading
 import time
@@ -138,8 +139,43 @@ def api_restock(folder: str = "real-frozen-v3", estimates: bool = False):
     base = (RUNS / Path(folder).name)
     stocks = [json.loads(p.read_text()) for p in sorted(base.glob("*/stock.json"))]
     if estimates and hasattr(kitchen, "restock_with_estimates"):
-        return kitchen.restock_with_estimates(stocks, cache_path=RUNS / "pricecheck" / "cache.json")
-    return {"lines": kitchen.restock_list(stocks)}
+        r = kitchen.restock_with_estimates(stocks, cache_path=RUNS / "pricecheck" / "cache.json")
+    else:
+        r = {"lines": kitchen.restock_list(stocks)}
+    return _present_restock(r, stocks)
+
+
+_LOCATION = re.compile(r"\s*[,(]?\s*\b((?:top|bottom|middle)\s+(?:left|right|shelf)|(?:in|on|behind|under)\s+(?:the\s+)?"
+                       r"(?:drawer|shelf|fridge|door|counter|tray|wire shelf))\b\)?", re.I)
+
+
+def _present_restock(r: dict, stocks: list[dict]) -> dict:
+    """Display tidy-up only: location out of the name, plain names for empty dispensers, a labelled total."""
+    names_by_file = {st.get("source", {}).get("video"): " ".join(i["name"].lower() for s in st["stalls"] for i in s["items"])
+                     for st in stocks}
+    total, priced = 0.0, 0
+    for l in r.get("lines", []):
+        name = l["name"]
+        m = _LOCATION.search(name)
+        if m:
+            l["location"] = m.group(1)
+            name = _LOCATION.sub("", name).strip(" ,")
+        if re.search(r"dispenser", name, re.I) and l.get("stock_level") == "empty":
+            kind = "Cereal dispenser" if "cereal" in names_by_file.get(l.get("source_file"), "") else "Dispenser"
+            name = f"{kind} (empty)"
+        l["display_name"] = name[:1].upper() + name[1:]
+        e = l.get("estimate") or {}
+        if e.get("typical_low") is not None:
+            hi = e.get("typical_high") if e.get("typical_high") is not None else e["typical_low"]
+            e["display"] = (f'£{e["typical_low"]:.2f}' if abs(hi - e["typical_low"]) < 0.005 else f'£{e["typical_low"]:.2f}–£{hi:.2f}') + \
+                (f' {e["unit"]}' if e.get("unit") == "each" else (f' per {e["unit"]}' if e.get("unit") else ""))
+            if e.get("unit") in (None, "each"):  # only whole items add up; a per-100g price isn't a pack price
+                total += (e["typical_low"] + hi) / 2
+                priced += 1
+    n = len(r.get("lines", []))
+    r["total"] = {"gbp": round(total, 2), "priced": priced, "of": n,
+                  "label": f"web estimate for {priced} of {n} items, one of each, midpoint of UK supermarket quotes; items priced per weight not added"}
+    return r
 
 
 @app.get("/api/agent/id")

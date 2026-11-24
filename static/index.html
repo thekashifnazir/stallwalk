@@ -201,9 +201,9 @@ async function showRestock(est) {
   const lines = r.lines || [];
   $("restockout").innerHTML = lines.length ? lines.map(l => {
     const e = l.estimate;
-    const price = e && e.typical_low != null ? `£${e.typical_low.toFixed(2)}–£${(e.typical_high ?? e.typical_low).toFixed(2)}${e.unit ? " per " + esc(e.unit) : ""} <small>(${esc(e.label || "web estimate")})</small>` : (est ? "<small>no web estimate</small>" : "");
-    return `<div class="match"><b>${esc(l.name)}</b> · <span class="flag" style="display:inline">${esc(l.stock_level)}</span> ${price}<br><small>${esc(l.source_file || "")}</small></div>`;
-  }).join("") : "<p>Nothing low or empty.</p>";
+    const price = e && e.display ? `${esc(e.display)} <small>(web estimate)</small>` : (est ? `<small>${esc(l.estimate_note || "no web estimate")}</small>` : "");
+    return `<div class="match"><b>${esc(l.display_name || l.name)}</b> · <span class="flag" style="display:inline">${esc(l.stock_level)}</span> ${price}<br><small>${esc(l.location ? l.location + " · " : "")}${esc(l.source_file || "")}</small></div>`;
+  }).join("") + (est && r.total ? `<p><b>Restock about £${r.total.gbp.toFixed(2)}</b> <small>(${esc(r.total.label)})</small></p>` : "") : "<p>Nothing low or empty.</p>";
 }
 $("restockbtn").addEventListener("click", () => showRestock(false));
 $("restockest").addEventListener("click", () => showRestock(true));
