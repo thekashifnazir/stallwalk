@@ -1352,3 +1352,5 @@ a.why-card:hover, a.why-card:focus-visible { transform: translate(-2px, -2px); b
 @media (max-width: 720px) { .hw-row { grid-template-columns: 1fr; gap: var(--ds-spacing-1); } .hw-head { display: none; } }
 .arch-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 @media (max-width: 720px) { .arch-scroll .arch-img { min-width: 760px; } }
+.arch-scroll { max-width: 100%; }
+html, body { overflow-x: clip; }
