@@ -312,6 +312,14 @@ def agent_order(order: str, run: str | None = None):
             "missing": [l["asked"] for l in r["lines"] if not l.get("pick") and "not on any stock list" in (l.get("note") or "not on any stock list")]}
 
 
+@app.get("/api/stockroom")
+def api_stockroom():
+    """The whole (made-up) restaurant stockroom, for the page. Free: no model or search calls."""
+    room = json.loads((DEMO / "stockroom.json").read_text())
+    return {"made_up": True, "items": [{"name": i["name"], "qty": i["qty"], "unit": i["unit"], "level": i["status"]}
+                                       for i in room["items"]]}
+
+
 @app.get("/api/agent/stockroom")
 def agent_stockroom(items: str):
     """Check the (made-up) restaurant stockroom before buying: have, low or out, so we don't overbuy."""
