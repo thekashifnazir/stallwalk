@@ -2,7 +2,7 @@
 
 # 🧺 stallwalk
 
-**Walk a market or a stock room with your phone. Get every stall's stock and prices, what's run out, and a priced order.**
+**Supermarkets are online. Market stalls aren't.<br>stallwalk turns a phone walk into live market stock: what's on each stall, at what price, and what came in this morning. Like a supermarket website, for the market.**
 
 _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 Nov 2026_
 
@@ -22,6 +22,15 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 </p>
 
 > **In 30 seconds.** Someone walks past the stalls, or round a kitchen stock room, filming on a phone. stallwalk pulls frames from the video, has a vision model on Nebius Token Factory read each one, and then code merges the readings into one stock list per stall, with a stock level per item. Code owns every price: a price it can't read stays blank, and a price that differs across frames gets flagged, never averaged. From that list it works out what's run out, prices an order across the stalls, checks prices against UK supermarket websites, suggests end-of-day deals for the stallholder, and turns the list into product records an AI shopping agent can buy from. A voice agent sits on top and answers only from the app.
+
+**What you can do with it** (the moules frites demo is one example):
+
+- **Check before you go:** "Is there wild garlic at the market today?"
+- **What's in season and just in:** the freshest arrivals from this morning's walk.
+- **Plan a dish or restock a kitchen:** it checks your stockroom, then tells you which stall to go to for each item, and where to pick up the rest (Tavily web search).
+- **Sell more:** stallholders list a stall with a 10-second pan, and clear stock with end-of-day deals.
+- **Let AI agents buy:** stalls become listings an AI shopping assistant can buy from.
+- **Not just markets:** a salon's retail shelf or colour cupboard works the same way: one walk, a stock list, and what's low to reorder.
 
 | **46 of 49** | **29 of 30** | **11 of 13** | **45 of 48** |
 |:---:|:---:|:---:|:---:|
@@ -221,7 +230,7 @@ Optional parts:
 
 - **Voice agent.** Put the app on a public URL (`cloudflared tunnel --url http://localhost:8787`), then `uv run python voice/setup_agent.py --public-url <url> --test`.
 - **Catalogue entry.** Run NVIDIA's Retail Catalog Enrichment backend on localhost:8000, or set `CATALOG_ENRICHMENT_URL`.
-- **Deals and "what goes with it".** Need a local checkout of NVIDIA's Retail Agentic Commerce blueprint. The promotion agent reads its path from an environment variable; the recommendation agent's path is set in `stallwalk/blueprint_reco.py`.
+- **Deals and "what goes with it".** Both read NVIDIA's Retail Agentic Commerce blueprint from `AGENTIC_COMMERCE_DIR` (the needed files are vendored in `vendor/retail-agentic-commerce/`).
 
 </details>
 
@@ -259,7 +268,6 @@ The market-stall idea first came up as Market Live at The Build Room Leicester 0
 - **Price-card photos** are from Wikimedia Commons under CC0, CC BY and CC BY-SA. Each photo's title, licence and link is in [fixtures/commons/CREDITS.md](fixtures/commons/CREDITS.md).
 - **Nebius owns Tavily, so we use Tavily for the web checks.**
 - **Code:** AI-generated under my direction.
-- **Built by** Kashif Nazir · [kashifnazir.com](https://kashifnazir.com)
 
 </details>
 
