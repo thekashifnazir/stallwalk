@@ -435,16 +435,32 @@ def agent_plan_meal(ingredients: str, run: str | None = None):
                                       kitchen.clean_name(a) in n for n in need_names)]
     have = room.get("have") or [a for a in asked if a not in to_buy]
     order = agent_order(", ".join(to_buy), run) if to_buy else {"answer": "Nothing to buy on the market.", "missing": []}
+    # say which stall to go to for what (from the same order split the agent_order answer used)
+    stock = _agent_stock(run)
+    split = kitchen.split_order(", ".join(to_buy), [stock] if stock else []) if to_buy else {"lines": []}
+    by_stall: dict[str, list] = {}
+    for l in split["lines"]:
+        if l.get("pick"):
+            by_stall.setdefault(l["pick"]["stall"], []).append(l)
+    route = []
+    for stall, ls in by_stall.items():
+        items = ", ".join(l["asked"] for l in ls)
+        sub = sum(l["line_total_gbp"] for l in ls if l.get("line_total_gbp") is not None)
+        route.append(f"{stall} for {items}" + (f" (£{sub:.2f})" if sub else ""))
+    market_total = sum(l["line_total_gbp"] for l in split["lines"] if l.get("line_total_gbp") is not None)
     web = agent_web_find(", ".join(order["missing"])) if order.get("missing") else None
     low = [n for n in room["need"] if any(i["name"] == n and i["status"] == "low"
                                           for i in json.loads((DEMO / "stockroom.json").read_text())["items"])]
     answer = " ".join(x for x in [
         f"You already have {' and '.join(have)} in the stockroom, so skip {'it' if len(have) == 1 else 'them'}." if have else "",
         (lambda t: t[:1].upper() + t[1:])(f"{' and '.join(x.lower() for x in low)} {'is' if len(low) == 1 else 'are'} low, so buy {'it' if len(low) == 1 else 'them'}.") if low else "",
-        f"From the market: {order['answer']}" if to_buy else "",
-        web["answer"] if web else "",
+        (f"Go to {'; then '.join(route)}. Market total £{market_total:.2f}." if route else "") if to_buy else "",
+        (f"Not on the market today: {', '.join(order['missing'])}." if order.get("missing") else ""),
+        ("Tavily web check on UK supermarkets: " + web["answer"].replace("Web estimate, online prices: ", "")) if web else "",
+        "Stalls and prices are made up for the demo." if (stock or {}).get("made_up") and to_buy else "",
     ] if x)
     return {"answer": answer, "have": have, "buy": to_buy, "market_missing": order.get("missing", []),
+            "route": route, "market_total_gbp": round(market_total, 2),
             "store_finders": (web or {}).get("store_finders", []),
             "seconds": round(time.time() - t0, 1)}
 
