@@ -1,0 +1,1411 @@
+[
+ {
+  "file": "20261124_165350.jpg (photo, 5 frames, 46.2 s, 13 items)",
+  "kind": "real",
+  "listed": 13,
+  "right": 11,
+  "half": 0,
+  "wrong": 2,
+  "unticked": 0,
+  "missed": [
+   "So all snacks",
+   "popcorn",
+   "popcorn",
+   "quavers",
+   "cheese and onion Hula hoops",
+   "Flapjacks yellow and red not sure what they are",
+   "double decker small chocolotes",
+   "Tribe bar",
+   "mini cheddars crisps",
+   "Goat's cheese cheesies",
+   "various haribo",
+   "tribe bars"
+  ],
+  "lines": [
+   [
+    "blue and white snack packets",
+    "y"
+   ],
+   [
+    "blue packet crisps (stock: low)",
+    "y"
+   ],
+   [
+    "Cadbury chocolate bar (purple wrapper)",
+    "y"
+   ],
+   [
+    "Green packet crisps",
+    "y"
+   ],
+   [
+    "Mixed chocolate bars (Mars, Milky Way, etc.)",
+    "n"
+   ],
+   [
+    "mixed small sweets",
+    "y"
+   ],
+   [
+    "orange snack packets",
+    "y"
+   ],
+   [
+    "purple wrapped sweets",
+    "y"
+   ],
+   [
+    "red and black snack packets (stock: low)",
+    "y"
+   ],
+   [
+    "Tribe chocolate bar",
+    "y"
+   ],
+   [
+    "Walkers crisps",
+    "n"
+   ],
+   [
+    "Yellow packet crisps",
+    "y"
+   ],
+   [
+    "yellow snack packets",
+    "y"
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165353.jpg (photo, 5 frames, 7.8 s, 9 items)",
+  "kind": "real",
+  "listed": 9,
+  "right": 9,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [],
+  "lines": [
+   [
+    "cereal dispenser with brown cereal",
+    "y"
+   ],
+   [
+    "cereal dispenser with granola",
+    "y"
+   ],
+   [
+    "cereal dispenser with yellow flakes",
+    "y"
+   ],
+   [
+    "cereal dispenser, empty (stock: empty)",
+    "y"
+   ],
+   [
+    "cereal rings",
+    "y"
+   ],
+   [
+    "empty dispenser (stock: empty)",
+    "y"
+   ],
+   [
+    "oats",
+    "y"
+   ],
+   [
+    "cereal in dispenser",
+    "y"
+   ],
+   [
+    "Weetabix (stock: low)",
+    "y"
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165405.jpg (photo, 5 frames, 9.8 s, 27 items)",
+  "kind": "real",
+  "listed": 27,
+  "right": 27,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "Think you got everything but there is alot so maybe do some more passes"
+  ],
+  "lines": [
+   [
+    "Alpro fresh delicious taste drink",
+    "y"
+   ],
+   [
+    "Alpro fresh tasty drink",
+    "y"
+   ],
+   [
+    "apro juice carton",
+    "y"
+   ],
+   [
+    "black bag",
+    "y"
+   ],
+   [
+    "black insulated bag",
+    "y"
+   ],
+   [
+    "Coca-Cola bottle",
+    "y"
+   ],
+   [
+    "Coca-Cola can (red, bottom right)",
+    "y"
+   ],
+   [
+    "Coca-Cola Original Taste 24 pack",
+    "y"
+   ],
+   [
+    "Coca-Cola Zero Sugar 24 pack",
+    "y"
+   ],
+   [
+    "Corona Cero",
+    "y"
+   ],
+   [
+    "Corona Extra beer pack",
+    "y"
+   ],
+   [
+    "Dasani no sugar no sweeteners no calories",
+    "y"
+   ],
+   [
+    "Dash cans",
+    "y"
+   ],
+   [
+    "Dash sparkling water can",
+    "y"
+   ],
+   [
+    "Diet Coke 24 pack",
+    "y"
+   ],
+   [
+    "Diet Coke can",
+    "y"
+   ],
+   [
+    "Heinz Tomato Ketchup",
+    "y"
+   ],
+   [
+    "No sugar sweeteners pack (pink)",
+    "y"
+   ],
+   [
+    "No sweeteners pack (orange)",
+    "y"
+   ],
+   [
+    "plastic container with yellow contents",
+    "y"
+   ],
+   [
+    "plastic food containers",
+    "y"
+   ],
+   [
+    "San Pellegrino cans",
+    "y"
+   ],
+   [
+    "small jar with light contents",
+    "y"
+   ],
+   [
+    "small jar with light contents (bottom right)",
+    "y"
+   ],
+   [
+    "small jar with yellow contents",
+    "y"
+   ],
+   [
+    "yellow canned drink (brand unreadable)",
+    "y"
+   ],
+   [
+    "yogurt tub",
+    "y"
+   ]
+  ]
+ },
+ {
+  "file": "00.jpg: Canterbury market stall 2026.jpg (3 items, 10.0 s)",
+  "kind": "price",
+  "listed": 3,
+  "right": 1,
+  "half": 2,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "£3.00 but hard to see it as it's just covered",
+   "sweet peppers is £1.50 per bowl"
+  ],
+  "lines": [
+   [
+    "Vine tomatoes: **no price read** [Fantastic Vine Tomato]",
+    "h"
+   ],
+   [
+    "Avocados: **£1.50 a punnet** · GBP [Ripe Ready Eat + Avoc £4.50]",
+    "y"
+   ],
+   [
+    "Sweet Red Peppers: **£1.50 a bon** · unit each · GBP [Sweet Red Peppers]",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "02.jpg: Stowmarket, Wilkes Way, Half price stall - geograph.org.uk - 7429830.jpg (5 items, 9.6 s)",
+  "kind": "price",
+  "listed": 5,
+  "right": 5,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [],
+  "lines": [
+   [
+    "fleece blanket: **£5** · GBP [HALF PRICE NOW £5 WAS £10]",
+    "y"
+   ],
+   [
+    "leopard print bucket hat on mannequin head: **£5** · deal HALF PRICE · GBP [HALF PRICE NOW £5 WAS £10]",
+    "y"
+   ],
+   [
+    "leopard print hat: **£5** · deal HALF PRICE · GBP [HALF PRICE NOW £5 WAS £10]",
+    "y"
+   ],
+   [
+    "leopard print scarf: **no price read** [HALF PRICE NOW £5 WAS £10]",
+    "y"
+   ],
+   [
+    "leopard print hat: **£10** · unit each · GBP [£10 EACH]",
+    "y"
+   ]
+  ]
+ },
+ {
+  "file": "03.jpg: Yellow food stall and price board, Shilin Night Market, Taipei, June 2019.jpg (6 items, 11.4 s)",
+  "kind": "price",
+  "listed": 6,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 6,
+  "missed": [
+   "I can't read this language so up to you!"
+  ],
+  "lines": [
+   [
+    "藥燉排骨 / Herbal ribs: **85** · TWD [藥燉排骨 85]",
+    null
+   ],
+   [
+    "臭肉飯: **30** · TWD [臭肉飯 30]",
+    null
+   ],
+   [
+    "臭豆腐: **50** · TWD [香臭豆腐 50]",
+    null
+   ],
+   [
+    "Oyster omelette: **65** · TWD [蚵仔煎 65]",
+    null
+   ],
+   [
+    "蚵仔煎: **65** · TWD [蚵仔煎 65]",
+    null
+   ],
+   [
+    "藥燉排: **no price read** [徐哥 藥燉排 Herbal ribs]",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "04.jpg: Cabbage 60c Lb (126311597).jpeg (9 items, 10.5 s)",
+  "kind": "price",
+  "listed": 9,
+  "right": 6,
+  "half": 3,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "think this covers all teh cabbage types"
+  ],
+  "lines": [
+   [
+    "Cabbage: **60¢ / lb.** · unit lb. · USD [Cabbage]",
+    "y"
+   ],
+   [
+    "Broccoli: **$1.75 / head** · unit head · USD [Broccoli]",
+    "y"
+   ],
+   [
+    "dark purple bell peppers: **no price read** [Broccoli]",
+    "y"
+   ],
+   [
+    "green bell pepper: **no price read** [Broccoli]",
+    "y"
+   ],
+   [
+    "green cabbage: **no price read** [Broccoli]",
+    "h"
+   ],
+   [
+    "orange bell pepper: **no price read** [Broccoli]",
+    "y"
+   ],
+   [
+    "purple cabbage: **no price read** [Broccoli]",
+    "h"
+   ],
+   [
+    "red cabbage: **no price read** [Broccoli]",
+    "h"
+   ],
+   [
+    "yellow bell pepper: **no price read** [Broccoli]",
+    "y"
+   ]
+  ]
+ },
+ {
+  "file": "05.jpg: Dual units damson.JPG (2 items, 7.2 s)",
+  "kind": "price",
+  "listed": 2,
+  "right": 1,
+  "half": 1,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [],
+  "lines": [
+   [
+    "English Damson plums: **2.65 1.20** · unit kg · GBP [English Damsons]",
+    "y"
+   ],
+   [
+    "dark plums: **no price read** [fresh produce]",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "06.jpg: Dual units greengages.JPG (6 items, 6.8 s)",
+  "kind": "price",
+  "listed": 6,
+  "right": 1,
+  "half": 4,
+  "wrong": 1,
+  "unticked": 0,
+  "missed": [
+   "yep just no prices for these"
+  ],
+  "lines": [
+   [
+    "Green Gages plums: **£2.65 Kg £1.20 lb** · unit kg · GBP [Green Gages]",
+    "y"
+   ],
+   [
+    "Green plums: **2.65** · GBP [Green Gages]",
+    "n"
+   ],
+   [
+    "Oranges: **no price read** [Green Gages]",
+    "h"
+   ],
+   [
+    "Raspberries in punnet: **no price read** · unit punnet [Green Gages]",
+    "h"
+   ],
+   [
+    "Red plums: **no price read** [Green Gages]",
+    "h"
+   ],
+   [
+    "Tomatoes: **no price read** [Green Gages]",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "09.jpg: Organic - Vegetables at Farmers Market (30297519628).jpg (17 items, 15.9 s)",
+  "kind": "price",
+  "listed": 17,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 17,
+  "missed": [
+   "price board is right but no sure which these apply to i think it's for all the veg so not sure how to mark it"
+  ],
+  "lines": [
+   [
+    "Organic carrots: **1 BUNCH FOR $2** · unit bunch · deal 3 BUNCHES FOR $5 · USD [ORGANIC]",
+    null
+   ],
+   [
+    "Organic leafy greens: **1 BUNCH 3 BUNCH OR CHE** · deal 1 BUNCH 3 BUNCH OR CHE [ORGANIC]",
+    null
+   ],
+   [
+    "Organic mushrooms: **no price read** [ORGANIC]",
+    null
+   ],
+   [
+    "Baby chioggia beets: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Baby gold beets: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Baby mixed beets: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Baby orange carrots: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Baby purple carrots: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Baby rainbow carrots: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Baby yellow carrots: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Collards: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Green chard: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Green kale: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Kohlrabi: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Lacinato kale: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Rainbow chard: **no price read** [CITY LINE SOUTH]",
+    null
+   ],
+   [
+    "Red chard: **no price read** [CITY LINE SOUTH]",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "10.jpg: Fresh Wednesday 24 (4827778809).jpg (4 items, 9.3 s)",
+  "kind": "price",
+  "listed": 4,
+  "right": 1,
+  "half": 3,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "yep looks good"
+  ],
+  "lines": [
+   [
+    "cucumbers: **$3.50 gr.** · unit lb · USD",
+    "y"
+   ],
+   [
+    "red potatoes: **no price read**",
+    "h"
+   ],
+   [
+    "white potatoes: **no price read**",
+    "h"
+   ],
+   [
+    "yellow cherry tomatoes: **no price read**",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "11.jpg: Fiddleheads (7358160732).jpg (1 items, 8.4 s)",
+  "kind": "price",
+  "listed": 1,
+  "right": 1,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [],
+  "lines": [
+   [
+    "Fiddleheads: **6.00 /lbs** · unit lbs · GBP [Fresh Organic Fruits & Vegetables Daily]",
+    "y"
+   ]
+  ]
+ },
+ {
+  "file": "12.jpg: Leucate Village (Aude), farmer's market, sweet herbs.jpg (14 items, 10.3 s)",
+  "kind": "price",
+  "listed": 14,
+  "right": 8,
+  "half": 6,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "some prices can't be seen by me and it shold all be eurs"
+  ],
+  "lines": [
+   [
+    "Badiane anis etoile: **3 les 30g** · unit 30g · deal 3 les 30g · EUR [Badiane ANIS ETOILE]",
+    "y"
+   ],
+   [
+    "Graines Anis Vert: **no price read** [Badiane ANIS ETOILE]",
+    "h"
+   ],
+   [
+    "Réglisse bâtons: **1 les 6** · unit 6 · deal 1 les 6 · EUR [Réglisse Bâtons]",
+    "y"
+   ],
+   [
+    "The Noir de Ceylan: **2 les 30g** · unit 30g · deal 2 les 30g · EUR [Thé clair de Ceylan]",
+    "y"
+   ],
+   [
+    "Thé clair de Ceylan: **2 les 30g** · unit 30g · deal 2 les 30g · GBP [Thé clair de Ceylan]",
+    "h"
+   ],
+   [
+    "Romarin: **1 les 50g** · unit 50g · deal 1 les 50g · EUR [Romarin]",
+    "y"
+   ],
+   [
+    "Hélange Salad: **1 les 80** · deal 1 les 80 · EUR [Hélange Poissons]",
+    "y"
+   ],
+   [
+    "Mélange Pizza: **1 les 60** · deal 1 les 60 · EUR [Hélange Poissons]",
+    "y"
+   ],
+   [
+    "Mélange Poissons: **180 les 30** · unit 30 · deal 180 les 30 · EUR [Hélange Poissons]",
+    "y"
+   ],
+   [
+    "Estrragon: **9 les 20g** · unit 20g · deal 9 les 20g · EUR [Estrangon]",
+    "y"
+   ],
+   [
+    "THE VERT de CHINE: **1400** · EUR [THE VERT de CHINE]",
+    "h"
+   ],
+   [
+    "Mélange Salade: **1 80** · GBP [Mélange Salade]",
+    "h"
+   ],
+   [
+    "Herbes Spro...: **80 les** [Herbes Spro...]",
+    "h"
+   ],
+   [
+    "Unnamed product: **2 les 30g** · unit 30g · deal 2 for 30g · GBP [2 les 30g]",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "13.jpg: Münster, Domplatz, Wochenmarkt -- 2019 -- 2644.jpg (1 items, 4.2 s)",
+  "kind": "price",
+  "listed": 1,
+  "right": 0,
+  "half": 1,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "1.50"
+  ],
+  "lines": [
+   [
+    "garlic bulbs: **75p** · GBP [75p]",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "14.jpg: Münster, Wochenmarkt -- 2017 -- 2338.jpg (13 items, 6.8 s)",
+  "kind": "price",
+  "listed": 13,
+  "right": 0,
+  "half": 6,
+  "wrong": 7,
+  "unticked": 0,
+  "missed": [
+   "prices should be eur",
+   "alot of these are gueses or close for example the partinachen is 4.90"
+  ],
+  "lines": [
+   [
+    "Deutsche Radieschen: **no price read** [Deutsche",
+    "h"
+   ],
+   [
+    "Radishes: **1 00** · GBP [Deutsche",
+    "h"
+   ],
+   [
+    "Garlic: **2,00** · unit each · GBP",
+    "n"
+   ],
+   [
+    "Grapes: **2.00** · unit kg · GBP",
+    "n"
+   ],
+   [
+    "Potatoes: **2 80** · unit kg · GBP",
+    "h"
+   ],
+   [
+    "Knoblauch frisch: **2.00** · unit Stück · GBP [Knoblauch",
+    "h"
+   ],
+   [
+    "Kleine Finnenkartoffeln: **1 kg 2 80** · unit kg · GBP [kleine",
+    "h"
+   ],
+   [
+    "Partinachen: **1 kg 4 80** · unit kg · GBP [Partinahen",
+    "n"
+   ],
+   [
+    "Walnuß Bohnen: **1.8g 5** · GBP [Walnuß Bohnen]",
+    "n"
+   ],
+   [
+    "Dunkel Bohnchen: **5.00** · unit kg · GBP [Dunkel Bohnchen 1kg 5.00]",
+    "n"
+   ],
+   [
+    "Kartoffeln: **2.00** · unit kg · GBP [Kartoffeln 1kg Deutschland 2.00]",
+    "n"
+   ],
+   [
+    "Broccoli: **60** · GBP [Messeiro Brasil]",
+    "h"
+   ],
+   [
+    "radishes: **2.00** · GBP [Stück 2.00]",
+    "n"
+   ]
+  ]
+ },
+ {
+  "file": "15.jpg: Winterswijk (NL), Wochenmarkt -- 2024 -- 4322.jpg (2 items, 10.2 s)",
+  "kind": "price",
+  "listed": 2,
+  "right": 0,
+  "half": 0,
+  "wrong": 2,
+  "unticked": 0,
+  "missed": [
+   "i can't tell either for this"
+  ],
+  "lines": [
+   [
+    "purple allium flowers: **99p each, 3 for £2.50** · unit each · deal 3 for £12 · GBP",
+    "n"
+   ],
+   [
+    "purple flowers: **3 for £12** · deal 3 for £12 · GBP",
+    "n"
+   ]
+  ]
+ },
+ {
+  "file": "16.jpg: Winterswijk (NL), Wochenmarkt -- 2016 -- 4143.jpg (2 items, 8.5 s)",
+  "kind": "price",
+  "listed": 2,
+  "right": 1,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 1,
+  "missed": [
+   "probably not gbp though due to different language"
+  ],
+  "lines": [
+   [
+    "plums: **2.50 KILO** · unit kilo · GBP [PRUIMEN]",
+    "y"
+   ],
+   [
+    "plums: **no price read** [KILO]",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "17.jpg: E5310-Tarragona-greengrocery-on-the-main-square.jpg (12 items, 8.0 s)",
+  "kind": "price",
+  "listed": 12,
+  "right": 9,
+  "half": 3,
+  "wrong": 0,
+  "unticked": 0,
+  "missed": [
+   "just the gbp ones"
+  ],
+  "lines": [
+   [
+    "Mongeta 'Perona': **2.95** · EUR [Mongeta 'Perona' 2.95]",
+    "y"
+   ],
+   [
+    "Pressec 'Vermell': **0.75** · EUR [Pressec 'Vermell' 0.75]",
+    "y"
+   ],
+   [
+    "Síndria: **0.99** · EUR [Síndria 0.99]",
+    "y"
+   ],
+   [
+    "Watermelon: **0.99** · unit kg · GBP [Síndria 0.99]",
+    "h"
+   ],
+   [
+    "3 Cabdells: **0.99** · EUR [3 Cabdells 0.99]",
+    "y"
+   ],
+   [
+    "Cabbage: **3 for 0.99** · unit each · deal 3 for 0.99 · GBP [3 Cabdells 0.99]",
+    "h"
+   ],
+   [
+    "Pinya \"Del Monte\": **1.10** · EUR [Pinya \"Del Monte\"]",
+    "y"
+   ],
+   [
+    "Meló \"Galia\": **0.59** · EUR [Meló \"Galia\"]",
+    "y"
+   ],
+   [
+    "Tomàquet \"Branca\": **0.69** · unit kg · EUR [Tomàquet \"Branca\"]",
+    "y"
+   ],
+   [
+    "Cirera: **2.99** · unit kg · EUR [Cirera]",
+    "y"
+   ],
+   [
+    "Pruna \"Negre\": **0.79** · unit kg · EUR [Pruna \"Negre\"]",
+    "y"
+   ],
+   [
+    "Mongela: **2.95** · GBP [Mongela]",
+    "h"
+   ]
+  ]
+ },
+ {
+  "file": "18.jpg: Canada IMG 20170812 120333 (38903785462).jpg (5 items, 4.6 s)",
+  "kind": "price",
+  "listed": 5,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 5,
+  "missed": [],
+  "lines": [
+   [
+    "Saxon Shires Double Gloucester Leicester Double Gloucester Cheddar: **$5.85/100g** · unit 100g · USD",
+    null
+   ],
+   [
+    "Tree Smoked Cheddar: **$3.50/100g** · unit 100g · USD",
+    null
+   ],
+   [
+    "Cheese Smoked (raw cow's milk): **$3.50/100g** · unit 100g · USD [33 BOOKS]",
+    null
+   ],
+   [
+    "Extra-Old Cheddar (raw cow's milk): **$2.49/100g** · unit 100g · USD [33 BOOKS]",
+    null
+   ],
+   [
+    "Saxon Shires Double Gloucester Leicester Derby Lancashire Cheddar: **$5.85/100g** · unit 100g · USD [33 BOOKS]",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "19.jpg: Turbot fish at market, 2009.jpg (4 items, 4.2 s)",
+  "kind": "price",
+  "listed": 4,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 4,
+  "missed": [],
+  "lines": [
+   [
+    "Turbot: **8,80 €/kg** · unit kg · EUR [Turbot]",
+    null
+   ],
+   [
+    "Oeufs de Saumon: **8,50 €** · EUR [Oeufs de Saumon]",
+    null
+   ],
+   [
+    "whole flat fish on ice: **no price read** [Oeufs de Saumon]",
+    null
+   ],
+   [
+    "Cuisses de Grenouille: **6,80 €/kg** · unit kg · EUR [Cuisses de Grenouille]",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165417.mp4 (video, 6 frames, 4.2 s, 26 items)",
+  "kind": "real",
+  "listed": 26,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 26,
+  "missed": [],
+  "lines": [
+   [
+    "Alpro almond drink carton",
+    null
+   ],
+   [
+    "Alpro Deliciously Fresh Taste almond drink",
+    null
+   ],
+   [
+    "Coca-Cola cans",
+    null
+   ],
+   [
+    "Coca-Cola Original Taste multipack",
+    null
+   ],
+   [
+    "Coca-Cola Zero Sugar multipack",
+    null
+   ],
+   [
+    "Coke can pack",
+    null
+   ],
+   [
+    "Coke Diet",
+    null
+   ],
+   [
+    "Coke multipack",
+    null
+   ],
+   [
+    "Corona beer box",
+    null
+   ],
+   [
+    "Corona Cero beer pack",
+    null
+   ],
+   [
+    "Corona Extra beer pack",
+    null
+   ],
+   [
+    "Dash sparkling water cans",
+    null
+   ],
+   [
+    "Diet Coke cans",
+    null
+   ],
+   [
+    "Fanta Orange can",
+    null
+   ],
+   [
+    "Heinz Tomato Ketchup bottle",
+    null
+   ],
+   [
+    "Lurpak butter tub",
+    null
+   ],
+   [
+    "No sugar no sweeteners no calories canned drinks (orange pack)",
+    null
+   ],
+   [
+    "No sugar no sweeteners no calories drink pack (peach box)",
+    null
+   ],
+   [
+    "Oatly oat drink carton",
+    null
+   ],
+   [
+    "Orange juice cans",
+    null
+   ],
+   [
+    "orange soda can",
+    null
+   ],
+   [
+    "pink soda can",
+    null
+   ],
+   [
+    "Red cans (possibly Coca-Cola)",
+    null
+   ],
+   [
+    "Sanpellegrino Aranciata cans",
+    null
+   ],
+   [
+    "Yellow cans (possibly juice or soft drink)",
+    null
+   ],
+   [
+    "Yellow cans in drawer",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165448.jpg (photo, 5 frames, 6.8 s, 17 items)",
+  "kind": "real",
+  "listed": 17,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 17,
+  "missed": [],
+  "lines": [
+   [
+    "Balsamic Vinegar of Modena",
+    null
+   ],
+   [
+    "Canderel sweetener",
+    null
+   ],
+   [
+    "Coffee canister",
+    null
+   ],
+   [
+    "Galaxy Instant Hot Chocolate",
+    null
+   ],
+   [
+    "jam",
+    null
+   ],
+   [
+    "Jam jar",
+    null
+   ],
+   [
+    "Monin Caramel syrup",
+    null
+   ],
+   [
+    "Monin syrup",
+    null
+   ],
+   [
+    "Monin Vanilla syrup",
+    null
+   ],
+   [
+    "Napolina Extra Virgin Olive Oil",
+    null
+   ],
+   [
+    "Nescafe Espresso Rich Crema",
+    null
+   ],
+   [
+    "Nutella spread",
+    null
+   ],
+   [
+    "paper towels",
+    null
+   ],
+   [
+    "Quaker Oats",
+    null
+   ],
+   [
+    "salt",
+    null
+   ],
+   [
+    "sugar dispenser",
+    null
+   ],
+   [
+    "Tea canister",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165452.mp4 (video, 8 frames, 4.3 s, 23 items)",
+  "kind": "real",
+  "listed": 23,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 23,
+  "missed": [],
+  "lines": [
+   [
+    "black canister with wooden lid",
+    null
+   ],
+   [
+    "Nescafe Espresso coffee",
+    null
+   ],
+   [
+    "Nescafe Gold Blend coffee jar",
+    null
+   ],
+   [
+    "red canister",
+    null
+   ],
+   [
+    "Balsamic vinegar of Modena",
+    null
+   ],
+   [
+    "Carex hand soap",
+    null
+   ],
+   [
+    "extra virgin olive oil",
+    null
+   ],
+   [
+    "Fairy Max dish soap",
+    null
+   ],
+   [
+    "Galaxy hot chocolate",
+    null
+   ],
+   [
+    "jam jar with red checkered lid",
+    null
+   ],
+   [
+    "Monin syrup",
+    null
+   ],
+   [
+    "Nescafe Espresso Rich Crema",
+    null
+   ],
+   [
+    "Nutella hazelnut spread",
+    null
+   ],
+   [
+    "Palmolive hand soap",
+    null
+   ],
+   [
+    "paper towels",
+    null
+   ],
+   [
+    "Quaker oats container",
+    null
+   ],
+   [
+    "salt shaker",
+    null
+   ],
+   [
+    "sugar dispenser",
+    null
+   ],
+   [
+    "toothpicks",
+    null
+   ],
+   [
+    "Vibe Cafe cup",
+    null
+   ],
+   [
+    "Vibe Cafe mug",
+    null
+   ],
+   [
+    "wooden cutlery set",
+    null
+   ],
+   [
+    "wooden forks and spoons",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165503.mp4 (video, 9 frames, 7.0 s, 13 items)",
+  "kind": "real",
+  "listed": 13,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 13,
+  "missed": [],
+  "lines": [
+   [
+    "black and red snack packets",
+    null
+   ],
+   [
+    "blue and green snack packets",
+    null
+   ],
+   [
+    "blue snack packets on wire shelf",
+    null
+   ],
+   [
+    "blue Tribe protein bars",
+    null
+   ],
+   [
+    "blue wrapped sweets",
+    null
+   ],
+   [
+    "cereal rings in dispenser",
+    null
+   ],
+   [
+    "empty dispenser (stock: empty)",
+    null
+   ],
+   [
+    "grains in dispenser",
+    null
+   ],
+   [
+    "granola in container (stock: low)",
+    null
+   ],
+   [
+    "mixed small wrapped sweets",
+    null
+   ],
+   [
+    "oats in dispenser",
+    null
+   ],
+   [
+    "purple wrapped sweets",
+    null
+   ],
+   [
+    "Reese's peanut butter cups",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165516.mp4 (video, 6 frames, 28.8 s, 13 items)",
+  "kind": "real",
+  "listed": 13,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 13,
+  "missed": [],
+  "lines": [
+   [
+    "Billington's Demerara Rough Cut Cafe Cubes",
+    null
+   ],
+   [
+    "Cadbury Heroes chocolate box",
+    null
+   ],
+   [
+    "Galaxy hot chocolate",
+    null
+   ],
+   [
+    "Galaxy Instant Hot Chocolate",
+    null
+   ],
+   [
+    "Lindt chocolate",
+    null
+   ],
+   [
+    "M&S English Breakfast tea bags",
+    null
+   ],
+   [
+    "Maldon Sea Salt Flakes",
+    null
+   ],
+   [
+    "Plant Fruits tea",
+    null
+   ],
+   [
+    "Pukka tea",
+    null
+   ],
+   [
+    "Taylors of Harrogate Yorkshire Tea",
+    null
+   ],
+   [
+    "Twinings Earl Grey tea",
+    null
+   ],
+   [
+    "Twinings Pure Peppermint tea",
+    null
+   ],
+   [
+    "White Granulated Sugar",
+    null
+   ]
+  ]
+ },
+ {
+  "file": "20261124_165526.jpg (photo, 5 frames, 21.9 s, 17 items)",
+  "kind": "real",
+  "listed": 17,
+  "right": 0,
+  "half": 0,
+  "wrong": 0,
+  "unticked": 17,
+  "missed": [],
+  "lines": [
+   [
+    "Billington's sugar box",
+    null
+   ],
+   [
+    "Galaxy tins/jars (partly hidden behind shelf edge)",
+    null
+   ],
+   [
+    "Granulated sugar blue packet (partly hidden)",
+    null
+   ],
+   [
+    "Green herbal tea box (green carton, text partly unreadable)",
+    null
+   ],
+   [
+    "Green tea carton (lying flat, brand not readable)",
+    null
+   ],
+   [
+    "Kitchen paper rolls (no brand visible)",
+    null
+   ],
+   [
+    "Twinings English Breakfast tea (50 bags)",
+    null
+   ],
+   [
+    "Volvic (boxed, diamond-pattern carton)",
+    null
+   ],
+   [
+    "Galaxy caramel",
+    null
+   ],
+   [
+    "Maltesers",
+    null
+   ],
+   [
+    "paper towels",
+    null
+   ],
+   [
+    "Pukka tea box",
+    null
+   ],
+   [
+    "Twinings Pure Peppermint herbal infusions",
+    null
+   ],
+   [
+    "Bilton's Demerara rough cut cubes",
+    null
+   ],
+   [
+    "Green & Black's chocolate bar",
+    null
+   ],
+   [
+    "M&S English Breakfast tea",
+    null
+   ],
+   [
+    "White granulated sugar",
+    null
+   ]
+  ]
+ }
+]

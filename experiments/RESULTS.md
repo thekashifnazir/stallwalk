@@ -1,6 +1,6 @@
 # Results on real images (hand-checked by Kash, 24 Nov 2026, ~17:30)
 
-Kash ticked the model's lists by eye. He stopped about halfway, so only the ticked files count below. English-language images only, by choice (non-English price boards were dropped from the count).
+Kash ticked the model's lists by eye (raw ticks: experiments/ticks-2026-11-24.json). He stopped about halfway, so only the ticked files count below. English-language images only, by choice (non-English price boards were dropped from the count).
 
 ## Office kitchen (Fresha, 3 photos ticked, no price cards)
 
