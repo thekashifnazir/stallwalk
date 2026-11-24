@@ -13,6 +13,7 @@ from pathlib import Path
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from . import walk
 from .ask import ask
@@ -27,6 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "out"
 STATIC = ROOT / "static"
 app = FastAPI(title="stallwalk")
+app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 # ---- rate limit on routes that spend paid API credits (Token Factory, Tavily), per client IP
 from collections import deque  # noqa: E402
