@@ -213,16 +213,20 @@ def agent_stalls(run: str | None = None):
 
 @app.get("/api/agent/restock")
 def agent_restock(folder: str = "real-frozen-v3"):
-    base = RUNS / Path(folder).name
-    stocks = [json.loads(p.read_text()) for p in sorted(base.glob("*/stock.json"))]
-    r = kitchen.restock_with_estimates(stocks, cache_path=RUNS / "pricecheck" / "cache.json")
-    out = []
-    for l in r["lines"]:
+    r = api_restock(folder=folder, estimates=True)  # same tidy names, locations and total as the screen
+    lines = r.get("lines", [])
+    said = []
+    for l in lines[:5]:
         e = l.get("estimate") or {}
-        est = (f', usually about £{e["typical_low"]:.2f} to £{e["typical_high"]:.2f} at UK supermarkets (web estimate)'
-               if e.get("typical_low") is not None and e.get("quotes", 0) >= 2 else "")
-        out.append(f'{l["name"]} is {l["stock_level"]}{est}')
-    return {"answer": "; ".join(out) or "Nothing has run out."}
+        where = f' ({l["location"]})' if l.get("location") else ""
+        price = f', about {e["display"]} (web estimate)' if e.get("display") else ""
+        level = "" if "(empty)" in l["display_name"] else f' is {l["stock_level"]}'
+        said.append(f'{l["display_name"]}{where}{level}{price}')
+    more = f", and {len(lines) - 5} more" if len(lines) > 5 else ""
+    t = r.get("total") or {}
+    total = (f'. Restock about £{t["gbp"]:.2f}, a web estimate for {t["priced"]} of {t["of"]} items'
+             if t.get("priced") else "")
+    return {"answer": ("; ".join(said) + more + total + ".") if said else "Nothing has run out."}
 
 
 @app.get("/api/agent/order")
