@@ -15,7 +15,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 4.5,
+            "typical_high": 9.0,
+            "unit": "kg",
+            "quotes": 5,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/browse/groceries-and-essentials/fresh-food/chilled-fish-and-seafood/prawns-and-seafood?facetsArgs=category%3AMussels",
+              "https://groceries.morrisons.com/categories/meat-fish/fish-seafood/shell-fish/cockles-mussels/184382",
+              "https://www.tesco.com/shop/en-GB/products/313857947"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Cod Fillet",
@@ -26,7 +38,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 21.0,
+            "typical_high": 30.42,
+            "unit": "kg",
+            "quotes": 5,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/browse/groceries-and-essentials/fresh-food/chilled-fish-and-seafood/cod-haddock-and-white-fish?facetsArgs=category%3AFresh+Cod",
+              "https://www.sainsburys.co.uk/groceries/browse/meat-and-fish/fish-and-seafood/cod-and-white-fish/c:1020354",
+              "https://www.waitrose.com/ecom/shop/browse/groceries/fresh_and_chilled/chilled_fish_and_seafood/cod_haddock_and_white_fish"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Salmon Fillet",
@@ -37,7 +61,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 13.32,
+            "typical_high": 43.44,
+            "unit": "kg",
+            "quotes": 11,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/products/279468791",
+              "https://www.waitrose.com/ecom/shop/browse/groceries/fresh_and_chilled/chilled_fish_and_seafood/salmon_and_trout",
+              "https://www.aldi.co.uk/products/fresh-food/fish/k/1588161416978050011"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "King Prawns",
@@ -48,7 +84,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Mackerel",
@@ -59,7 +103,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         }
       ]
     },
@@ -75,7 +127,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.8,
+            "typical_high": 8.88,
+            "unit": "kg",
+            "quotes": 5,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/browse/groceries-and-essentials/fresh-food/fresh-salad-coleslaw-and-sandwich-fillers/tomatoes",
+              "https://www.asda.com/groceries/fresh-fruit-vegetables-flowers/fresh-salad-stir-fry/tomatoes",
+              "https://www.trolley.co.uk/product/large-vine-tomatoes-per-kg/QIC983"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Bananas",
@@ -86,7 +150,18 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.17,
+            "typical_high": 0.2,
+            "unit": "each",
+            "quotes": 2,
+            "sources": [
+              "https://www.trolley.co.uk/product/m-s-organic-bananas/FGM628",
+              "https://www.waitrose.com/ecom/shop/browse/groceries/fresh_and_chilled/fresh_fruit/bananas"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Red Onions",
@@ -97,7 +172,17 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.99,
+            "typical_high": 0.99,
+            "unit": "kg",
+            "quotes": 1,
+            "sources": [
+              "https://groceries.morrisons.com/categories/fruit-veg-flowers/vegetables/onions-leeks/183855?sortBy=favorite"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Coriander",
@@ -108,7 +193,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Avocados",
@@ -119,7 +212,17 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.323,
+            "typical_high": 0.88,
+            "unit": "each",
+            "quotes": 3,
+            "sources": [
+              "https://www.asda.com/groceries/fresh-fruit-vegetables-flowers/fresh-salad-stir-fry/avocados/avocados"
+            ],
+            "verdict": "usual"
+          }
         }
       ]
     },
@@ -135,7 +238,18 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.75,
+            "typical_high": 1.16,
+            "unit": "kg",
+            "quotes": 2,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/products/302290700",
+              "https://groceries.morrisons.com/categories/fruit-veg/vegetables/potatoes-sweet-potatoes/183854"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Shallots",
@@ -146,7 +260,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 3.67,
+            "typical_high": 16.67,
+            "unit": "kg",
+            "quotes": 3,
+            "sources": [
+              "https://groceries.morrisons.com/categories/fruit-veg/vegetables/onions-leeks/shallots/183859",
+              "https://www.tesco.com/shop/en-GB/products/290711055",
+              "https://www.sainsburys.co.uk/groceries/product/sainsburys-shallots-400g"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Garlic",
@@ -157,7 +283,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Flat-leaf Parsley",
@@ -168,7 +302,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Lemons",
@@ -179,7 +321,18 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.35,
+            "typical_high": 1.45,
+            "unit": "each",
+            "quotes": 5,
+            "sources": [
+              "https://www.trolley.co.uk/product/lemons-each/NBJ510",
+              "https://www.trolley.co.uk/explore/lemons"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Thyme",
@@ -190,7 +343,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         }
       ]
     },
@@ -206,7 +367,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Chicken Thighs",
@@ -217,7 +386,17 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 7.63,
+            "typical_high": 7.63,
+            "unit": "kg",
+            "quotes": 1,
+            "sources": [
+              "https://www.trolley.co.uk/product/m-s-select-farms-free-range-chicken-thighs-skinless-boneless-typically/QMW027"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Beef Mince",
@@ -228,7 +407,17 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 9.0,
+            "typical_high": 37.5,
+            "unit": "kg",
+            "quotes": 15,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/browse/groceries-and-essentials/fresh-food/fresh-meat-and-poultry/fresh-beef?facetsArgs=category%3ABeef+Mince"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Pork Sausages",
@@ -239,7 +428,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 1.29,
+            "typical_high": 3.49,
+            "unit": "each",
+            "quotes": 6,
+            "sources": [
+              "https://www.tesco.com/shop/en-GB/browse/groceries-and-essentials/fresh-food/fresh-meat-and-poultry/sausages",
+              "https://www.aldi.co.uk/products/fresh-food/bacon-sausages/k/1588161416978050007",
+              "https://www.trolley.co.uk/product/tesco-16-pork-sausages/JPC044"
+            ],
+            "verdict": "usual"
+          }
         }
       ]
     },
@@ -255,7 +456,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Creme Fraiche",
@@ -266,7 +475,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Free-range Eggs",
@@ -277,7 +494,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Mature Cheddar",
@@ -288,7 +513,21 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [
+            "about 2x the usual UK price (UK supermarkets \u00a30.54-\u00a31.06 per 100g)"
+          ],
+          "price_check": {
+            "typical_low": 0.54,
+            "typical_high": 1.06,
+            "unit": "100g",
+            "quotes": 15,
+            "sources": [
+              "https://www.trolley.co.uk/product/tesco-mature-cheddar/QWM689",
+              "https://www.trolley.co.uk/product/mary-anns-dairy-mature-cheddar-cheese/CUM251",
+              "https://www.trolley.co.uk/product/cathedral-city-mature-cheddar/YEJ619"
+            ],
+            "verdict": "high"
+          }
         }
       ]
     },
@@ -304,7 +543,15 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": null,
+            "typical_high": null,
+            "unit": null,
+            "quotes": 0,
+            "sources": [],
+            "verdict": "unknown"
+          }
         },
         {
           "name": "Baguette",
@@ -315,7 +562,19 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 0.5,
+            "typical_high": 1.8,
+            "unit": "each",
+            "quotes": 6,
+            "sources": [
+              "https://www.trolley.co.uk/product/small-baguette/OKU140",
+              "https://www.tesco.com/shop/en-GB/products/309461614",
+              "https://www.sainsburys.co.uk/groceries/browse/bakery/from-our-in-store-bakery/baguettes-and-batons/c:1018827"
+            ],
+            "verdict": "usual"
+          }
         },
         {
           "name": "Croissants",
@@ -326,7 +585,17 @@
           "currency": "GBP",
           "stock_level": "full",
           "seen_in_frames": 3,
-          "needs_check": []
+          "needs_check": [],
+          "price_check": {
+            "typical_low": 1.52,
+            "typical_high": 1.6,
+            "unit": "each",
+            "quotes": 2,
+            "sources": [
+              "https://www.trolley.co.uk/product/almond-croissant-each/CSQ255"
+            ],
+            "verdict": "usual"
+          }
         }
       ]
     }
