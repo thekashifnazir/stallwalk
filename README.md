@@ -257,5 +257,10 @@ Optional parts:
 - **Price-card photos** are from Wikimedia Commons under CC0, CC BY and CC BY-SA. Each photo's title, licence and link is in [fixtures/commons/CREDITS.md](fixtures/commons/CREDITS.md).
 - **Nebius owns Tavily, so we use Tavily for the web checks.**
 - **Code:** AI-generated under my direction.
+- **Built by** Kashif Nazir · [kashifnazir.com](https://kashifnazir.com)
 
 </details>
+
+---
+
+Built by Kashif Nazir · [kashifnazir.com](https://kashifnazir.com)
