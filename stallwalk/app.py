@@ -285,6 +285,25 @@ def agent_web_find(items: str):
     return {"answer": r["answer"], "items": r["items"]}
 
 
+@app.get("/api/deals")
+def api_deals(stall: str, left: str, run: str = "synthetic_walk"):
+    """End-of-day deals from the NVIDIA Agentic Commerce blueprint's promotion agent (Token Factory).
+    left: "Avocados:30, Bananas:4" = units left per item. The blueprint's code applies the discount and checks margin."""
+    from . import blueprint_promo
+    counts = {}
+    for part in left.split(","):
+        if ":" in part:
+            k, v = part.rsplit(":", 1)
+            try:
+                counts[k.strip()] = float(v)
+            except ValueError:
+                pass
+    deals = blueprint_promo.stall_deals(RUNS / Path(run).name, stall, counts)
+    said = [f'{d["item"]}: £{d["card_price_gbp"]:.2f} to £{d["deal_price_gbp"]:.2f}' if d["deal_price_gbp"] < d["card_price_gbp"]
+            else f'{d["item"]}: keep at £{d["card_price_gbp"]:.2f}' for d in deals]
+    return {"deals": deals, "answer": "; ".join(said) or "No deals."}
+
+
 @app.get("/api/frame/{run}/{frame}")
 def api_frame(run: str, frame: str):
     p = (RUNS / run / "frames" / Path(frame).name)
