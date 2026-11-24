@@ -135,10 +135,10 @@ def api_order(order: str = Form(...)):
     return kitchen.split_order(order, _market_stocks())
 
 
-@app.get("/api/restock")
 KITCHEN = ROOT / "fixtures" / "real_kitchen"  # item lists from the frozen kitchen run (text only, no footage)
 
 
+@app.get("/api/restock")
 def api_restock(folder: str = "real-frozen-v3", estimates: bool = False):
     """Low and empty items across a folder of runs (e.g. the office kitchen footage)."""
     base = RUNS / Path(folder).name
