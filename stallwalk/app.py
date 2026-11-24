@@ -195,6 +195,9 @@ def agent_id():
 # ---- voice agent tools (ElevenLabs webhook tools call these; short plain answers it can speak)
 AGENT_RUN = os.environ.get("STALLWALK_AGENT_RUN", "meal")  # "meal" = fixtures/demo/meal_market.json, else a run name
 DEMO = ROOT / "fixtures" / "demo"
+# the blueprint agents read out/<run>/stock.json: make the meal market available as a run too
+(RUNS / "meal_market").mkdir(parents=True, exist_ok=True)
+(RUNS / "meal_market" / "stock.json").write_text((DEMO / "meal_market.json").read_text())
 
 
 def _agent_stock(run: str | None = None) -> dict | None:
@@ -307,6 +310,22 @@ def api_deals(stall: str, left: str, run: str = "synthetic_walk"):
     said = [f'{d["item"]}: £{d["card_price_gbp"]:.2f} to £{d["deal_price_gbp"]:.2f}' if d["deal_price_gbp"] < d["card_price_gbp"]
             else f'{d["item"]}: keep at £{d["card_price_gbp"]:.2f}' for d in deals]
     return {"deals": deals, "answer": "; ".join(said) or "No deals."}
+
+
+@app.get("/api/agent/what_goes_with")
+def agent_what_goes_with(q: str, run: str = "meal_market"):
+    """NVIDIA Agentic Commerce blueprint's recommendation agent (its own 4-stage pipeline, Token Factory),
+    over the market's stock list. Stall and card price filled in by code."""
+    from . import blueprint_reco
+    r = blueprint_reco.recommend(q, run=run)
+    recs = r.get("recommendations") or r.get("result", {}).get("recommendations") or []
+    said = []
+    for x in recs[:4]:
+        name = x.get("product_name") or x.get("name")
+        bits = [b for b in (x.get("stall"), x.get("price_text")) if b]
+        said.append(name + (f" ({', '.join(bits)})" if bits else ""))
+    return {"answer": ("Goes well with: " + "; ".join(said) + ".") if said else "Nothing on the stalls stands out.",
+            "raw": r}
 
 
 @app.get("/api/frame/{run}/{frame}")
