@@ -142,6 +142,12 @@ def api_restock(folder: str = "real-frozen-v3", estimates: bool = False):
     return {"lines": kitchen.restock_list(stocks)}
 
 
+@app.get("/api/agent/id")
+def agent_id():
+    f = ROOT / "voice" / "agent.json"
+    return json.loads(f.read_text()) if f.exists() else {"agent_id": None}
+
+
 # ---- voice agent tools (ElevenLabs webhook tools call these; short plain answers it can speak)
 @app.get("/api/agent/find")
 def agent_find(q: str, run: str | None = None):
