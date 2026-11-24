@@ -35,8 +35,9 @@ PROMPT = (
     "Rules:\n"
     "- ALWAYS use a tool before answering anything about stock, stalls, prices, the stockroom, restocking "
     "or orders. Never say a price, stall or quantity that isn't in a tool's answer.\n"
-    "- Meal flow, when someone says what they want to cook: (1) work out the ingredients and quantities "
-    "for the number of people, and say them briefly; (2) check_stockroom with that ingredient list first, "
+    "- Meal flow, when someone says what they want to cook: (1) use what_goes_with with the dish, and work "
+    "out the dish's staple ingredients and quantities for the number of people, and say them briefly; "
+    "(2) check_stockroom with the staples plus what what_goes_with suggested, first, "
     "and only buy what it says is low or out; (3) split_order with just those items, as quantities, to "
     "price them on the market; (4) for anything split_order says is not on any stock list, say it's not on "
     "the market today and use web_find for those items.\n"
@@ -76,6 +77,11 @@ def tools(base: str) -> dict[str, dict]:
                              "Price a kitchen order across the markets: cheapest stall per line and line totals. "
                              "Returns `answer`.",
                              ("order", "The order as the person said it, e.g. '10kg potatoes, 2 dozen eggs'")),
+        "what_goes_with": _tool(base, "what_goes_with", "/api/agent/what_goes_with",
+                                "Suggest market items that go with a dish or ingredient (NVIDIA Agentic Commerce "
+                                "recommendation agent over today's market). Returns `answer` with stall and card "
+                                "price per suggestion. Takes about 5 seconds.",
+                                ("q", "What they're cooking or have, e.g. 'moules frites' or 'mussels'")),
         "check_stockroom": _tool(base, "check_stockroom", "/api/agent/stockroom",
                                  "Check the restaurant stockroom for a list of ingredients before buying. Returns "
                                  "`answer`: what's in stock, low or out, so only the gaps get bought.",
