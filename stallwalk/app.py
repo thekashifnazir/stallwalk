@@ -187,15 +187,25 @@ def agent_id():
 
 
 # ---- voice agent tools (ElevenLabs webhook tools call these; short plain answers it can speak)
-AGENT_RUN = os.environ.get("STALLWALK_AGENT_RUN", "synthetic_walk")  # the market the voice agent talks about
+AGENT_RUN = os.environ.get("STALLWALK_AGENT_RUN", "meal")  # "meal" = fixtures/demo/meal_market.json, else a run name
+DEMO = ROOT / "fixtures" / "demo"
+
+
+def _agent_stock(run: str | None = None) -> dict | None:
+    """The ONE stock list the voice agent's find, stalls and order tools all read, so prices can't disagree."""
+    run = run or AGENT_RUN
+    if run == "meal":
+        return json.loads((DEMO / "meal_market.json").read_text())
+    p = _stock_path(run)
+    return json.loads(p.read_text()) if p and p.exists() else None
 
 
 @app.get("/api/agent/find")
 def agent_find(q: str, run: str | None = None):
-    p = _stock_path(run or AGENT_RUN)
-    if not p or not p.exists():
+    stock = _agent_stock(run)
+    if not stock:
         return {"answer": "I haven't walked a market yet."}
-    r = ask(json.loads(p.read_text()), q)
+    r = ask(stock, q)
     if not r["matches"]:
         return {"answer": r.get("note") or "Nothing on today's stalls matches that."}
     parts = [f'{m["name"]} at {m["stall"]}, {m["price_text"] or "price not on the card"}' for m in r["matches"][:4]]
@@ -204,10 +214,9 @@ def agent_find(q: str, run: str | None = None):
 
 @app.get("/api/agent/stalls")
 def agent_stalls(run: str | None = None):
-    p = _stock_path(run or AGENT_RUN)
-    if not p or not p.exists():
+    st = _agent_stock(run)
+    if not st:
         return {"answer": "No walk yet."}
-    st = json.loads(p.read_text())
     return {"answer": "; ".join(f'{s["stall"]}: {len(s["items"])} items, e.g. ' +
                                 ", ".join(i["name"] for i in s["items"][:4]) for s in st["stalls"])}
 
@@ -232,15 +241,40 @@ def agent_restock(folder: str = "real-frozen-v3"):
 
 
 @app.get("/api/agent/order")
-def agent_order(order: str):
-    r = kitchen.split_order(order, _market_stocks())
+def agent_order(order: str, run: str | None = None):
+    stock = _agent_stock(run)
+    r = kitchen.split_order(order, [stock] if stock else [])
     parts = []
     for l in r["lines"]:
         pk = l.get("pick")
         tot = f', £{l["line_total_gbp"]:.2f}' if l.get("line_total_gbp") is not None else ""
-        parts.append(f'{l["asked"]}: {pk["stall"]} at {pk["market"]}, {pk["price_text"]}{tot}' if pk
-                     else f'{l["asked"]}: {l.get("note") or "no match"}')
-    return {"answer": "; ".join(parts) + ". These market stock lists are made up for the demo."}
+        parts.append(f'{l["asked"]}: {pk["stall"]}, {pk["price_text"]}{tot}' if pk
+                     else f'{l["asked"]}: {l.get("note") or "not on the market today"}'.replace("not on any stock list", "not on the market today"))
+    total = sum(l["line_total_gbp"] for l in r["lines"] if l.get("line_total_gbp") is not None)
+    tail = f". Market total £{total:.2f}" if total else ""
+    made_up = " These stalls and prices are made up for the demo." if (stock or {}).get("made_up") else ""
+    return {"answer": "; ".join(parts) + tail + "." + made_up,
+            "missing": [l["asked"] for l in r["lines"] if not l.get("pick") and "not on any stock list" in (l.get("note") or "not on any stock list")]}
+
+
+@app.get("/api/agent/stockroom")
+def agent_stockroom(items: str):
+    """Check the (made-up) restaurant stockroom before buying: have, low or out, so we don't overbuy."""
+    from .walk import _same_item
+    room = json.loads((DEMO / "stockroom.json").read_text())
+    asked = [x.strip() for x in re.split(r",|\band\b", items) if x.strip()]
+    said, need = [], []
+    for a in asked:
+        hit = next((i for i in room["items"] if _same_item(a, i["name"]) or _same_item(kitchen.clean_name(a), i["name"])), None)
+        if not hit:
+            said.append(f"{a}: not something we stock"); need.append(a)
+        elif hit["status"] == "have":
+            said.append(f'{hit["name"]}: have {hit["qty"]} {hit["unit"]}')
+        else:
+            said.append(f'{hit["name"]}: {hit["status"]}' + (f' ({hit["qty"]} {hit["unit"]} left)' if hit["qty"] else ""))
+            need.append(hit["name"])
+    return {"answer": "; ".join(said) + (f". Buy: {', '.join(need)}." if need else ". Nothing to buy.")
+                      + " Stockroom is made up for the demo.", "need": need}
 
 
 @app.get("/api/frame/{run}/{frame}")

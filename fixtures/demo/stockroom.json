@@ -1,0 +1,104 @@
+{
+  "stockroom": "Demo restaurant stockroom (made up)",
+  "made_up": true,
+  "items": [
+    {
+      "name": "Olive oil",
+      "qty": 3,
+      "unit": "litre",
+      "par": 2,
+      "status": "have"
+    },
+    {
+      "name": "Sunflower oil",
+      "qty": 1,
+      "unit": "litre",
+      "par": 5,
+      "status": "low"
+    },
+    {
+      "name": "Sea salt",
+      "qty": 2,
+      "unit": "kg",
+      "par": 1,
+      "status": "have"
+    },
+    {
+      "name": "Black pepper",
+      "qty": 500,
+      "unit": "g",
+      "par": 200,
+      "status": "have"
+    },
+    {
+      "name": "Plain flour",
+      "qty": 5,
+      "unit": "kg",
+      "par": 2,
+      "status": "have"
+    },
+    {
+      "name": "Butter",
+      "qty": 250,
+      "unit": "g",
+      "par": 2000,
+      "status": "low"
+    },
+    {
+      "name": "Garlic",
+      "qty": 0,
+      "unit": "each",
+      "par": 10,
+      "status": "out"
+    },
+    {
+      "name": "Shallots",
+      "qty": 0,
+      "unit": "kg",
+      "par": 1,
+      "status": "out"
+    },
+    {
+      "name": "Flat-leaf parsley",
+      "qty": 0,
+      "unit": "bunch",
+      "par": 4,
+      "status": "out"
+    },
+    {
+      "name": "White wine",
+      "qty": 0,
+      "unit": "bottle",
+      "par": 3,
+      "status": "out"
+    },
+    {
+      "name": "Double cream",
+      "qty": 2,
+      "unit": "litre",
+      "par": 1,
+      "status": "have"
+    },
+    {
+      "name": "Lemons",
+      "qty": 6,
+      "unit": "each",
+      "par": 10,
+      "status": "low"
+    },
+    {
+      "name": "Maris Piper potatoes",
+      "qty": 5,
+      "unit": "kg",
+      "par": 20,
+      "status": "low"
+    },
+    {
+      "name": "Sugar",
+      "qty": 2,
+      "unit": "kg",
+      "par": 1,
+      "status": "have"
+    }
+  ]
+}

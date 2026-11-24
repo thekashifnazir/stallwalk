@@ -1,0 +1,340 @@
+{
+  "market": "Demo market (made up)",
+  "made_up": true,
+  "note": "Made-up stalls and prices for the demo. Billy's and Patel's match the synthetic walk. Butter and white wine are left out on purpose.",
+  "stalls": [
+    {
+      "stall": "Billy's Fresh Fish",
+      "items": [
+        {
+          "name": "Mussels",
+          "price_gbp": 6.0,
+          "price_text": "\u00a36/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Cod Fillet",
+          "price_gbp": 14.99,
+          "price_text": "\u00a314.99/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Salmon Fillet",
+          "price_gbp": 18.5,
+          "price_text": "\u00a318.50/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "King Prawns",
+          "price_gbp": 4.0,
+          "price_text": "\u00a34 per 200g",
+          "unit": "200g",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Mackerel",
+          "price_gbp": 3.0,
+          "price_text": "\u00a33 each",
+          "unit": "each",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Patel's Fruit & Veg",
+      "items": [
+        {
+          "name": "Tomatoes",
+          "price_gbp": 1.8,
+          "price_text": "\u00a31.80/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Bananas",
+          "price_gbp": 0.2,
+          "price_text": "5 for \u00a31",
+          "unit": "each",
+          "deal": "5 for \u00a31",
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Red Onions",
+          "price_gbp": 1.2,
+          "price_text": "\u00a31.20/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Coriander",
+          "price_gbp": 0.8,
+          "price_text": "80p bunch",
+          "unit": "bunch",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Avocados",
+          "price_gbp": 1.0,
+          "price_text": "\u00a31 each",
+          "unit": "each",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Green's Veg",
+      "items": [
+        {
+          "name": "Maris Piper Potatoes",
+          "price_gbp": 0.9,
+          "price_text": "90p/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Shallots",
+          "price_gbp": 2.4,
+          "price_text": "\u00a32.40/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Garlic",
+          "price_gbp": 0.5,
+          "price_text": "50p a bulb",
+          "unit": "each",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Flat-leaf Parsley",
+          "price_gbp": 0.8,
+          "price_text": "80p bunch",
+          "unit": "bunch",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Lemons",
+          "price_gbp": 0.25,
+          "price_text": "4 for \u00a31",
+          "unit": "each",
+          "deal": "4 for \u00a31",
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Thyme",
+          "price_gbp": 1.0,
+          "price_text": "\u00a31 bunch",
+          "unit": "bunch",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Hughes Butchers",
+      "items": [
+        {
+          "name": "Smoked Bacon Lardons",
+          "price_gbp": 3.2,
+          "price_text": "\u00a33.20 per 200g",
+          "unit": "200g",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Chicken Thighs",
+          "price_gbp": 6.5,
+          "price_text": "\u00a36.50/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Beef Mince",
+          "price_gbp": 8.0,
+          "price_text": "\u00a38/kg",
+          "unit": "kg",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Pork Sausages",
+          "price_gbp": 4.5,
+          "price_text": "\u00a34.50 for 6",
+          "unit": "pack",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Meadow Dairy",
+      "items": [
+        {
+          "name": "Double Cream",
+          "price_gbp": 1.6,
+          "price_text": "\u00a31.60 per 300ml",
+          "unit": "300ml",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Creme Fraiche",
+          "price_gbp": 1.8,
+          "price_text": "\u00a31.80 per 200ml",
+          "unit": "200ml",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Free-range Eggs",
+          "price_gbp": 2.8,
+          "price_text": "\u00a32.80 dozen",
+          "unit": "dozen",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Mature Cheddar",
+          "price_gbp": 2.2,
+          "price_text": "\u00a32.20 per 100g",
+          "unit": "100g",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Rise Bakery",
+      "items": [
+        {
+          "name": "Sourdough",
+          "price_gbp": 4.2,
+          "price_text": "\u00a34.20 loaf",
+          "unit": "loaf",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Baguette",
+          "price_gbp": 1.6,
+          "price_text": "\u00a31.60 each",
+          "unit": "each",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        },
+        {
+          "name": "Croissants",
+          "price_gbp": 1.2,
+          "price_text": "\u00a31.20 each",
+          "unit": "each",
+          "deal": null,
+          "currency": "GBP",
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": []
+        }
+      ]
+    }
+  ],
+  "source": {
+    "video": "demo market (made up)",
+    "frames": 0,
+    "fps": null,
+    "errors": []
+  }
+}
