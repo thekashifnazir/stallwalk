@@ -25,7 +25,8 @@ def read_one(model: str, frame: Path) -> dict:
     content = [{"type": "text", "text": walk.FRAME_PROMPT}, tf.image_part(frame)]
     t0 = time.time()
     try:
-        reply = tf.chat(model, content, temperature=0.0, extra=walk.NO_THINKING)
+        extra = None if model.startswith("google/") else walk.NO_THINKING  # gemma has no thinking switch
+        reply = tf.chat(model, content, temperature=0.0, extra=extra)
     except Exception as e:  # noqa: BLE001 - record the failure, score what's left
         return {"frame": frame.name, "signs": [], "items": [], "error": str(e)[:200],
                 "empty": False, "secs": round(time.time() - t0, 1)}
