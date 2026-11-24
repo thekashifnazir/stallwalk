@@ -3,80 +3,82 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>stallwalk</title>
-<style>
-  :root { --bg:#f6f3ee; --ink:#1d1b18; --muted:#6b655c; --card:#fff; --line:#e3ddd3; --accent:#2e7d32; --warn:#b26a00; }
-  * { box-sizing:border-box; }
-  body { margin:0; font:16px/1.45 -apple-system, system-ui, sans-serif; background:var(--bg); color:var(--ink); }
-  header { padding:20px 16px 8px; max-width:980px; margin:auto; }
-  h1 { margin:0; font-size:28px; letter-spacing:-.5px; }
-  header p { margin:4px 0 0; color:var(--muted); }
-  main { max-width:980px; margin:auto; padding:8px 16px 40px; display:grid; gap:16px; }
-  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
-  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-  input[type=text] { flex:1; min-width:200px; padding:12px; font-size:16px; border:1px solid var(--line); border-radius:8px; }
-  button, label.btn { background:var(--ink); color:#fff; border:0; border-radius:8px; padding:12px 16px; font-size:15px; cursor:pointer; }
-  label.btn input { display:none; }
-  .stats { display:flex; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:14px; }
-  .stats b { color:var(--ink); font-size:20px; display:block; }
-  .stalls { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); }
-  .stall h3 { margin:0 0 8px; font-size:17px; }
-  .item { display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-top:1px solid var(--line); font-size:15px; }
-  .item .p { font-variant-numeric:tabular-nums; white-space:nowrap; }
-  .flag { color:var(--warn); font-size:12px; display:block; }
-  .match { padding:10px 0; border-top:1px solid var(--line); }
-  .match small { color:var(--muted); }
-  #status { color:var(--muted); font-size:14px; }
-</style>
+<title>stallwalk: market stalls, online</title>
+<link rel="stylesheet" href="/static/stallwalk.css">
 </head>
 <body>
-<header>
-  <h1>stallwalk</h1>
-  <p>Walk the market with your phone. Shoppers see every stall's stock and prices.</p>
+<header class="hero">
+  <p class="brand"><b>stallwalk</b></p>
+  <h1 class="hero-title">Supermarkets are online. Market stalls aren't.</h1>
+  <p class="hero-sub">Walk the market with your phone, then just ask what to buy.</p>
+  <div class="hero-actions">
+    <button type="button" class="btn btn-primary btn-voice" id="talkbtn">Talk to stallwalk</button>
+    <span id="voicestatus" class="voice-status"></span>
+  </div>
+  <div class="chips">
+    <button type="button" class="chip" data-say="I'm making moules frites for 4 tonight. What do I need to buy?">I'm making moules frites for 4</button>
+    <button type="button" class="chip" data-say="What's run out in the kitchen?">What's run out in the kitchen?</button>
+    <button type="button" class="chip" data-say="Where are the mussels and how much are they?">Where are the mussels?</button>
+  </div>
+  <div id="transcript" class="result-list transcript" aria-live="polite"></div>
 </header>
+
 <main>
-  <section class="panel">
-    <div class="row">
-      <label class="btn">Upload a walk video or photo<input id="video" type="file" accept="video/*,image/*"></label>
-      <button type="button" id="livebtn">Walk live</button>
+  <section class="paths">
+    <div class="path-card panel" id="buying">
+      <h2 class="section-title">Buying: ask what's on the stalls</h2>
+      <form class="ask-row" id="askform">
+        <input type="text" id="q" placeholder="e.g. fresh coriander under £1" autocomplete="off">
+        <button class="btn btn-primary">Ask</button>
+      </form>
+      <div id="answer" class="result-list"></div>
+
+      <h3>Restock a kitchen</h3>
+      <div class="ask-row">
+        <button type="button" class="btn btn-secondary" id="restockbtn">What's run out (office kitchen walk)</button>
+        <button type="button" class="btn btn-secondary" id="restockest">…with web price estimates</button>
+      </div>
+      <div id="restockout" class="result-list"></div>
+      <form class="ask-row" id="orderform">
+        <input type="text" id="order" value="10kg potatoes, 30 lemons, 3kg salmon, 2 dozen eggs">
+        <button class="btn btn-secondary">Split across markets</button>
+      </form>
+      <small class="demo-note">Market stock lists for the order split are made up for the demo.</small>
+      <div id="orderout" class="result-list"></div>
+    </div>
+
+    <div class="path-card panel" id="selling">
+      <h2 class="section-title">Selling: put your stall online</h2>
+      <div class="ask-row">
+        <label class="btn btn-primary">Upload a walk video or photo<input id="video" type="file" accept="video/*,image/*" hidden></label>
+        <button type="button" class="btn btn-secondary" id="livebtn">Walk live</button>
+      </div>
       <span id="status"></span>
+      <video id="cam" playsinline muted style="display:none;width:100%;max-height:320px;margin-top:12px;border-radius:8px;background:#000"></video>
+      <div class="stats" id="stats"></div>
+      <div class="ask-row">
+        <button type="button" class="btn btn-secondary" id="checkbtn">Check prices on the web</button>
+        <button type="button" class="btn btn-secondary" id="exportbtn">Make it buyable by AI agents</button>
+      </div>
+      <span id="exportstatus"></span>
+      <pre id="exportout" style="display:none;max-height:260px;overflow:auto;font-size:12px;padding:10px;border-radius:8px"></pre>
     </div>
-    <video id="cam" playsinline muted style="display:none;width:100%;max-height:320px;margin-top:12px;border-radius:8px;background:#000"></video>
-    <div>
-    </div>
-    <div class="stats" id="stats" style="margin-top:12px"></div>
   </section>
 
-  <section class="panel">
-    <form class="row" id="askform">
-      <input type="text" id="q" placeholder="e.g. fresh coriander under £1" autocomplete="off">
-      <button>Ask</button>
-    </form>
-    <div id="answer"></div>
+  <section>
+    <p class="demo-label">Demo market: made-up stalls and prices</p>
+    <div class="stall-grid stalls" id="stalls"></div>
   </section>
 
-  <section class="panel">
-    <div class="row"><button type="button" id="checkbtn">Check prices on the web</button><button type="button" id="exportbtn">Make it buyable by AI agents</button><span id="exportstatus"></span></div>
-    <pre id="exportout" style="display:none;max-height:260px;overflow:auto;font-size:12px;background:#f3efe8;padding:10px;border-radius:8px"></pre>
+  <section class="how">
+    <h2 class="section-title">How it works</h2>
+    <div class="how-step"><b>1. Phone walk</b><span>Film the stalls, or upload a video or photo.</span></div>
+    <div class="how-step"><b>2. NVIDIA Nemotron VL on Nebius Token Factory</b><span>Reads every frame: items, price cards, stall signs.</span></div>
+    <div class="how-step"><b>3. Stock list</b><span>Code merges what it saw and owns every price. Anything unclear is flagged, never guessed.</span></div>
+    <div class="how-step"><b>4. Voice agent and web estimates</b><span>Ask for a dish: it checks the stockroom, prices the stalls, and estimates the rest from UK supermarkets.</span></div>
   </section>
-
-  <section class="panel">
-    <h3 style="margin:0 0 8px">Kitchen: restock and order</h3>
-    <div class="row">
-      <button type="button" id="restockbtn">What's run out (office kitchen walk)</button>
-      <button type="button" id="restockest">…with web price estimates</button>
-    </div>
-    <div id="restockout"></div>
-    <form class="row" id="orderform" style="margin-top:12px">
-      <input type="text" id="order" value="10kg potatoes, 30 lemons, 3kg salmon, 2 dozen eggs">
-      <button>Split across markets</button>
-    </form>
-    <small style="color:var(--muted)">Market stock lists for the order split are made up for the demo.</small>
-    <div id="orderout"></div>
-  </section>
-
-  <section class="stalls" id="stalls"></section>
 </main>
+<footer class="footer">Built by Kashif Nazir · <a href="https://kashifnazir.com">kashifnazir.com</a> · <a href="https://github.com/thekashifnazir/stallwalk">GitHub</a></footer>
 <div id="voicewrap"></div>
 <script>
 let run = null;
@@ -94,26 +96,65 @@ function render(stock) {
   if (stock.score) stats += `<div><b>${stock.score.items_found}/${stock.score.items_in_hand_count}</b>found vs hand count</div><div><b>${stock.score.prices_right}/${stock.score.items_in_hand_count}</b>prices right</div>`;
   $("stats").innerHTML = stats;
   $("stalls").innerHTML = (stock.stalls || []).map(s => `
-    <div class="panel stall"><h3>${esc(s.stall)}</h3>
-      ${s.items.map(i => `<div class="item"><span>${esc(i.name)}${i.deal ? ` · <small>${esc(i.deal)}</small>` : ""}
+    <div class="panel stall stall-card"><h3>${esc(s.stall)}</h3>
+      ${s.items.map(i => `<div class="item item-row"><span>${esc(i.name)}${i.deal ? ` · <small>${esc(i.deal)}</small>` : ""}
         ${i.price_check && i.price_check.verdict === "usual" ? `<span class="flag" style="color:var(--accent)">usual UK price</span>` : ""}
         ${i.needs_check.map(f => `<span class="flag">${esc(f)}</span>`).join("")}
         <a href="#" class="enrich" data-stall="${esc(s.stall)}" data-name="${esc(i.name)}" style="font-size:12px">catalogue entry</a>
         <span class="entry"></span></span>
-        <span class="p">${esc(i.price_text || "price not readable")}</span></div>`).join("")}
+        <span class="p price">${esc(i.price_text || "price not readable")}</span></div>`).join("")}
     </div>`).join("");
 }
 
 fetch("/api/stock").then(r => r.json()).then(render);
 
-// ElevenLabs voice agent: only shows once voice/agent.json exists
-fetch("/api/agent/id").then(r => r.json()).then(({ agent_id }) => {
-  if (!agent_id) return;
-  $("voicewrap").innerHTML = `<elevenlabs-convai agent-id="${esc(agent_id)}"></elevenlabs-convai>`;
+// ElevenLabs voice agent as the main way in: the big button starts a call in the page.
+// Uses the ElevenLabs JS client; falls back to the floating widget if it can't load.
+let agentId = null, conv = null;
+function say(who, text) {
+  const t = $("transcript");
+  t.insertAdjacentHTML("beforeend", `<div class="result ${who}"><small>${who === "ai" ? "stallwalk" : "you"}</small><br>${esc(text)}</div>`);
+  t.scrollTop = t.scrollHeight;
+}
+function fallbackWidget() {
+  if (!agentId || document.querySelector("elevenlabs-convai")) return;
+  $("voicewrap").innerHTML = `<elevenlabs-convai agent-id="${esc(agentId)}"></elevenlabs-convai>`;
   const sc = document.createElement("script");
   sc.src = "https://unpkg.com/@elevenlabs/convai-widget-embed"; sc.async = true; sc.type = "text/javascript";
   document.body.appendChild(sc);
-});
+  $("voicestatus").textContent = "Use the voice button in the corner.";
+}
+async function startTalk(firstLine) {
+  if (conv) { await conv.endSession(); conv = null; $("talkbtn").textContent = "Talk to stallwalk"; $("voicestatus").textContent = "Call ended."; return; }
+  if (!agentId) { $("voicestatus").textContent = "Voice isn't set up on this build."; return; }
+  $("voicestatus").textContent = "Connecting…";
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+    const { Conversation } = await import("https://esm.sh/@elevenlabs/client");
+    conv = await Conversation.startSession({
+      agentId,
+      onConnect: () => { $("voicestatus").textContent = "Listening. Just talk."; $("talkbtn").textContent = "End call"; },
+      onDisconnect: () => { conv = null; $("talkbtn").textContent = "Talk to stallwalk"; $("voicestatus").textContent = "Call ended."; },
+      onModeChange: (m) => { if (conv) $("voicestatus").textContent = m.mode === "speaking" ? "stallwalk is talking…" : "Listening. Just talk."; },
+      onMessage: (m) => say(m.source === "user" ? "user" : "ai", m.message),
+      onError: (e) => { $("voicestatus").textContent = "Voice error: " + (e && e.message ? e.message : e); },
+    });
+    if (firstLine) {
+      if (typeof conv.sendUserMessage === "function") { conv.sendUserMessage(firstLine); say("user", firstLine); }
+      else $("voicestatus").textContent = `Say: "${firstLine}"`;
+    }
+  } catch (e) {
+    conv = null;
+    $("voicestatus").textContent = "Couldn't start voice here, so here's the voice button instead.";
+    fallbackWidget();
+  }
+}
+fetch("/api/agent/id").then(r => r.json()).then(({ agent_id }) => { agentId = agent_id || null; if (!agentId) $("talkbtn").disabled = true; });
+$("talkbtn").addEventListener("click", () => startTalk());
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+  if (conv && typeof conv.sendUserMessage === "function") { conv.sendUserMessage(c.dataset.say); say("user", c.dataset.say); }
+  else if (!conv) startTalk(c.dataset.say);
+}));
 
 $("video").addEventListener("change", async (e) => {
   const f = e.target.files[0]; if (!f) return;
@@ -202,7 +243,7 @@ async function showRestock(est) {
   $("restockout").innerHTML = lines.length ? lines.map(l => {
     const e = l.estimate;
     const price = e && e.display ? `${esc(e.display)} <small>(web estimate)</small>` : (est ? `<small>${esc(l.estimate_note || "no web estimate")}</small>` : "");
-    return `<div class="match"><b>${esc(l.display_name || l.name)}</b> · <span class="flag" style="display:inline">${esc(l.stock_level)}</span> ${price}<br><small>${esc(l.location ? l.location + " · " : "")}${esc(l.source_file || "")}</small></div>`;
+    return `<div class="match result"><b>${esc(l.display_name || l.name)}</b> · <span class="flag" style="display:inline">${esc(l.stock_level)}</span> ${price}<br><small>${esc(l.location ? l.location + " · " : "")}${esc(l.source_file || "")}</small></div>`;
   }).join("") + (est && r.total ? `<p><b>Restock about £${r.total.gbp.toFixed(2)}</b> <small>(${esc(r.total.label)})</small></p>` : "") : "<p>Nothing low or empty.</p>";
 }
 $("restockbtn").addEventListener("click", () => showRestock(false));
@@ -214,7 +255,7 @@ $("orderform").addEventListener("submit", async (e) => {
   const fd = new FormData(); fd.append("order", $("order").value);
   const r = await (await fetch("/api/order", { method: "POST", body: fd })).json();
   const lines = r.lines || [];
-  $("orderout").innerHTML = lines.map(l => `<div class="match"><b>${esc(l.qty ?? "")} ${esc(l.unit ?? "")} ${esc(l.asked)}</b> → ${l.pick
+  $("orderout").innerHTML = lines.map(l => `<div class="match result"><b>${esc(l.qty ?? "")} ${esc(l.unit ?? "")} ${esc(l.asked)}</b> → ${l.pick
       ? `${esc(l.pick.market)} · ${esc(l.pick.stall)} · ${esc(l.pick.price_text || "")}${l.line_total_gbp != null ? ` · <b>£${l.line_total_gbp.toFixed(2)}</b>` : ""}`
       : `<small>${esc(l.note || "no match")}</small>`}</div>`).join("");
 });
@@ -226,7 +267,7 @@ $("askform").addEventListener("submit", async (e) => {
   const fd = new FormData(); fd.append("question", q); if (run) fd.append("run", run);
   const res = await (await fetch("/api/ask", { method: "POST", body: fd })).json();
   $("answer").innerHTML = `<p>${esc(res.note || res.error || "")}</p>` + (res.matches || []).map(m =>
-    `<div class="match"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small>
+    `<div class="match result"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small>
       <button type="button" class="more" data-name="${esc(m.name)}" data-stall="${esc(m.stall)}" style="margin-left:8px;padding:4px 10px;font-size:13px">About this</button>
       <div class="facts"></div></div>`).join("");
 });
