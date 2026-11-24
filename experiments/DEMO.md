@@ -22,7 +22,7 @@ App: http://localhost:8787 (phone: the trycloudflare link from the stallwalk ses
 | 2:30 to 2:45 | Closer | "And the stock list is ready for AI shopping agents: one click turns it into ACP and UCP product records, and anything we're not sure of is marked not buyable." | **Make it buyable by AI agents** (GET /api/export) | Pure code, no live call. Fall back to the export test output |
 | 2:45 to 3:00 | Next and credit | "Next: real stall walks feeding the market every morning, and the order sent to the stalls. Inspired by Market Live, built by Team Nan at The Build Room Leicester 01." | Credit line on screen | |
 
-The live calls on stage are the voice conversation (ElevenLabs plus the app's tool endpoints through the tunnel) . The web_find answer is already cached. Every other beat is a file, a fixture or a cached result.
+The live calls on stage are the voice conversation (ElevenLabs plus the app's tool endpoints through the tunnel). The web_find answer is already cached. Every other beat is a file, a fixture or a cached result.
 
 ## Fallback flow: stock room walk
 
