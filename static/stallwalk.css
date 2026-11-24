@@ -1315,3 +1315,9 @@ button.details-link:not(:disabled):hover, button.details-link:active {
   .progress::after { content: "..."; }
   button:hover, .btn:hover, button.chip:hover { transform: none; }
 }
+
+/* Fixes (24 Nov 19:10): hidden always wins; a status line only animates while something is actually running */
+[hidden] { display: none !important; }
+.progress:empty { display: none; }
+.progress.idle { color: var(--ds-color-text, inherit); font-weight: 500; }
+.progress.idle::before, .progress.idle::after { display: none; animation: none; }

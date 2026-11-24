@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>stallwalk: market stalls, online</title>
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=1">
-<link rel="stylesheet" href="/static/stallwalk.css?v=0145570">
+<link rel="stylesheet" href="/static/stallwalk.css?v=fix1">
 </head>
 <body>
 <header class="hero">
@@ -445,6 +445,14 @@ $("kitchenbtn").addEventListener("click", (e) => {
         }).join("") + (r.total ? `<p class="plan-total">Restock about ${money(r.total.gbp)} <small>(${esc(r.total.label)})</small></p>` : "");
     } catch (err) { fail($("kitchenout"), err); }
   });
+});
+
+// ---- status lines: only animate while work is running
+const WORKING = /^(Reading|Filming|Looking up|Checking|Connecting)/;
+["status", "checkstatus", "exportstatus"].forEach(id => {
+  const el = $(id);
+  const sync = () => el.classList.toggle("idle", !WORKING.test(el.textContent.trim()));
+  new MutationObserver(sync).observe(el, { childList: true, characterData: true, subtree: true }); sync();
 });
 
 // ---- motion: reveal on scroll, count up the evidence numbers
