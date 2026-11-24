@@ -38,7 +38,11 @@
   <section class="panel">
     <div class="row">
       <label class="btn">Upload a walk video<input id="video" type="file" accept="video/*" capture="environment"></label>
+      <button type="button" id="livebtn">Walk live</button>
       <span id="status"></span>
+    </div>
+    <video id="cam" playsinline muted style="display:none;width:100%;max-height:320px;margin-top:12px;border-radius:8px;background:#000"></video>
+    <div>
     </div>
     <div class="stats" id="stats" style="margin-top:12px"></div>
   </section>
@@ -86,6 +90,35 @@ $("video").addEventListener("change", async (e) => {
   const stock = await r.json();
   $("status").textContent = r.ok ? "Done." : "Something went wrong.";
   render(stock);
+});
+
+// ---- live walk: grab a frame every ~1.2 s, send it, redraw the stock list as answers come back
+let live = null;
+$("livebtn").addEventListener("click", async () => {
+  if (live) { clearInterval(live.timer); live.stream.getTracks().forEach(t => t.stop()); live = null;
+    $("livebtn").textContent = "Walk live"; $("cam").style.display = "none"; $("status").textContent = "Stopped."; return; }
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: 1280 }, audio: false });
+  const cam = $("cam"); cam.srcObject = stream; cam.style.display = "block"; await cam.play();
+  const session = "w" + Date.now().toString(36);
+  const fd0 = new FormData(); fd0.append("session", session); fetch("/api/live/reset", { method: "POST", body: fd0 });
+  const canvas = document.createElement("canvas");
+  live = { stream, session, seq: 0, inflight: 0 };
+  $("livebtn").textContent = "Stop";
+  live.timer = setInterval(() => {
+    if (!live || live.inflight > 3) return;  // don't queue up if the model is slower than the walk
+    canvas.width = cam.videoWidth; canvas.height = cam.videoHeight;
+    canvas.getContext("2d").drawImage(cam, 0, 0);
+    const seq = ++live.seq; live.inflight++;
+    canvas.toBlob(async (blob) => {
+      const fd = new FormData(); fd.append("session", session); fd.append("seq", seq); fd.append("image", blob, "f.jpg");
+      try {
+        const stock = await (await fetch("/api/live/frame", { method: "POST", body: fd })).json();
+        render(stock);
+        const lf = stock.last_frame || {};
+        $("status").textContent = `Frame ${lf.seq}: ${lf.items} items read in ${lf.seconds}s` + (lf.error ? " (error)" : "");
+      } finally { if (live) live.inflight--; }
+    }, "image/jpeg", 0.8);
+  }, 1200);
 });
 
 $("askform").addEventListener("submit", async (e) => {
