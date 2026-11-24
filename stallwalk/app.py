@@ -327,11 +327,38 @@ def agent_stockroom(items: str):
                       + " Stockroom is made up for the demo.", "need": need}
 
 
+# official store finders (links only; we never claim a branch has stock or is open)
+STORE_FINDERS = {
+    "Tesco": "https://www.tesco.com/store-locator/", "Sainsbury's": "https://stores.sainsburys.co.uk/",
+    "Asda": "https://storelocator.asda.com/", "Morrisons": "https://my.morrisons.com/storefinder/",
+    "Waitrose": "https://www.waitrose.com/find-a-store", "Aldi": "https://www.aldi.co.uk/store-finder",
+    "Co-op": "https://www.coop.co.uk/store-finder",
+}
+
+
+def _store_finders(rows: list[dict]) -> list[dict]:
+    seen = []
+    for r in rows:
+        for st in r.get("stores", []):
+            name = next((k for k in STORE_FINDERS if st.lower().startswith(k.lower())), None)
+            if name and name not in [x["store"] for x in seen]:
+                seen.append({"store": name, "url": STORE_FINDERS[name]})
+    return seen
+
+
+def _finder_line(finders: list[dict]) -> str:
+    if not finders:
+        return ""
+    sites = [f["url"].split("//")[1].split("/")[0].removeprefix("www.") for f in finders[:3]]
+    return " To find a branch, use the store finder on " + ", ".join(sites) + "."
+
+
 @app.get("/api/agent/web_find")
 def agent_web_find(items: str):
     """Web fallback for what the market doesn't have: UK supermarket web estimates (Tavily), labelled as such."""
     r = webfind.web_find(webfind.split_items(items), cache_path=RUNS / "pricecheck" / "cache.json")
-    return {"answer": r["answer"], "items": r["items"]}
+    finders = _store_finders(r["items"])
+    return {"answer": r["answer"] + _finder_line(finders), "items": r["items"], "store_finders": finders}
 
 
 @app.get("/api/deals")
@@ -401,6 +428,7 @@ def agent_plan_meal(ingredients: str, run: str | None = None):
         web["answer"] if web else "",
     ] if x)
     return {"answer": answer, "have": have, "buy": to_buy, "market_missing": order.get("missing", []),
+            "store_finders": (web or {}).get("store_finders", []),
             "seconds": round(time.time() - t0, 1)}
 
 
