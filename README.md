@@ -21,3 +21,9 @@ uv run python -m stallwalk walk fixtures/synthetic_walk.mp4 --truth fixtures/syn
 Needs `.env` with `TOKENFACTORY_API_KEY` (and optionally `TOKENFACTORY_BASE_URL`, `VISION_MODEL`).
 
 The synthetic stalls, items and prices are made up.
+
+## Data
+
+- `fixtures/real_kitchen/`: item lists the pipeline produced from phone footage of the event venue's office kitchen (24 Nov 2026). Text only; the footage itself is not in this repo.
+- `fixtures/demo/`, `fixtures/markets/`, `fixtures/synthetic_*`: made-up stalls, prices and stockroom for the demo.
+- `fixtures/commons/`: Wikimedia Commons photos, see `CREDITS.md`.

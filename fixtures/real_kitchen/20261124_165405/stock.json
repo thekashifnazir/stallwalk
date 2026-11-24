@@ -1,0 +1,192 @@
+{
+  "stalls": [
+    {
+      "stall": "Unknown stall",
+      "items": [
+        {
+          "name": "Alpro fresh delicious taste plant-based drink",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "Alpro fresh taste drink"
+          ]
+        },
+        {
+          "name": "black insulated bag",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "carton",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "Coca-Cola Original Taste 24 cans",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 5,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "Coca-Cola can"
+          ]
+        },
+        {
+          "name": "Corona Extra 24 pack",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "DASH no sugar no sweeteners no calories 12x330ml",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "DASH sparkling water",
+            "Dash water can"
+          ]
+        },
+        {
+          "name": "Diet Coke 24 pack",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "food container with yellow contents",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "Heinz Tomato Ketchup",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "San Pellegrino sparkling fruit beverage",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "San Pellegrino sparkling can"
+          ]
+        },
+        {
+          "name": "tub with label",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "yellow canned drink (brand unreadable)",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [],
+  "source": {
+    "video": "20261124_165405.jpg",
+    "frames": 5,
+    "fps": 1.0,
+    "errors": [
+      "f_0001.jpg"
+    ],
+    "seconds": 45.6
+  }
+}

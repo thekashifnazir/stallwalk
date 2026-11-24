@@ -1,0 +1,146 @@
+{
+  "stalls": [
+    {
+      "stall": "Unknown stall",
+      "items": [
+        {
+          "name": "Cadbury Bournville",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    },
+    {
+      "stall": "Cadbury Bournville",
+      "items": [
+        {
+          "name": "Bilton's Demerara rough cut cane cubes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Cadbury Heroes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": "2kg",
+          "currency": null,
+          "deal": null,
+          "stock_level": "low",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Green box (unreadable brand)",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        }
+      ]
+    },
+    {
+      "stall": "Scots",
+      "items": [
+        {
+          "name": "Galaxy caramel chocolate",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Maldon Sea Salt Flakes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "paper towels",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "Pukka tea box",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Twinings Pure Peppermint",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [],
+  "source": {
+    "video": "20261124_165526.jpg",
+    "frames": 5,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 11.4
+  }
+}

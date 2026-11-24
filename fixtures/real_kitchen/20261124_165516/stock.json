@@ -1,0 +1,217 @@
+{
+  "stalls": [
+    {
+      "stall": "Galaxy",
+      "items": [
+        {
+          "name": "Billington's Demerara Rough Cut Cafe Cubes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Cadbury Heroes chocolate box",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": "2 kg",
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Galaxy hot chocolate",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Galaxy Instant Hot Chocolate",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Lindt chocolate",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "M&S English Breakfast tea",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Maldon Sea Salt Flakes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Plantagenet tea",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Pukka tea",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Twinings Earl Grey tea",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Twinings Pure Peppermint tea",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "white granulated sugar",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Yorkshire Tea",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [
+    {
+      "name": "green tea boxes (brand unreadable)",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "Plantation tea",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Galaxy"
+    }
+  ],
+  "source": {
+    "video": "20261124_165516.mp4",
+    "frames": 6,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 7.9
+  }
+}

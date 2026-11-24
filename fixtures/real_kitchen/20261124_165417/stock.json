@@ -1,0 +1,235 @@
+{
+  "stalls": [
+    {
+      "stall": "Unknown stall",
+      "items": [
+        {
+          "name": "Alpro almond drink carton",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "Oatly oat drink carton"
+          ]
+        },
+        {
+          "name": "Coca-Cola cans bottom right",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "low",
+          "seen_in_frames": 20,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "Coca-Cola Original Taste 24 pack",
+            "Coca-Cola Zero Sugar 24 pack",
+            "Diet Coke cans",
+            "Fanta can",
+            "orange soda can",
+            "pink soda can",
+            "Red cans bottom right",
+            "Sanpellegrino Aranciata cans",
+            "Yellow cans in drawer"
+          ]
+        },
+        {
+          "name": "Corona beer",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Corona Cero",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Corona Extra beer pack",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Dash can",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Dash sparkling water cans",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Heinz Tomato Ketchup bottle",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "No sugar no sweeteners no calories drinks",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Orange juice cans",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Red cartons in drawer",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "low",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [
+    {
+      "name": "Pink cans",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "Green can",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "plastic food containers",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "glass jar with yellow lid",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    }
+  ],
+  "source": {
+    "video": "20261124_165417.mp4",
+    "frames": 6,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 7.0
+  }
+}

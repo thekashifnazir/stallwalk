@@ -1,0 +1,362 @@
+{
+  "stalls": [
+    {
+      "stall": "Unknown stall",
+      "items": [
+        {
+          "name": "black canister with wooden lid",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "glass bottle with yellow liquid",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "red canister",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    },
+    {
+      "stall": "BUTTER",
+      "items": [
+        {
+          "name": "Balsamic Vinegar of Modena",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Carex hand soap",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Extra Virgin Olive Oil",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Fairy Max dish soap",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Galaxy Hot Chocolate",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "green hand soap bottle",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "jam jar with red check lid",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Monin syrup",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Nescafe Espresso Rich Crema 7",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Nutella hazelnut spread",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "paper towels",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Quaker oats container",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "salt shaker",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "sugar",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "toothpicks",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Vibe Cafe cup",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "Vibe Cafe mug"
+          ]
+        },
+        {
+          "name": "wooden cutlery set",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [
+    {
+      "name": "glass shaker with white contents",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "glass bottle with white label",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "bottle with red label",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "wooden forks",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "BUTTER"
+    },
+    {
+      "name": "jam",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "BUTTER"
+    }
+  ],
+  "source": {
+    "video": "20261124_165452.mp4",
+    "frames": 8,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 7.0
+  }
+}

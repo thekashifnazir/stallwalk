@@ -1,0 +1,430 @@
+{
+  "stalls": [
+    {
+      "stall": "Unknown stall",
+      "items": [
+        {
+          "name": "cornflakes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "empty cereal dispenser",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "grains",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "oats",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "purple wrapped candies",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ],
+          "also_read_as": [
+            "purple wrapped sweets"
+          ]
+        },
+        {
+          "name": "Reese's snack packets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "low",
+          "seen_in_frames": 3,
+          "needs_check": [
+            "price not readable"
+          ],
+          "also_read_as": [
+            "Reese's peanut butter cups"
+          ]
+        },
+        {
+          "name": "Tribe protein bars",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "yellow and black snack packets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [
+    {
+      "name": "mixed small snack packets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "black and yellow snack packets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "blue and green snack packets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "mixed wrapped sweets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "Walkers crisps (yellow bags)",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "blue bags of crisps",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "low",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "black and red wrapped sweets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "low",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "blue wrapped sweets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "low",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "orange bags of crisps",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "mixed sweets",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "yellow chip bags",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "blue chip bags",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "green chip bags",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "low",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "orange chip bags",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "Hershey's",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "mixed small candies",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "blue Tribe bars",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "yellow packaged snacks",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "mixed wrapped candies",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    },
+    {
+      "name": "blue packaged bars",
+      "price_gbp": null,
+      "price_text": null,
+      "unit": null,
+      "currency": null,
+      "deal": null,
+      "stock_level": "full",
+      "seen_in_frames": 1,
+      "needs_check": [
+        "price not readable",
+        "only seen blurry or partly hidden"
+      ],
+      "stall": "Unknown stall"
+    }
+  ],
+  "source": {
+    "video": "20261124_165503.mp4",
+    "frames": 9,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 6.1
+  }
+}

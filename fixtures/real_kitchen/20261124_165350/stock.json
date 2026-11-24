@@ -1,0 +1,234 @@
+{
+  "stalls": [
+    {
+      "stall": "Unknown stall",
+      "items": [
+        {
+          "name": "black and yellow snack packets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ],
+          "also_read_as": [
+            "orange snack packets"
+          ]
+        },
+        {
+          "name": "Cadbury chocolate bar (purple wrapper)",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Lay's potato chips",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Mixed chocolate bars (Mars, Milky Way, etc.)",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "mixed sweets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "mixed wrapped sweets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "purple chocolate bars",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "purple wrapped sweets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "Tribe protein bar",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Walkers Cheese & Onion crisps",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Walkers Ready Salted crisps",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Walkers Salt & Vinegar crisps",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "yellow and blue patterned crisp packets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ],
+          "also_read_as": [
+            "blue and white patterned crisp packets"
+          ]
+        },
+        {
+          "name": "yellow and blue snack packets",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ],
+          "also_read_as": [
+            "blue and pink snack packets"
+          ]
+        },
+        {
+          "name": "Yellow packet crisps",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "low",
+          "seen_in_frames": 4,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ],
+          "also_read_as": [
+            "blue packaged chips",
+            "Blue packet crisps",
+            "Green packet crisps"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [],
+  "source": {
+    "video": "20261124_165350.jpg",
+    "frames": 5,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 10.1
+  }
+}

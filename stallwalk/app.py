@@ -136,9 +136,14 @@ def api_order(order: str = Form(...)):
 
 
 @app.get("/api/restock")
+KITCHEN = ROOT / "fixtures" / "real_kitchen"  # item lists from the frozen kitchen run (text only, no footage)
+
+
 def api_restock(folder: str = "real-frozen-v3", estimates: bool = False):
     """Low and empty items across a folder of runs (e.g. the office kitchen footage)."""
-    base = (RUNS / Path(folder).name)
+    base = RUNS / Path(folder).name
+    if not base.exists() and folder == "real-frozen-v3":
+        base = KITCHEN
     stocks = [json.loads(p.read_text()) for p in sorted(base.glob("*/stock.json"))]
     if estimates and hasattr(kitchen, "restock_with_estimates"):
         r = kitchen.restock_with_estimates(stocks, cache_path=RUNS / "pricecheck" / "cache.json")

@@ -1,0 +1,83 @@
+{
+  "stalls": [
+    {
+      "stall": "Westabix",
+      "items": [
+        {
+          "name": "cereal rings",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 5,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "corn flakes",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "low",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable",
+            "only seen blurry or partly hidden"
+          ]
+        },
+        {
+          "name": "empty dispenser",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "empty",
+          "seen_in_frames": 1,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "oats",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        },
+        {
+          "name": "Westabix",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": null,
+          "currency": null,
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    }
+  ],
+  "possible": [],
+  "source": {
+    "video": "20261124_165353.jpg",
+    "frames": 5,
+    "fps": 1.0,
+    "errors": [],
+    "seconds": 8.3
+  }
+}
