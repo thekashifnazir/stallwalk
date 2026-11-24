@@ -428,7 +428,7 @@ def agent_plan_meal(ingredients: str, run: str | None = None):
                                           for i in json.loads((DEMO / "stockroom.json").read_text())["items"])]
     answer = " ".join(x for x in [
         f"You already have {' and '.join(have)} in the stockroom, so skip {'it' if len(have) == 1 else 'them'}." if have else "",
-        f"{' and '.join(x.lower() for x in low)} {'is' if len(low) == 1 else 'are'} low, so buy {'it' if len(low) == 1 else 'them'}." if low else "",
+        (lambda t: t[:1].upper() + t[1:])(f"{' and '.join(x.lower() for x in low)} {'is' if len(low) == 1 else 'are'} low, so buy {'it' if len(low) == 1 else 'them'}.") if low else "",
         f"From the market: {order['answer']}" if to_buy else "",
         web["answer"] if web else "",
     ] if x)
