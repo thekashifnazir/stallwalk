@@ -154,7 +154,7 @@ def _present_restock(r: dict, stocks: list[dict]) -> dict:
     """Display tidy-up only: location out of the name, plain names for empty dispensers, a labelled total."""
     names_by_file = {st.get("source", {}).get("video"): " ".join(i["name"].lower() for s in st["stalls"] for i in s["items"])
                      for st in stocks}
-    total, priced = 0.0, 0
+    total, priced, summed = 0.0, 0, []
     for l in r.get("lines", []):
         name = l["name"]
         m = _LOCATION.search(name)
@@ -173,8 +173,9 @@ def _present_restock(r: dict, stocks: list[dict]) -> dict:
             if e.get("unit") in (None, "each"):  # only whole items add up; a per-100g price isn't a pack price
                 total += (e["typical_low"] + hi) / 2
                 priced += 1
+                summed.append(l["display_name"])
     n = len(r.get("lines", []))
-    r["total"] = {"gbp": round(total, 2), "priced": priced, "of": n,
+    r["total"] = {"gbp": round(total, 2), "priced": priced, "of": n, "items": summed,
                   "label": f"web estimate for {priced} of {n} items, one of each, midpoint of UK supermarket quotes; items priced per weight not added"}
     return r
 
@@ -224,7 +225,8 @@ def agent_restock(folder: str = "real-frozen-v3"):
         said.append(f'{l["display_name"]}{where}{level}{price}')
     more = f", and {len(lines) - 5} more" if len(lines) > 5 else ""
     t = r.get("total") or {}
-    total = (f'. Restock about £{t["gbp"]:.2f}, a web estimate for {t["priced"]} of {t["of"]} items'
+    names = " and ".join(t.get("items") or [])
+    total = (f'. Restock about £{t["gbp"]:.2f}: one each of {names}, the middle of UK supermarket web prices'
              if t.get("priced") else "")
     return {"answer": ("; ".join(said) + more + total + ".") if said else "Nothing has run out."}
 
