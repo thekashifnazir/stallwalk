@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>stallwalk: market stalls, online</title>
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=1">
-<link rel="stylesheet" href="/static/stallwalk.css?v=story4">
+<link rel="stylesheet" href="/static/stallwalk.css?v=try1">
 </head>
 <body>
 <header class="hero" id="top">
@@ -43,6 +43,17 @@
 
 <main>
 
+<section class="section try reveal is-in" id="try">
+  <h2 class="section-title">Try it in 10 seconds</h2>
+  <div class="try-buttons">
+    <button type="button" class="btn btn-primary try-btn" id="tryplan">Plan moules frites for 4</button>
+    <button type="button" class="btn btn-primary try-btn" id="trylow">What's low in the stockroom?</button>
+    <button type="button" class="btn btn-primary try-btn" id="tryfind">Where are the mussels?</button>
+  </div>
+  <p class="hint">Or press Talk to stallwalk and just ask.</p>
+  <div id="tryout" class="try-out" aria-live="polite"></div>
+</section>
+
 <section class="section why reveal" id="why">
   <h2 class="section-title">What you can do with it</h2>
   <div class="why-grid">
@@ -55,9 +66,26 @@
   </div>
   <p class="data-source"><b>Where the data comes from:</b> stallholders film their own stall, paid walkers cover whole markets, and later shoppers' photos keep it fresh.</p>
 </section>
-
+<section class="section reveal">
+    <p class="market-intro">This is a made-up market we walked for the demo. In real life, a phone walk fills this in.</p>
+    <p class="demo-label" id="marketlabel">Demo market: made-up stalls and prices</p>
+    <div class="stall-grid stalls" id="stalls"></div>
+  </section>
+<section class="section reveal" id="evidence">
+    <h2 class="section-title">Can you trust it?</h2>
+    <div class="evidence">
+      <div class="ev"><span class="ev-num" data-to="46" data-of="49">0</span><span class="ev-label">items right on a real kitchen shelf</span>
+        <span class="ev-note">Fresha's kitchen, filmed tonight, hand-checked on 3 photos.</span>
+        <button type="button" class="btn btn-secondary" id="kitchenbtn">See what had run out</button></div>
+      <div class="ev"><span class="ev-num" data-to="11" data-of="13">0</span><span class="ev-label">prices read right, and it never made one up</span>
+        <span class="ev-note">7 photos from Wikimedia Commons. Where no card was in shot, it left the price blank.</span></div>
+      <div class="ev"><span class="ev-num" data-to="45" data-of="48">0</span><span class="ev-label">deal decisions inside NVIDIA's own rules</span>
+        <span class="ev-note">Code checked every one, and caught the other 3.</span></div>
+    </div>
+    <div id="kitchenout" class="result-list"></div>
+  </section>
 <section class="section arch reveal" id="built">
-  <h2 class="section-title">How it works, and why</h2>
+  <h2 class="section-title">For the curious: how it works, and why</h2>
   <div class="arch-scroll"><img class="arch-img" src="/static/architecture.svg?v=bf864cd" alt="Phone walk and voice agent go to the stallwalk app, which uses Nemotron on Nebius Token Factory, two NVIDIA blueprints and a Tavily web check, and produces stock lists, meal plans, end-of-day deals and records AI agents can buy."></div>
   <div class="hw-table" role="table">
     <div class="hw-row hw-head" role="row"><span>Part</span><span>What it does</span><span>Why it's here</span><span>Try it</span></div>
@@ -72,7 +100,6 @@
   </div>
   <p class="fresha-nod">Not just markets. Anywhere you need to know what's on the shelf and what's missing, like a salon's retail shelf or colour cupboard, works the same way: one walk, a stock list, and what's low to reorder.</p>
 </section>
-
 <section class="paths">
     <!-- BUYING -->
     <div class="path-card panel reveal" id="buying">
@@ -137,25 +164,13 @@
     </div>
   </section>
 
-  <section class="section reveal">
-    <p class="demo-label" id="marketlabel">Demo market: made-up stalls and prices</p>
-    <div class="stall-grid stalls" id="stalls"></div>
-  </section>
 
-  <section class="section reveal" id="evidence">
-    <p class="section-kicker">Tested, not guessed</p>
-    <h2 class="section-title">How well it reads</h2>
-    <div class="evidence">
-      <div class="ev"><span class="ev-num" data-to="46" data-of="49">0</span><span class="ev-label">items right in a real office kitchen walk</span>
-        <span class="ev-note">Fresha's kitchen, filmed tonight, hand-checked on 3 photos.</span>
-        <button type="button" class="btn btn-secondary" id="kitchenbtn">See what had run out</button></div>
-      <div class="ev"><span class="ev-num" data-to="11" data-of="13">0</span><span class="ev-label">prices read right off real market price cards</span>
-        <span class="ev-note">7 photos from Wikimedia Commons. Where no card was in shot, it left the price blank.</span></div>
-      <div class="ev"><span class="ev-num" data-to="45" data-of="48">0</span><span class="ev-label">deal decisions followed NVIDIA's own rules</span>
-        <span class="ev-note">Code checked every one, and caught the other 3.</span></div>
-    </div>
-    <div id="kitchenout" class="result-list"></div>
-  </section>
+
+
+
+  
+
+  
 
 
 </main>
@@ -267,6 +282,27 @@ document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () =
   else if (!conv) startTalk(c.dataset.say);
 }));
 
+function planHTML(r) {
+      const a = r.answer || "";
+      const route = r.route || [];
+      const total = r.market_total_gbp != null ? money(r.market_total_gbp) : null;
+      const pickups = splitAfter(a, "For the rest,", "Source:").map(l => l.match(/pick up (.*?) from (.*?)(?: \((.*?)\))?$/i)).filter(Boolean);
+      const web = pickups.length ? [] : splitAfter(a, "Tavily web check on UK supermarkets:", "Check your local store").concat(splitAfter(a, "Web estimate, online prices:", "Check your local store"));
+      const low = (a.match(/(?:^|\.\s*)([^.]*?) (?:is|are) low, so buy/) || [])[1];
+      return `<div class="plan">
+        ${(r.have || []).length ? `<div class="plan-have"><span class="tag tag-have">already in the stockroom</span> ${r.have.map(esc).join(", ")}: skip</div>` : ""}
+        ${low ? `<div class="plan-have"><span class="tag tag-low">low in the stockroom</span> ${esc(low)}: buy</div>` : ""}
+        ${route.length ? `<div class="plan-buy"><span class="tag tag-made-up">your route round the market</span>${route.map((l, k) => {
+          const m = l.match(/^(.*?) for (.*?)(?: \((£[\d.]+)\))?$/) || [null, l, "", ""];
+          return `<div class="plan-line"><b>${k + 1}. ${esc(m[1])}</b><span>${esc(m[2])}</span><span class="price">${esc(m[3] || "")}</span></div>`; }).join("")}</div>` : ""}
+        ${total && route.length ? `<div class="plan-total">Market total ${esc(total)} <span class="tag tag-made-up">made-up stalls</span></div>` : ""}
+        ${(r.market_missing || []).length ? `<div class="plan-web"><span class="tag tag-web">not on the market</span> <span class="tag tag-web">Tavily search</span>${pickups.map(m => `<div class="plan-line"><b>Pick up ${esc(m[1])}</b><span>at ${esc(m[2])}</span><span class="price">${esc(m[3] || "")}</span></div>`).join("")}${web.map(l => `<div class="plan-line">${esc(l)}</div>`).join("")}
+          <small class="muted">Online prices, so check your local store.</small>
+          ${(r.store_finders || []).length ? `<small>Find a branch: ${r.store_finders.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.store)}</a>`).join(" · ")}</small>` : ""}</div>` : ""}
+        ${!route.length && !web.length && !pickups.length ? `<p>${esc(a)}</p>` : ""}
+        <small class="muted">${r.seconds ? `Planned in ${r.seconds}s.` : ""}</small></div>`;
+}
+
 // ---- buying: plan a dish
 function splitAfter(text, start, end) {
   const i = text.indexOf(start); if (i < 0) return [];
@@ -280,24 +316,7 @@ $("planform").addEventListener("submit", (e) => {
   busy(btn, "Planning…", async () => {
     try {
       const r = await getJSON(`/api/agent/plan_meal?ingredients=${encodeURIComponent($("ingredients").value)}&run=${DEMO_RUN}`);
-      const a = r.answer || "";
-      const route = r.route || [];
-      const total = r.market_total_gbp != null ? money(r.market_total_gbp) : null;
-      const pickups = splitAfter(a, "For the rest,", "Source:").map(l => l.match(/pick up (.*?) from (.*?)(?: \((.*?)\))?$/i)).filter(Boolean);
-      const web = pickups.length ? [] : splitAfter(a, "Tavily web check on UK supermarkets:", "Check your local store").concat(splitAfter(a, "Web estimate, online prices:", "Check your local store"));
-      const low = (a.match(/(?:^|\.\s*)([^.]*?) (?:is|are) low, so buy/) || [])[1];
-      $("planout").innerHTML = `<div class="plan">
-        ${(r.have || []).length ? `<div class="plan-have"><span class="tag tag-have">already in the stockroom</span> ${r.have.map(esc).join(", ")}: skip</div>` : ""}
-        ${low ? `<div class="plan-have"><span class="tag tag-low">low in the stockroom</span> ${esc(low)}: buy</div>` : ""}
-        ${route.length ? `<div class="plan-buy"><span class="tag tag-made-up">your route round the market</span>${route.map((l, k) => {
-          const m = l.match(/^(.*?) for (.*?)(?: \((£[\d.]+)\))?$/) || [null, l, "", ""];
-          return `<div class="plan-line"><b>${k + 1}. ${esc(m[1])}</b><span>${esc(m[2])}</span><span class="price">${esc(m[3] || "")}</span></div>`; }).join("")}</div>` : ""}
-        ${total && route.length ? `<div class="plan-total">Market total ${esc(total)} <span class="tag tag-made-up">made-up stalls</span></div>` : ""}
-        ${(r.market_missing || []).length ? `<div class="plan-web"><span class="tag tag-web">not on the market</span> <span class="tag tag-web">Tavily search</span>${pickups.map(m => `<div class="plan-line"><b>Pick up ${esc(m[1])}</b><span>at ${esc(m[2])}</span><span class="price">${esc(m[3] || "")}</span></div>`).join("")}${web.map(l => `<div class="plan-line">${esc(l)}</div>`).join("")}
-          <small class="muted">Online prices, so check your local store.</small>
-          ${(r.store_finders || []).length ? `<small>Find a branch: ${r.store_finders.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.store)}</a>`).join(" · ")}</small>` : ""}</div>` : ""}
-        ${!route.length && !web.length && !pickups.length ? `<p>${esc(a)}</p>` : ""}
-        <small class="muted">${r.seconds ? `Planned in ${r.seconds}s.` : ""}</small></div>`;
+      $("planout").innerHTML = planHTML(r);
     } catch (err) { fail($("planout"), err); }
   });
 });
@@ -473,6 +492,35 @@ $("kitchenbtn").addEventListener("click", (e) => {
           return `<div class="match result"><b>${esc(l.display_name || l.name)}</b> <span class="tag tag-${l.stock_level === "empty" ? "out" : "low"}">${esc(l.stock_level)}</span> ${est}<br><small class="muted">${esc(l.location ? l.location + " · " : "")}seen in ${shot}</small></div>`;
         }).join("") + (r.total ? `<p class="plan-total">Restock about ${money(r.total.gbp)} <small>(${esc(r.total.label)})</small></p>` : "");
     } catch (err) { fail($("kitchenout"), err); }
+  });
+});
+
+
+// ---- try it in 10 seconds: answers show right here
+const tryOut = (html) => { $("tryout").innerHTML = html; };
+$("tryplan").addEventListener("click", (e) => {
+  tryOut(`<p class="progress">Checking the stockroom, the stalls and the web</p>`);
+  busy(e.currentTarget, "Planning…", async () => {
+    try { tryOut(planHTML(await getJSON(`/api/agent/plan_meal?ingredients=${encodeURIComponent($("ingredients").value)}&run=${DEMO_RUN}`))); }
+    catch (err) { fail($("tryout"), err); }
+  });
+});
+$("trylow").addEventListener("click", (e) => {
+  busy(e.currentTarget, "Checking…", async () => {
+    try {
+      const s = await getJSON("/api/stockroom");
+      const need = (s.items || []).filter(i => (i.level || i.status) !== "have");
+      tryOut(`<div class="plan"><span class="tag tag-made-up">made-up restaurant stockroom</span>` + (need.length ? need.map(i => {
+        const st = i.level || i.status; return `<div class="plan-line"><b>${esc(i.name)}</b><span>${esc(i.qty ?? "")} ${esc(i.unit ?? "")} left</span><span class="tag tag-${esc(st)}">${esc(st === "out" ? "run out" : st)}</span></div>`; }).join("") : "<p>Nothing is low.</p>") + `</div>`);
+    } catch (err) { fail($("tryout"), err); }
+  });
+});
+$("tryfind").addEventListener("click", (e) => {
+  busy(e.currentTarget, "Looking…", async () => {
+    try {
+      const r = await getJSON(`/api/agent/find?q=mussels&run=${DEMO_RUN}`);
+      tryOut(`<div class="plan"><div class="plan-total">${esc(r.answer || r.note || "Not on the stalls today.")}</div><small class="muted">Price from the stall's own card. <a href="#stalls">See the stall</a></small></div>`);
+    } catch (err) { fail($("tryout"), err); }
   });
 });
 

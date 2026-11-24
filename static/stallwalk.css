@@ -1354,3 +1354,8 @@ a.why-card:hover, a.why-card:focus-visible { transform: translate(-2px, -2px); b
 @media (max-width: 720px) { .arch-scroll .arch-img { min-width: 760px; } }
 .arch-scroll { max-width: 100%; }
 html, body { overflow-x: clip; }
+.try { padding: var(--ds-spacing-6) var(--ds-spacing-5); border: 3px solid currentColor; border-radius: var(--ds-radius-lg, 16px); box-shadow: 8px 8px 0 var(--ds-color-primary); background: var(--ds-color-surface, #fff); }
+.try-buttons { display: grid; gap: var(--ds-spacing-3); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.try-btn { font-size: 1.1rem; padding: var(--ds-spacing-4) var(--ds-spacing-5); }
+.try-out:not(:empty) { margin-top: var(--ds-spacing-4); animation: sw-rise .4s both; }
+.market-intro { font-size: 1.1rem; margin: 0 0 var(--ds-spacing-2); }
