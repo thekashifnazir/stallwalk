@@ -28,6 +28,44 @@ RUNS = ROOT / "out"
 STATIC = ROOT / "static"
 app = FastAPI(title="stallwalk")
 
+# ---- rate limit on routes that spend paid API credits (Token Factory, Tavily), per client IP
+from collections import deque  # noqa: E402
+
+from fastapi import Request  # noqa: E402
+
+PAID = ("/api/walk", "/api/live/frame", "/api/ask", "/api/facts", "/api/enrich", "/api/pricecheck",
+        "/api/order", "/api/restock", "/api/deals", "/api/agent/find", "/api/agent/order",
+        "/api/agent/restock", "/api/agent/web_find", "/api/agent/what_goes_with")
+LIMIT_PER_IP = int(os.environ.get("STALLWALK_LIMIT_PER_IP", "60"))      # calls per window per IP
+LIMIT_TOTAL = int(os.environ.get("STALLWALK_LIMIT_TOTAL", "400"))      # calls per window, everyone
+WINDOW_S = 600
+_hits: dict[str, deque] = {}
+_all: deque = deque()
+_hits_lock = threading.Lock()
+
+
+@app.middleware("http")
+async def paid_rate_limit(request: Request, call_next):
+    path = request.url.path
+    if request.method != "GET" and request.method != "POST" or not path.startswith(PAID):
+        return await call_next(request)
+    ip = request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "?")
+    if ip in ("127.0.0.1", "::1") and "cf-connecting-ip" not in request.headers:
+        return await call_next(request)  # the laptop itself
+    now = time.time()
+    with _hits_lock:
+        q = _hits.setdefault(ip, deque())
+        for d in (q, _all):
+            while d and now - d[0] > WINDOW_S:
+                d.popleft()
+        if len(q) >= LIMIT_PER_IP or len(_all) >= LIMIT_TOTAL:
+            return JSONResponse({"error": "rate limited: this demo spends paid API credits, try again in a few minutes",
+                                 "answer": "I'm being rate limited right now, try again in a few minutes."},
+                                status_code=429, headers={"Retry-After": "120", "Cache-Control": "no-store"})
+        q.append(now)
+        _all.append(now)
+    return await call_next(request)
+
 
 def _latest() -> Path | None:
     runs = sorted((p for p in RUNS.glob("*/stock.json")), key=lambda p: p.stat().st_mtime)
@@ -107,6 +145,9 @@ def api_enrich(stall: str = Form(...), name: str = Form(...), run: str | None = 
         return JSONResponse({"error": "item not in stock list"}, status_code=404)
     out = enrich_item(p.parent, stall, item)
     out["run"] = p.parent.name
+    if "blueprint call failed" in (out.get("error") or ""):
+        out["error"] = ("The catalogue entry comes from the NVIDIA Catalog Enrichment blueprint, which runs on the "
+                        "local build only. Everything else works here.")
     return out
 
 
@@ -317,8 +358,19 @@ def agent_what_goes_with(q: str, run: str = "meal_market"):
     """NVIDIA Agentic Commerce blueprint's recommendation agent (its own 4-stage pipeline, Token Factory),
     over the market's stock list. Stall and card price filled in by code."""
     from . import blueprint_reco
+    from .walk import _same_item
+    if re.search(r"\bmoules\b", q, re.I) and not re.search(r"mussel", q, re.I):
+        q = q + ", I have mussels"  # the dish name alone doesn't tell the retriever what's already in the basket
     r = blueprint_reco.recommend(q, run=run)
     recs = r.get("recommendations") or r.get("result", {}).get("recommendations") or []
+    cart = r.get("cart_items") or []
+    cart_names = [c.get("name", "") for c in cart]
+    cart_cats = {c.get("category") for c in cart if c.get("category")}
+    stock = _agent_stock(run if run != "meal_market" else "meal") or {"stalls": []}
+    cat_of = {i["name"]: blueprint_reco._category(i["name"], st["stall"]) for st in stock["stalls"] for i in st["items"]}
+    # code-side filter: not what's already in the basket, and not more of the same kind (another fish with mussels)
+    recs = [x for x in recs if not any(_same_item(x.get("product_name") or "", n) for n in cart_names)
+            and cat_of.get(x.get("product_name")) not in cart_cats]
     said = []
     for x in recs[:4]:
         name = x.get("product_name") or x.get("name")
