@@ -245,7 +245,7 @@ Optional parts:
 
 ## <a name="credits"></a>6. 🙏 Credits and licences
 
-**Inspired by Market Live, built by Team Nan at The Build Room Leicester 01.**
+The market-stall idea first came up as Market Live at The Build Room Leicester 01.
 
 <details>
 <summary><b>Blueprints, photos and code</b></summary>
