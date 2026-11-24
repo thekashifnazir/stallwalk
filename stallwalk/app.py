@@ -15,6 +15,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from . import walk
 from .ask import ask
 from .export import export_stock
+from .facts import item_facts
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "out"
@@ -76,6 +77,12 @@ def api_export(run: str | None = None):
     if not p or not p.exists():
         return JSONResponse({"error": "no stock list yet"}, status_code=400)
     return export_stock(json.loads(p.read_text()))
+
+
+@app.get("/api/facts")
+def api_facts(name: str, stall: str = ""):
+    """Web facts for one item (Tavily + Nemotron), with sources. Cached per item."""
+    return item_facts(name, stall)
 
 
 @app.get("/api/frame/{run}/{frame}")

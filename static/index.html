@@ -135,6 +135,16 @@ $("exportbtn").addEventListener("click", async () => {
   $("exportout").textContent = JSON.stringify(acp.slice(0, 3), null, 2);
 });
 
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("button.more"); if (!b) return;
+  const box = b.parentElement.querySelector(".facts"); box.textContent = "Searching the web…";
+  const f = await (await fetch(`/api/facts?name=${encodeURIComponent(b.dataset.name)}&stall=${encodeURIComponent(b.dataset.stall)}`)).json();
+  box.innerHTML = (f.facts || []).length
+    ? `<ul style="margin:6px 0 0 18px;padding:0">${f.facts.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` +
+      `<small>Sources: ${(f.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a>`).join(" · ")}</small>`
+    : `<small>${esc(f.error || "Nothing useful found.")}</small>`;
+});
+
 $("askform").addEventListener("submit", async (e) => {
   e.preventDefault();
   const q = $("q").value.trim(); if (!q) return;
@@ -142,7 +152,9 @@ $("askform").addEventListener("submit", async (e) => {
   const fd = new FormData(); fd.append("question", q); if (run) fd.append("run", run);
   const res = await (await fetch("/api/ask", { method: "POST", body: fd })).json();
   $("answer").innerHTML = `<p>${esc(res.note || res.error || "")}</p>` + (res.matches || []).map(m =>
-    `<div class="match"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small></div>`).join("");
+    `<div class="match"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small>
+      <button type="button" class="more" data-name="${esc(m.name)}" data-stall="${esc(m.stall)}" style="margin-left:8px;padding:4px 10px;font-size:13px">About this</button>
+      <div class="facts"></div></div>`).join("");
 });
 </script>
 </body>
