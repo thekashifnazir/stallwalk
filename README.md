@@ -44,6 +44,8 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 
 ## <a name="how"></a>1. 🧭 How it works
 
+<p align="center"><img src="static/architecture.svg" width="900" alt="Phone walk and voice agent go to the stallwalk app on Google Cloud Run, which uses Nemotron on Nebius Token Factory, two NVIDIA retail blueprints and a Tavily web check, and produces stock lists, meal plans, end-of-day deals and records AI agents can buy."></p>
+
 **A FastAPI app on Google Cloud Run does all the work. The models read and suggest; code merges, prices, converts units and decides what's buyable.**
 
 <details>
