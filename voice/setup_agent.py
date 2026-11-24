@@ -27,23 +27,27 @@ API = "https://api.elevenlabs.io/v1/convai"
 IDS = Path(__file__).with_name("agent.json")
 VOICE_LLM = "claude-sonnet-5-5"  # same choice as the Dwelly agent: it keeps to "only say what the tool said"
 NAME = "stallwalk"
-FIRST_MESSAGE = "Hi, I've walked the market. Ask me what's on the stalls, or what the kitchen's run out of."
+FIRST_MESSAGE = "Hi, I've walked the market. Tell me what you'd like to cook, or ask what's on the stalls."
 
 PROMPT = (
-    "You're the voice of stallwalk, in UK English. You help shoppers find what's on the market stalls, "
-    "and you help a kitchen manager see what's run out and where to buy it.\n"
+    "You're the voice of stallwalk, in UK English. You help a cook plan a meal from what's on the market "
+    "today, help shoppers find what's on the stalls, and help a kitchen manager see what's run out.\n"
     "Rules:\n"
-    "- ALWAYS use a tool before answering anything about stock, stalls, prices, restocking or orders. "
-    "find_item for one product, list_stalls for what stalls there are, whats_run_out for the kitchen "
-    "restock list, split_order to price an order across the markets, web_find for items no stall has.\n"
-    "- Never say a price, stall or quantity that isn't in the tool's answer. If the tool doesn't have it, "
-    "say you didn't see it on the walk.\n"
-    "- If the tool's answer says web estimate, say it's a web estimate, not a price from the stall.\n"
-    "- If the tool says the market stock lists are made up for the demo, say so once.\n"
-    "- web_find gives online supermarket prices only. Say they're online prices and to check the local "
-    "store. Never say a shop is nearby, open, or has it in stock.\n"
-    "- Keep every answer under three sentences. No lists read out in full: give the top two or three "
-    "and offer the rest.\n"
+    "- ALWAYS use a tool before answering anything about stock, stalls, prices, the stockroom, restocking "
+    "or orders. Never say a price, stall or quantity that isn't in a tool's answer.\n"
+    "- Meal flow, when someone says what they want to cook: (1) work out the ingredients and quantities "
+    "for the number of people, and say them briefly; (2) check_stockroom with that ingredient list first, "
+    "and only buy what it says is low or out; (3) split_order with just those items, as quantities, to "
+    "price them on the market; (4) for anything split_order says is not on any stock list, say it's not on "
+    "the market today and use web_find for those items.\n"
+    "- Other tools: find_item for one product, list_stalls for what stalls there are, whats_run_out for "
+    "the kitchen restock list.\n"
+    "- If a tool's answer says web estimate or online price, say it's a web estimate, not a price from a "
+    "stall. web_find can't see local shops: say to check the local store, and never say a shop is nearby, "
+    "open, or has it in stock.\n"
+    "- If a tool says the market or stockroom is made up for the demo, say so once.\n"
+    "- Keep every answer under three sentences. Don't read long lists in full: give the top two or three "
+    "and the total, and offer the rest.\n"
     "- If a tool errors, say you can't check right now."
 )
 
@@ -72,6 +76,10 @@ def tools(base: str) -> dict[str, dict]:
                              "Price a kitchen order across the markets: cheapest stall per line and line totals. "
                              "Returns `answer`.",
                              ("order", "The order as the person said it, e.g. '10kg potatoes, 2 dozen eggs'")),
+        "check_stockroom": _tool(base, "check_stockroom", "/api/agent/stockroom",
+                                 "Check the restaurant stockroom for a list of ingredients before buying. Returns "
+                                 "`answer`: what's in stock, low or out, so only the gaps get bought.",
+                                 ("items", "Comma-separated ingredients, e.g. 'mussels, shallots, butter, white wine'")),
         "web_find": _tool(base, "web_find", "/api/agent/web_find",
                           "Online UK supermarket prices for items that are NOT on any walked stall. Returns "
                           "`answer`: a web estimate of the online price per item, with store names. It can't "
