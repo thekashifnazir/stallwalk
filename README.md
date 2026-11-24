@@ -44,14 +44,14 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 
 ## <a name="how"></a>1. 🧭 How it works
 
-**A FastAPI app on a laptop does all the work. The models read and suggest; code merges, prices, converts units and decides what's buyable.**
+**A FastAPI app on Google Cloud Run does all the work. The models read and suggest; code merges, prices, converts units and decides what's buyable.**
 
 <details>
 <summary><b>How a request reaches the app, and what it calls</b></summary>
 
 <br>
 
-It's hosted on Google Cloud Run at https://stallwalk-442338018346.europe-west2.run.app, and the voice agent's tools point there. The Catalog Enrichment backend runs on Cloud Run too, on a private URL. For local development the app runs on a laptop behind a Cloudflare quick tunnel. The Cloudflare Containers config (Dockerfile and worker/) is ready but needs Workers Paid, so it isn't deployed.
+It's live at **https://stallwalk.kashifnazir.com**: a Cloudflare Worker on my domain in front of Google Cloud Run, and the voice agent's tools point at Cloud Run. The Catalog Enrichment backend runs on Cloud Run too, on a private URL. For local development the app runs on a laptop behind a Cloudflare quick tunnel. The Cloudflare Containers config (Dockerfile and worker/) is ready but needs Workers Paid, so it isn't deployed.
 
 ```mermaid
 flowchart LR
@@ -81,7 +81,7 @@ flowchart LR
 ```
 
 - The voice agent's tools point at the Cloud Run URL. `voice/setup_agent.py --public-url <url>` re-points all eight tools in place, for example at a quick tunnel during local development.
-- The Catalog Enrichment backend listens on localhost only. The catalogue entry runs on the local build only, and won't be in the hosted build.
+- The Catalog Enrichment backend runs on Cloud Run too, so catalogue entries work on the live site.
 - The two Agentic Commerce agents run inside the app's process, with their prompts loaded from the blueprint's own config files.
 
 </details>
@@ -144,7 +144,7 @@ An ElevenLabs Conversational AI agent with eight read-only webhook tools: `plan_
 | **NVIDIA Retail Agentic Commerce blueprint** | Promotion agent (layers and margin check copied) and recommendation agent (pipeline imported unchanged) |
 | **ElevenLabs Conversational AI** | The voice agent |
 | **Google Cloud Run** | Hosts the app (public URL) and the Catalog Enrichment backend (private URL) |
-| **Cloudflare** | Quick tunnel for local development; Containers config ready, needs Workers Paid |
+| **Cloudflare** | Worker proxy for stallwalk.kashifnazir.com (free plan); quick tunnel for local development; Containers config ready, needs Workers Paid |
 
 Model ids are the defaults in `stallwalk/tf.py`, `stallwalk/blueprint_promo.py` and `stallwalk/blueprint_reco.py`, and each can be changed by an environment variable.
 
@@ -234,8 +234,8 @@ Optional parts:
 
 - **Synthetic market.** The meal market, the stockroom and the three market stock lists in `fixtures/` are made up, and are labelled that way in the files. The real evidence is 3 office kitchen photos and 7 English Commons price-card photos, hand-checked about halfway through the set.
 - **The office footage isn't in the repo.** Only the text item lists the pipeline produced from it are, in `fixtures/real_kitchen/`.
-- **The public demo is unauthenticated.** Anyone with the Cloud Run URL can use it. It's rate-limited: per IP, 60 paid calls per 10 minutes, 400 in total, with a 429, a Retry-After header and an answer the voice agent can say. The Cloudflare Containers config is ready but needs Workers Paid, so it isn't deployed.
-- **No Docker on the build machine,** so the Shopping Assistant and Multi-Agent Intelligent Warehouse blueprints weren't run.
+- **The public demo is unauthenticated.** Anyone with the link can use it. It's rate-limited: per IP, 60 paid calls per 10 minutes, 400 in total, with a 429, a Retry-After header and an answer the voice agent can say. The Cloudflare Containers config is ready but needs Workers Paid, so it isn't deployed.
+- **The Shopping Assistant and Multi-Agent Intelligent Warehouse blueprints weren't run:** Shopping Assistant needs safety models that aren't on Token Factory, and Warehouse is a different problem.
 - **Recommendation picks are weak on the small market.** The blueprint picks from a handful of items, so code removes what you already have and the rest is often obvious (for moules frites: garlic, potatoes, shallots).
 - **Web prices are online prices.** Tavily can't see local shops, stock or opening hours, so every answer says to check the local store. Pack sizes mix (a can against a multipack), and an estimate spread wider than 4x is dropped.
 - **A flag needs two web quotes.** That stopped a false flag, and it also means a misread with only one quote isn't flagged (Red Onions at £12/kg in [PRICECHECK.md](experiments/PRICECHECK.md)).
