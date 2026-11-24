@@ -234,3 +234,17 @@ def test_250g_butter_matches_per_kg_offer():
         {"name": "Butter", "price_gbp": 8.0, "price_text": "£8/kg", "unit": "kg", "currency": "GBP"}]}]}
     line = kitchen.split_order([{"item": "butter", "qty": 250, "unit": "g"}], [market])["lines"][0]
     assert line["pick"]["name"] == "Butter" and line["line_total_gbp"] == 2.0
+
+
+@pytest.mark.parametrize("text,reply,want_qty", [
+    ("2kg mussels, 4 garlic cloves", {"item": "garlic", "qty": 4, "unit": "cloves"}, 1),
+    ("2kg mussels, 4 cloves garlic", {"item": "garlic", "qty": 4, "unit": None}, 1),
+    ("2kg mussels, 12 cloves of garlic", {"item": "garlic cloves", "qty": 12, "unit": "each"}, 2),
+    ("2kg mussels, 1 garlic", {"item": "garlic", "qty": 1, "unit": None}, 1),
+])
+def test_garlic_cloves_price_as_bulbs(monkeypatch, text, reply, want_qty):
+    monkeypatch.setattr(kitchen.tf, "chat", lambda *a, **k: json.dumps({"lines": [
+        {"item": "mussels", "qty": 2, "unit": "kg"}, reply]}))
+    garlic = [l for l in kitchen.split_order(text, [MEAL])["lines"] if "garlic" in l["asked"].lower()]
+    assert len(garlic) == 1
+    assert garlic[0]["qty"] == want_qty and garlic[0]["line_total_gbp"] == round(0.5 * want_qty, 2)

@@ -6,6 +6,7 @@ pick the cheapest priced option, and group the picks by market. Prices only ever
 from a stock list; nothing is estimated, and lines that don't match are listed as
 unmatched rather than forced onto something close.
 """
+import math
 import re
 
 from . import tf
@@ -146,6 +147,7 @@ def parse_order(order_text: str) -> list[dict]:
             if written:  # the order text wins over the model's reading ("2 dozen", not "24 dozen")
                 line["qty"], line["unit"] = written[0], written[1] or line["unit"]
             out.append(line)
+    _garlic_cloves_to_bulbs(order_text, out)
     # the model sometimes drops items (white wine, butter): every part of the order text gets a line
     for part in _order_parts(order_text):
         if not any(_matches(ln["item"], part) or _matches(part, ln["item"]) for ln in out):
@@ -153,6 +155,22 @@ def parse_order(order_text: str) -> list[dict]:
             out.append({"item": part, "qty": written[0] if written else None,
                         "unit": written[1] if written else None})
     return out
+
+
+_CLOVES_RE = re.compile(r"(\d+)\s*(?:x\s*)?(?:garlic\s+)?cloves?\b", re.I)
+
+
+def _garlic_cloves_to_bulbs(order_text: str, lines: list[dict]) -> None:
+    """Markets sell garlic by the bulb: "4 garlic cloves" -> 1 bulb, "12 cloves" -> 2 (about 10 a bulb)."""
+    m = _CLOVES_RE.search(order_text or "")
+    for ln in lines:
+        unit = (ln.get("unit") or "").lower()
+        if "garlic" not in ln["item"].lower() and not ("clove" in ln["item"].lower() and m):
+            continue
+        n = int(m.group(1)) if m else (ln.get("qty") if unit.startswith("clove") else None)
+        if (m or unit.startswith("clove")) and isinstance(n, (int, float)):
+            ln["qty"], ln["unit"] = max(1, math.ceil(n / 10)), "each"
+            ln["item"] = "garlic"
 
 
 _LEAD_QTY = re.compile(r"^\s*\d+(?:\.\d+)?\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|"
