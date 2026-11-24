@@ -4,112 +4,196 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>stallwalk: market stalls, online</title>
+<link rel="icon" href="/static/favicon.svg">
 <link rel="stylesheet" href="/static/stallwalk.css">
 </head>
 <body>
 <header class="hero">
-  <p class="brand"><b>stallwalk</b></p>
-  <h1 class="hero-title">Supermarkets are online. Market stalls aren't.</h1>
-  <p class="hero-sub">Walk the market with your phone, then just ask what to buy.</p>
-  <div class="hero-actions">
-    <button type="button" class="btn btn-primary btn-voice" id="talkbtn">Talk to stallwalk</button>
-    <span id="voicestatus" class="voice-status"></span>
+  <div class="hero-grid">
+    <div class="hero-text">
+      <p class="brand"><b>stallwalk</b></p>
+      <h1 class="hero-title">Supermarkets are online. Market stalls aren't.</h1>
+      <p class="hero-sub">Walk the market with your phone, then just ask what to buy.</p>
+      <div class="hero-actions">
+        <button type="button" class="btn btn-primary btn-voice" id="talkbtn">Talk to stallwalk</button>
+        <span id="voicestatus" class="voice-status"></span>
+      </div>
+      <p class="chips-label">Ask by voice:</p>
+      <div class="chips">
+        <button type="button" class="chip" data-say="I'm making moules frites for 4 tonight. What do I need to buy?">I'm making moules frites for 4</button>
+        <button type="button" class="chip" data-say="What's in the stockroom and what's running low?">What's low in the stockroom?</button>
+        <button type="button" class="chip" data-say="Where are the mussels and how much are they?">Where are the mussels?</button>
+      </div>
+      <div id="transcript" class="result-list transcript" aria-live="polite"></div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="phone"><div class="phone-screen"><div class="scan"></div></div></div>
+      <ul class="ticker">
+        <li><span class="tk-name">Mussels</span><span class="tk-stall">Billy's Fresh Fish</span><span class="tk-price">£6/kg</span></li>
+        <li><span class="tk-name">Maris Piper potatoes</span><span class="tk-stall">Green's Veg</span><span class="tk-price">90p/kg</span></li>
+        <li><span class="tk-name">Shallots</span><span class="tk-stall">Green's Veg</span><span class="tk-price">£2.40/kg</span></li>
+        <li><span class="tk-name">Double cream</span><span class="tk-stall">Meadow Dairy</span><span class="tk-price">£1.60</span></li>
+        <li><span class="tk-name">Sourdough</span><span class="tk-stall">Rise Bakery</span><span class="tk-price">£4.20</span></li>
+        <li><span class="tk-name">Coriander</span><span class="tk-stall">Patel's Fruit &amp; Veg</span><span class="tk-price">80p</span></li>
+      </ul>
+    </div>
   </div>
-  <div class="chips">
-    <button type="button" class="chip" data-say="I'm making moules frites for 4 tonight. What do I need to buy?">I'm making moules frites for 4</button>
-    <button type="button" class="chip" data-say="What's run out in the kitchen?">What's run out in the kitchen?</button>
-    <button type="button" class="chip" data-say="Where are the mussels and how much are they?">Where are the mussels?</button>
-  </div>
-  <div id="transcript" class="result-list transcript" aria-live="polite"></div>
 </header>
 
 <main>
   <section class="paths">
-    <div class="path-card panel" id="buying">
-      <h2 class="section-title">Buying: ask what's on the stalls</h2>
+    <!-- BUYING -->
+    <div class="path-card panel reveal" id="buying">
+      <p class="section-kicker">For chefs and shoppers</p>
+      <h2 class="section-title">Buying: plan a dish from the stalls</h2>
+
+      <h3>Plan a dish</h3>
+      <p class="hint">The same thing the voice agent does, typed. List what the dish needs: it skips what the stockroom already has, prices the rest at the stalls, and estimates anything the market doesn't sell from UK supermarket websites.</p>
+      <form class="ask-row" id="planform">
+        <input type="text" id="ingredients" value="2kg mussels, 1kg potatoes, shallots, 1 bulb garlic, parsley, white wine, butter" aria-label="Ingredients">
+        <button class="btn btn-primary">Plan it</button>
+      </form>
+      <div id="planout"></div>
+
+      <h3>Ask what's on the stalls</h3>
+      <p class="hint">Search every stall in plain words. Prices always come from the stall's own price card.</p>
       <form class="ask-row" id="askform">
-        <input type="text" id="q" placeholder="e.g. fresh coriander under £1" autocomplete="off">
-        <button class="btn btn-primary">Ask</button>
+        <input type="text" id="q" placeholder="e.g. fresh coriander under £1" autocomplete="off" aria-label="Question">
+        <button class="btn btn-secondary">Ask</button>
       </form>
       <div id="answer" class="result-list"></div>
 
-      <h3>Restock a kitchen</h3>
-      <div class="ask-row">
-        <button type="button" class="btn btn-secondary" id="restockbtn">What's run out (office kitchen walk)</button>
-        <button type="button" class="btn btn-secondary" id="restockest">…with web price estimates</button>
-      </div>
-      <div id="restockout" class="result-list"></div>
-      <form class="ask-row" id="orderform">
-        <input type="text" id="order" value="10kg potatoes, 30 lemons, 3kg salmon, 2 dozen eggs">
-        <button class="btn btn-secondary">Split across markets</button>
-      </form>
-      <small class="demo-note">Market stock lists for the order split are made up for the demo.</small>
-      <div id="orderout" class="result-list"></div>
+      <h3>The kitchen's stockroom</h3>
+      <p class="hint">A made-up restaurant stockroom. Plan a dish checks it first, so you don't buy what you already have.</p>
+      <div id="stockroom" class="stockroom"></div>
     </div>
 
-    <div class="path-card panel" id="selling">
+    <!-- SELLING -->
+    <div class="path-card panel reveal" id="selling">
+      <p class="section-kicker">For stallholders and markets</p>
       <h2 class="section-title">Selling: put your stall online</h2>
+
+      <h3>1. Walk the stalls</h3>
+      <p class="hint">Upload a video or photo of a stall, or film live. NVIDIA Nemotron VL reads the items and price cards, and the stock list below fills in.</p>
       <div class="ask-row">
-        <label class="btn btn-primary">Upload a walk video or photo<input id="video" type="file" accept="video/*,image/*" hidden></label>
-        <button type="button" class="btn btn-secondary" id="livebtn">Walk live</button>
+        <label class="btn btn-primary">Upload a video or photo<input id="video" type="file" accept="video/*,image/*" hidden></label>
+        <button type="button" class="btn btn-secondary" id="livebtn">Film live</button>
       </div>
-      <span id="status"></span>
+      <p id="status" class="progress" aria-live="polite"></p>
       <video id="cam" playsinline muted style="display:none;width:100%;max-height:320px;margin-top:12px;border-radius:8px;background:#000"></video>
       <div class="stats" id="stats"></div>
+      <a href="#" id="backdemo" class="back-demo" hidden>Back to the demo market</a>
+
+      <h3>2. Check the prices</h3>
+      <p class="hint">Looks up each item on UK supermarket websites (web search) and flags a price that looks wrong. It never changes a stall's price.</p>
+      <button type="button" class="btn btn-secondary" id="checkbtn">Check prices on the web</button>
+      <p id="checkstatus" class="progress" aria-live="polite"></p>
+
+      <h3>3. End-of-day deals</h3>
+      <p class="hint">NVIDIA's promotion agent suggests a discount for stock that's left over. Code applies it and never goes below the stall's margin floor. Stock counts here are made up.</p>
       <div class="ask-row">
-        <button type="button" class="btn btn-secondary" id="checkbtn">Check prices on the web</button>
-        <button type="button" class="btn btn-secondary" id="exportbtn">Make it buyable by AI agents</button>
+        <select id="dealstall" aria-label="Stall"></select>
+        <button type="button" class="btn btn-secondary" id="dealbtn">Suggest deals</button>
       </div>
-      <span id="exportstatus"></span>
-      <pre id="exportout" style="display:none;max-height:260px;overflow:auto;font-size:12px;padding:10px;border-radius:8px"></pre>
+      <div id="dealout" class="result-list"></div>
+
+      <h3>4. Let AI agents buy</h3>
+      <p class="hint">Turns the stock list into product records in the ACP and UCP formats AI shopping agents use. Anything flagged is held back.</p>
+      <button type="button" class="btn btn-secondary" id="exportbtn">Make it buyable by AI agents</button>
+      <p id="exportstatus" class="progress" aria-live="polite"></p>
+      <details class="records" id="records" hidden><summary>Show the records</summary><pre id="exportout"></pre></details>
     </div>
   </section>
 
-  <section>
-    <p class="demo-label">Demo market: made-up stalls and prices</p>
+  <section class="section reveal">
+    <p class="demo-label" id="marketlabel">Demo market: made-up stalls and prices</p>
     <div class="stall-grid stalls" id="stalls"></div>
   </section>
 
-  <section class="how">
+  <section class="section reveal" id="evidence">
+    <p class="section-kicker">Tested, not guessed</p>
+    <h2 class="section-title">How well it reads</h2>
+    <div class="evidence">
+      <div class="ev"><span class="ev-num" data-to="46" data-of="49">0</span><span class="ev-label">items right in a real office kitchen walk</span>
+        <span class="ev-note">Fresha's kitchen, filmed tonight, hand-checked on 3 photos.</span>
+        <button type="button" class="btn btn-secondary" id="kitchenbtn">See what had run out</button></div>
+      <div class="ev"><span class="ev-num" data-to="11" data-of="13">0</span><span class="ev-label">prices read right off real market price cards</span>
+        <span class="ev-note">7 photos from Wikimedia Commons. Where no card was in shot, it left the price blank.</span></div>
+      <div class="ev"><span class="ev-num" data-to="45" data-of="48">0</span><span class="ev-label">deal decisions followed NVIDIA's own rules</span>
+        <span class="ev-note">Code checked every one, and caught the other 3.</span></div>
+    </div>
+    <div id="kitchenout" class="result-list"></div>
+  </section>
+
+  <section class="how reveal">
     <h2 class="section-title">How it works</h2>
-    <div class="how-step"><b>1. Phone walk</b><span>Film the stalls, or upload a video or photo.</span></div>
-    <div class="how-step"><b>2. NVIDIA Nemotron VL on Nebius Token Factory</b><span>Reads every frame: items, price cards, stall signs.</span></div>
-    <div class="how-step"><b>3. Stock list</b><span>Code merges what it saw and owns every price. Anything unclear is flagged, never guessed.</span></div>
-    <div class="how-step"><b>4. Voice agent and web estimates</b><span>Ask for a dish: it checks the stockroom, prices the stalls, and estimates the rest from UK supermarkets.</span></div>
+    <div class="how-step" style="--i:0"><b>1. Phone walk</b><span>Film the stalls, or upload a video or photo.</span></div>
+    <div class="how-step" style="--i:1"><b>2. NVIDIA Nemotron VL on Nebius Token Factory</b><span>Reads every frame: items, price cards, stall signs.</span></div>
+    <div class="how-step" style="--i:2"><b>3. Stock list</b><span>Code merges what it saw and owns every price. Anything unclear is flagged, never guessed.</span></div>
+    <div class="how-step" style="--i:3"><b>4. Voice agent and web estimates</b><span>Ask for a dish: it checks the stockroom, prices the stalls, and estimates the rest from UK supermarkets.</span></div>
   </section>
 </main>
 <footer class="footer">Built by Kashif Nazir · <a href="https://kashifnazir.com">kashifnazir.com</a> · <a href="https://github.com/thekashifnazir/stallwalk">GitHub</a></footer>
 <div id="voicewrap"></div>
 <script>
+const DEMO_RUN = "meal_market";
 let run = null;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = (n) => n == null ? "" : `£${Number(n).toFixed(2)}`;
 
+// Every button shows it's working and can't be double-pressed.
+async function busy(btn, label, fn) {
+  const old = btn.textContent;
+  btn.disabled = true; btn.classList.add("is-busy"); btn.setAttribute("aria-busy", "true"); btn.textContent = label;
+  try { return await fn(); }
+  finally {
+    btn.disabled = false; btn.classList.remove("is-busy"); btn.removeAttribute("aria-busy"); btn.textContent = old;
+    btn.classList.add("done-flash"); setTimeout(() => btn.classList.remove("done-flash"), 900);
+  }
+}
+async function getJSON(url, opts) {
+  const r = await fetch(url, opts);
+  if (r.status === 429) throw new Error("Busy right now: too many requests. Try again in a few minutes.");
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(typeof j.detail === "string" ? j.detail : "That didn't work. Try again.");
+  return j;
+}
+const fail = (el, e) => { el.innerHTML = `<p class="flag">${esc(e.message || e)}</p>`; };
+
+// ---- stock list and stall grid
 function render(stock) {
   run = stock.run || null;
   const src = stock.source || {};
-  const n = (stock.stalls || []).reduce((a, s) => a + s.items.length, 0);
-  const flagged = (stock.stalls || []).reduce((a, s) => a + s.items.filter(i => i.needs_check.length).length, 0);
-  let stats = `<div><b>${(stock.stalls||[]).length}</b>stalls</div><div><b>${n}</b>items</div><div><b>${flagged}</b>need a check</div>`;
-  if (src.frames) stats += `<div><b>${src.frames}</b>frames read</div>`;
-  if (src.seconds) stats += `<div><b>${src.seconds}s</b>to read</div>`;
-  if (stock.score) stats += `<div><b>${stock.score.items_found}/${stock.score.items_in_hand_count}</b>found vs hand count</div><div><b>${stock.score.prices_right}/${stock.score.items_in_hand_count}</b>prices right</div>`;
+  const stalls = stock.stalls || [];
+  const n = stalls.reduce((a, s) => a + s.items.length, 0);
+  const flagged = stalls.reduce((a, s) => a + s.items.filter(i => (i.needs_check || []).length).length, 0);
+  let stats = `<div class="stat"><b>${stalls.length}</b>stalls</div><div class="stat"><b>${n}</b>items</div><div class="stat"><b>${flagged}</b>need a check</div>`;
+  if (src.frames) stats += `<div class="stat"><b>${src.frames}</b>frames read</div>`;
+  if (src.seconds) stats += `<div class="stat"><b>${src.seconds}s</b>to read</div>`;
   $("stats").innerHTML = stats;
-  $("stalls").innerHTML = (stock.stalls || []).map(s => `
-    <div class="panel stall stall-card"><h3>${esc(s.stall)}</h3>
+  const isDemo = !run || run === DEMO_RUN;
+  $("backdemo").hidden = isDemo;
+  $("marketlabel").textContent = isDemo ? "Demo market: made-up stalls and prices" : "Your walk: read just now";
+  $("stalls").innerHTML = stalls.map((s, si) => `
+    <div class="panel stall stall-card" style="--i:${si}"><h3>${esc(s.stall)}</h3>
       ${s.items.map(i => `<div class="item item-row"><span>${esc(i.name)}${i.deal ? ` · <small>${esc(i.deal)}</small>` : ""}
-        ${i.price_check && i.price_check.verdict === "usual" ? `<span class="flag" style="color:var(--accent)">usual UK price</span>` : ""}
-        ${i.needs_check.map(f => `<span class="flag">${esc(f)}</span>`).join("")}
-        <a href="#" class="enrich" data-stall="${esc(s.stall)}" data-name="${esc(i.name)}" style="font-size:12px">catalogue entry</a>
+        ${i.price_check && i.price_check.verdict === "usual" ? `<span class="tag tag-have">usual UK price</span>` : ""}
+        ${i.price_check && ["high", "low"].includes(i.price_check.verdict) ? `<span class="flag">price looks ${esc(i.price_check.verdict)} for the UK</span>` : ""}
+        ${(i.needs_check || []).map(f => `<span class="flag">${esc(f)}</span>`).join("")}
+        <a href="#" class="enrich details-link" data-stall="${esc(s.stall)}" data-name="${esc(i.name)}" title="NVIDIA Catalog Enrichment writes a product entry">Details</a>
         <span class="entry"></span></span>
         <span class="p price">${esc(i.price_text || "price not readable")}</span></div>`).join("")}
     </div>`).join("");
+  const keep = $("dealstall").value;
+  $("dealstall").innerHTML = stalls.map(s => `<option>${esc(s.stall)}</option>`).join("");
+  if (keep && stalls.some(s => s.stall === keep)) $("dealstall").value = keep;
 }
+function loadStock(r) { return getJSON("/api/stock" + (r ? `?run=${encodeURIComponent(r)}` : "")).then(render); }
+loadStock(DEMO_RUN).catch(() => loadStock(null));
+$("backdemo").addEventListener("click", (e) => { e.preventDefault(); loadStock(DEMO_RUN); $("status").textContent = ""; });
 
-fetch("/api/stock").then(r => r.json()).then(render);
-
-// ElevenLabs voice agent as the main way in: the big button starts a call in the page.
-// Uses the ElevenLabs JS client; falls back to the floating widget if it can't load.
+// ---- voice: the big button starts a call in the page (ElevenLabs JS client); the floating widget is the fallback
 let agentId = null, conv = null;
 function say(who, text) {
   const t = $("transcript");
@@ -124,17 +208,18 @@ function fallbackWidget() {
   document.body.appendChild(sc);
   $("voicestatus").textContent = "Use the voice button in the corner.";
 }
+function setLive(on) { $("talkbtn").classList.toggle("is-live", on); $("talkbtn").textContent = on ? "End call" : "Talk to stallwalk"; }
 async function startTalk(firstLine) {
-  if (conv) { await conv.endSession(); conv = null; $("talkbtn").textContent = "Talk to stallwalk"; $("voicestatus").textContent = "Call ended."; return; }
+  if (conv) { await conv.endSession(); conv = null; setLive(false); $("voicestatus").textContent = "Call ended."; return; }
   if (!agentId) { $("voicestatus").textContent = "Voice isn't set up on this build."; return; }
-  $("voicestatus").textContent = "Connecting…";
+  $("voicestatus").textContent = "Connecting. Allow the microphone when asked.";
   try {
     await navigator.mediaDevices.getUserMedia({ audio: true });
     const { Conversation } = await import("https://esm.sh/@elevenlabs/client");
     conv = await Conversation.startSession({
       agentId,
-      onConnect: () => { $("voicestatus").textContent = "Listening. Just talk."; $("talkbtn").textContent = "End call"; },
-      onDisconnect: () => { conv = null; $("talkbtn").textContent = "Talk to stallwalk"; $("voicestatus").textContent = "Call ended."; },
+      onConnect: () => { setLive(true); $("voicestatus").textContent = "Listening. Just talk."; },
+      onDisconnect: () => { conv = null; setLive(false); $("voicestatus").textContent = "Call ended."; },
       onModeChange: (m) => { if (conv) $("voicestatus").textContent = m.mode === "speaking" ? "stallwalk is talking…" : "Listening. Just talk."; },
       onMessage: (m) => say(m.source === "user" ? "user" : "ai", m.message),
       onError: (e) => { $("voicestatus").textContent = "Voice error: " + (e && e.message ? e.message : e); },
@@ -144,7 +229,7 @@ async function startTalk(firstLine) {
       else $("voicestatus").textContent = `Say: "${firstLine}"`;
     }
   } catch (e) {
-    conv = null;
+    conv = null; setLive(false);
     $("voicestatus").textContent = "Couldn't start voice here, so here's the voice button instead.";
     fallbackWidget();
   }
@@ -156,30 +241,108 @@ document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () =
   else if (!conv) startTalk(c.dataset.say);
 }));
 
-$("video").addEventListener("change", async (e) => {
-  const f = e.target.files[0]; if (!f) return;
-  $("status").textContent = "Reading the stalls…";
-  const fd = new FormData(); fd.append("video", f);
-  const r = await fetch("/api/walk", { method: "POST", body: fd });
-  const stock = await r.json();
-  $("status").textContent = r.ok ? "Done." : "Something went wrong.";
-  render(stock);
+// ---- buying: plan a dish
+function splitAfter(text, start, end) {
+  const i = text.indexOf(start); if (i < 0) return [];
+  const rest = text.slice(i + start.length); const j = end ? rest.indexOf(end) : -1;
+  return (j >= 0 ? rest.slice(0, j) : rest).split(";").map(s => s.trim().replace(/\.$/, "")).filter(Boolean);
+}
+$("planform").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const btn = $("planform").querySelector("button");
+  $("planout").innerHTML = `<p class="progress">Checking the stockroom, the stalls and the web</p>`;
+  busy(btn, "Planning…", async () => {
+    try {
+      const r = await getJSON(`/api/agent/plan_meal?ingredients=${encodeURIComponent($("ingredients").value)}&run=${DEMO_RUN}`);
+      const a = r.answer || "";
+      const market = splitAfter(a, "From the market:", "Market total");
+      const total = (a.match(/Market total (£[\d.]+)/) || [])[1];
+      const web = splitAfter(a, "Web estimate, online prices:", "Check your local store");
+      const low = (a.match(/\.\s*([^.]*?) (?:is|are) low, so buy/) || a.match(/^([^.]*?) (?:is|are) low, so buy/) || [])[1];
+      $("planout").innerHTML = `<div class="plan">
+        ${(r.have || []).length ? `<div class="plan-have"><span class="tag tag-have">already in the stockroom</span> ${r.have.map(esc).join(", ")}: skip</div>` : ""}
+        ${low ? `<div class="plan-have"><span class="tag tag-low">low in the stockroom</span> ${esc(low)}: buy</div>` : ""}
+        <div class="plan-buy">${market.filter(l => !/not on the market/.test(l)).map(l => {
+          const k = l.indexOf(":"); return `<div class="plan-line"><b>${esc(k > 0 ? l.slice(0, k) : l)}</b><span>${esc(k > 0 ? l.slice(k + 1) : "")}</span></div>`; }).join("")}</div>
+        ${total ? `<div class="plan-total">Market total ${esc(total)} <span class="tag tag-made-up">made-up stalls</span></div>` : ""}
+        ${web.length ? `<div class="plan-web"><span class="tag tag-web">not on the market: web estimate</span>${web.map(l => `<div class="plan-line">${esc(l)}</div>`).join("")}
+          ${(r.store_finders || []).length ? `<small>Find a branch: ${r.store_finders.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.store)}</a>`).join(" · ")}</small>` : ""}</div>` : ""}
+        ${!market.length && !web.length ? `<p>${esc(a)}</p>` : ""}
+        <small class="muted">${r.seconds ? `Planned in ${r.seconds}s.` : ""}</small></div>`;
+    } catch (err) { fail($("planout"), err); }
+  });
 });
 
-// ---- live walk: grab a frame every ~1.2 s, send it, redraw the stock list as answers come back
+// ---- buying: ask
+$("askform").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const q = $("q").value.trim(); if (!q) return;
+  const btn = $("askform").querySelector("button");
+  $("answer").innerHTML = `<p class="progress">Searching the stalls</p>`;
+  busy(btn, "Asking…", async () => {
+    try {
+      const fd = new FormData(); fd.append("question", q); if (run) fd.append("run", run);
+      const res = await getJSON("/api/ask", { method: "POST", body: fd });
+      const list = (res.matches || []).map(m =>
+        `<div class="match result"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small>
+          <button type="button" class="more btn btn-secondary" data-name="${esc(m.name)}" data-stall="${esc(m.stall)}">What is it? (web)</button>
+          <div class="facts"></div></div>`).join("");
+      $("answer").innerHTML = `<p>${esc(res.note || res.error || "")}</p>` + (list || (res.note ? "" : "<p>Nothing matched on the stalls.</p>"));
+    } catch (err) { fail($("answer"), err); }
+  });
+});
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button.more"); if (!b) return;
+  const box = b.parentElement.querySelector(".facts");
+  box.innerHTML = `<p class="progress">Looking it up</p>`;
+  busy(b, "Looking up…", async () => {
+    try {
+      const f = await getJSON(`/api/facts?name=${encodeURIComponent(b.dataset.name)}&stall=${encodeURIComponent(b.dataset.stall)}`);
+      box.innerHTML = (f.facts || []).length
+        ? `<ul>${f.facts.map(x => `<li>${esc(x)}</li>`).join("")}</ul><small>Sources: ${(f.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a>`).join(" · ")}</small>`
+        : `<small>${esc(f.error || "Nothing useful found.")}</small>`;
+    } catch (err) { fail(box, err); }
+  });
+});
+
+// ---- buying: stockroom (made up)
+getJSON("/api/stockroom").then(s => {
+  const items = s.items || [];
+  $("stockroom").innerHTML = items.map(i => {
+    const st = i.level || i.status || "have";
+    return `<div class="sr-row"><span>${esc(i.name)}</span><small class="muted">${esc(i.qty ?? "")} ${esc(i.unit ?? "")}</small><span class="tag tag-${esc(st)}">${st === "have" ? "in stock" : esc(st)}</span></div>`;
+  }).join("");
+}).catch(() => { $("stockroom").innerHTML = `<small class="muted">Stockroom list not available on this build.</small>`; });
+
+// ---- selling: upload / live walk
+$("video").addEventListener("change", async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  $("status").textContent = `Reading ${f.type.startsWith("image") ? "the photo" : "the video"}: about a second per frame`;
+  try {
+    const fd = new FormData(); fd.append("video", f);
+    const stock = await getJSON("/api/walk", { method: "POST", body: fd });
+    render(stock);
+    $("status").textContent = "Done. Your stalls are below.";
+    $("stalls").scrollIntoView({ behavior: "smooth" });
+  } catch (err) { $("status").textContent = err.message; }
+  e.target.value = "";
+});
 let live = null;
 $("livebtn").addEventListener("click", async () => {
   if (live) { clearInterval(live.timer); live.stream.getTracks().forEach(t => t.stop()); live = null;
-    $("livebtn").textContent = "Walk live"; $("cam").style.display = "none"; $("status").textContent = "Stopped."; return; }
-  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: 1280 }, audio: false });
+    $("livebtn").textContent = "Film live"; $("livebtn").classList.remove("is-live"); $("cam").style.display = "none"; $("status").textContent = "Stopped."; return; }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: 1280 }, audio: false }); }
+  catch (err) { $("status").textContent = "Couldn't open the camera. Allow camera access, or upload a video instead."; return; }
   const cam = $("cam"); cam.srcObject = stream; cam.style.display = "block"; await cam.play();
   const session = "w" + Date.now().toString(36);
   const fd0 = new FormData(); fd0.append("session", session); fetch("/api/live/reset", { method: "POST", body: fd0 });
   const canvas = document.createElement("canvas");
   live = { stream, session, seq: 0, inflight: 0 };
-  $("livebtn").textContent = "Stop";
+  $("livebtn").textContent = "Stop filming"; $("livebtn").classList.add("is-live");
+  $("status").textContent = "Filming: walk slowly past each stall";
   live.timer = setInterval(() => {
-    if (!live || live.inflight > 3) return;  // don't queue up if the model is slower than the walk
+    if (!live || live.inflight > 3) return;
     canvas.width = cam.videoWidth; canvas.height = cam.videoHeight;
     canvas.getContext("2d").drawImage(cam, 0, 0);
     const seq = ++live.seq; live.inflight++;
@@ -189,88 +352,113 @@ $("livebtn").addEventListener("click", async () => {
         const stock = await (await fetch("/api/live/frame", { method: "POST", body: fd })).json();
         render(stock);
         const lf = stock.last_frame || {};
-        $("status").textContent = `Frame ${lf.seq}: ${lf.items} items read in ${lf.seconds}s` + (lf.error ? " (error)" : "");
-      } finally { if (live) live.inflight--; }
+        $("status").textContent = `Frame ${lf.seq}: ${lf.items} items read in ${lf.seconds}s` + (lf.error ? " (couldn't read that one)" : "");
+      } catch (err) { $("status").textContent = "Lost a frame, still filming."; }
+      finally { if (live) live.inflight--; }
     }, "image/jpeg", 0.8);
   }, 1200);
 });
 
-$("checkbtn").addEventListener("click", async () => {
-  $("exportstatus").textContent = "Checking prices on the web…";
-  const fd = new FormData(); if (run) fd.append("run", run);
-  const stock = await (await fetch("/api/pricecheck", { method: "POST", body: fd })).json();
-  render(stock);
-  const all = (stock.stalls || []).flatMap(s => s.items).filter(i => i.price_check);
-  const odd = all.filter(i => ["high", "low"].includes(i.price_check.verdict)).length;
-  const usual = all.filter(i => i.price_check.verdict === "usual").length;
-  $("exportstatus").textContent = `${all.length} prices checked: ${usual} usual, ${odd} look odd, ${all.length - usual - odd} couldn't tell`;
+// ---- selling: price check
+$("checkbtn").addEventListener("click", (e) => {
+  $("checkstatus").textContent = "Looking up each item on UK supermarket websites";
+  busy(e.currentTarget, "Checking…", async () => {
+    try {
+      const fd = new FormData(); if (run) fd.append("run", run);
+      const stock = await getJSON("/api/pricecheck", { method: "POST", body: fd });
+      render(stock);
+      const all = (stock.stalls || []).flatMap(s => s.items).filter(i => i.price_check);
+      const odd = all.filter(i => ["high", "low"].includes(i.price_check.verdict)).length;
+      const usual = all.filter(i => i.price_check.verdict === "usual").length;
+      $("checkstatus").textContent = `${all.length} prices checked: ${usual} look usual, ${odd} look odd, ${all.length - usual - odd} couldn't be compared. See the tags on each stall below.`;
+    } catch (err) { $("checkstatus").textContent = err.message; }
+  });
 });
 
+// ---- selling: end-of-day deals (NVIDIA promotion agent)
+const MADE_UP_LEFT = [30, 4, 12, 25, 2, 18, 40, 6];
+$("dealbtn").addEventListener("click", (e) => {
+  const stall = $("dealstall").value; if (!stall) return;
+  $("dealout").innerHTML = `<p class="progress">Asking the promotion agent</p>`;
+  busy(e.currentTarget, "Thinking…", async () => {
+    try {
+      const res = await getJSON("/api/stock" + (run ? `?run=${encodeURIComponent(run)}` : ""));
+      const s = (res.stalls || []).find(x => x.stall === stall);
+      const items = (s ? s.items : []).filter(i => i.price_gbp);
+      const left = items.map((i, k) => `${i.name}:${MADE_UP_LEFT[k % MADE_UP_LEFT.length]}`).join(",");
+      const r = await getJSON(`/api/deals?stall=${encodeURIComponent(stall)}&left=${encodeURIComponent(left)}&run=${encodeURIComponent(run || DEMO_RUN)}`);
+      $("dealout").innerHTML = (r.deals || []).map(d => {
+        const cut = d.deal_price_gbp < d.card_price_gbp;
+        return `<div class="deal-row result"><b>${esc(d.item)}</b> <small class="muted">${esc(d.stock_left)} left</small>
+          <span class="price">${cut ? `<s class="was">${money(d.card_price_gbp)}</s> <b class="now">${money(d.deal_price_gbp)}</b>` : money(d.card_price_gbp)}</span>
+          <span class="tag ${cut ? "tag-low" : "tag-have"}">${cut ? esc(String(d.action).replace("DISCOUNT_", "").replace("_PCT", "% off")) : "keep the price"}</span>
+          ${d.reasoning ? `<br><small class="muted">${esc(d.reasoning)}</small>` : ""}</div>`;
+      }).join("") || "<p>No deals for this stall.</p>";
+    } catch (err) { fail($("dealout"), err); }
+  });
+});
+
+// ---- selling: agent-buyable export
+$("exportbtn").addEventListener("click", (e) => {
+  busy(e.currentTarget, "Building…", async () => {
+    try {
+      const ex = await getJSON("/api/export" + (run ? `?run=${encodeURIComponent(run)}` : ""));
+      const acp = ex.acp || [];
+      const ok = acp.filter(x => (x.agent_actions || {}).buyable).length;
+      $("exportstatus").textContent = `${acp.length} products ready for AI shopping agents: ${ok} buyable now, ${acp.length - ok} held back for a check.`;
+      $("exportout").textContent = JSON.stringify(acp.slice(0, 3), null, 2);
+      $("records").hidden = false;
+    } catch (err) { $("exportstatus").textContent = err.message; }
+  });
+});
+
+// ---- item details (NVIDIA Catalog Enrichment)
 document.addEventListener("click", async (e) => {
   const a = e.target.closest("a.enrich"); if (!a) return;
   e.preventDefault();
-  const box = a.nextElementSibling; box.innerHTML = "<small> NVIDIA blueprint working…</small>";
-  const fd = new FormData(); fd.append("stall", a.dataset.stall); fd.append("name", a.dataset.name); if (run) fd.append("run", run);
-  const r = await (await fetch("/api/enrich", { method: "POST", body: fd })).json();
-  box.innerHTML = r.error ? `<small>${esc(r.error)}</small>` :
-    `<div style="display:flex;gap:8px;margin-top:6px">${r.crop ? `<img src="/api/frame/${encodeURIComponent(r.run)}/${encodeURIComponent(r.crop)}" style="width:72px;height:72px;object-fit:cover;border-radius:6px">` : ""}
-     <small><b>${esc(r.title)}</b><br>${esc(r.description)}<br><i>${esc((r.tags || []).slice(0, 6).join(", "))}</i></small></div>`;
+  const box = a.nextElementSibling;
+  if (box.dataset.open) { box.innerHTML = ""; delete box.dataset.open; a.textContent = "Details"; return; }
+  box.innerHTML = `<small class="progress">NVIDIA Catalog Enrichment is writing the entry</small>`;
+  try {
+    const fd = new FormData(); fd.append("stall", a.dataset.stall); fd.append("name", a.dataset.name); if (run) fd.append("run", run);
+    const r = await getJSON("/api/enrich", { method: "POST", body: fd });
+    box.dataset.open = "1"; a.textContent = "Hide";
+    box.innerHTML = r.error ? `<small>${esc(r.error)}</small>` :
+      `<div class="entry-card">${r.crop ? `<img src="/api/frame/${encodeURIComponent(r.run)}/${encodeURIComponent(r.crop)}" alt="">` : ""}
+       <small><b>${esc(r.title)}</b><br>${esc(r.description)}<br><i>${esc((r.tags || []).slice(0, 6).join(", "))}</i></small></div>`;
+  } catch (err) { box.innerHTML = `<small class="flag">${esc(err.message)}</small>`; }
 });
 
-$("exportbtn").addEventListener("click", async () => {
-  const ex = await (await fetch("/api/export" + (run ? `?run=${encodeURIComponent(run)}` : ""))).json();
-  const acp = ex.acp || [];
-  const ok = acp.filter(x => (x.agent_actions || {}).buyable).length;
-  $("exportstatus").textContent = `${acp.length} listings in ACP and UCP format, ${ok} ready to buy, ${acp.length - ok} held for a check`;
-  $("exportout").style.display = "block";
-  $("exportout").textContent = JSON.stringify(acp.slice(0, 3), null, 2);
+// ---- evidence: office kitchen restock (real footage)
+$("kitchenbtn").addEventListener("click", (e) => {
+  busy(e.currentTarget, "Loading…", async () => {
+    try {
+      const r = await getJSON("/api/restock?estimates=true");
+      const files = [...new Set((r.lines || []).map(l => l.source_file))];
+      $("kitchenout").innerHTML = `<h3>What had run out in the office kitchen</h3><p class="hint">Read from photos and videos of the kitchen tonight. Prices are web estimates.</p>` +
+        (r.lines || []).map(l => {
+          const est = l.estimate && l.estimate.display ? `${esc(l.estimate.display)} <span class="tag tag-web">web estimate</span>` : "";
+          const shot = `${String(l.source_file || "").endsWith(".mp4") ? "video" : "photo"} ${files.indexOf(l.source_file) + 1}`;
+          return `<div class="match result"><b>${esc(l.display_name || l.name)}</b> <span class="tag tag-${l.stock_level === "empty" ? "out" : "low"}">${esc(l.stock_level)}</span> ${est}<br><small class="muted">${esc(l.location ? l.location + " · " : "")}seen in ${shot}</small></div>`;
+        }).join("") + (r.total ? `<p class="plan-total">Restock about ${money(r.total.gbp)} <small>(${esc(r.total.label)})</small></p>` : "");
+    } catch (err) { fail($("kitchenout"), err); }
+  });
 });
 
-document.addEventListener("click", async (e) => {
-  const b = e.target.closest("button.more"); if (!b) return;
-  const box = b.parentElement.querySelector(".facts"); box.textContent = "Searching the web…";
-  const f = await (await fetch(`/api/facts?name=${encodeURIComponent(b.dataset.name)}&stall=${encodeURIComponent(b.dataset.stall)}`)).json();
-  box.innerHTML = (f.facts || []).length
-    ? `<ul style="margin:6px 0 0 18px;padding:0">${f.facts.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` +
-      `<small>Sources: ${(f.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a>`).join(" · ")}</small>`
-    : `<small>${esc(f.error || "Nothing useful found.")}</small>`;
-});
-
-async function showRestock(est) {
-  $("restockout").innerHTML = "<p>…</p>";
-  const r = await (await fetch(`/api/restock?estimates=${est}`)).json();
-  const lines = r.lines || [];
-  $("restockout").innerHTML = lines.length ? lines.map(l => {
-    const e = l.estimate;
-    const price = e && e.display ? `${esc(e.display)} <small>(web estimate)</small>` : (est ? `<small>${esc(l.estimate_note || "no web estimate")}</small>` : "");
-    return `<div class="match result"><b>${esc(l.display_name || l.name)}</b> · <span class="flag" style="display:inline">${esc(l.stock_level)}</span> ${price}<br><small>${esc(l.location ? l.location + " · " : "")}${esc(l.source_file || "")}</small></div>`;
-  }).join("") + (est && r.total ? `<p><b>Restock about £${r.total.gbp.toFixed(2)}</b> <small>(${esc(r.total.label)})</small></p>` : "") : "<p>Nothing low or empty.</p>";
+// ---- motion: reveal on scroll, count up the evidence numbers
+function countUp(el) {
+  if (el.dataset.done) return; el.dataset.done = 1;
+  const to = +el.dataset.to, of = el.dataset.of;
+  const dur = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1200, t0 = performance.now();
+  const step = (t) => { const k = dur ? Math.min(1, (t - t0) / dur) : 1; el.textContent = `${Math.round(to * (1 - Math.pow(1 - k, 3)))} of ${of}`; if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
 }
-$("restockbtn").addEventListener("click", () => showRestock(false));
-$("restockest").addEventListener("click", () => showRestock(true));
-
-$("orderform").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  $("orderout").innerHTML = "<p>…</p>";
-  const fd = new FormData(); fd.append("order", $("order").value);
-  const r = await (await fetch("/api/order", { method: "POST", body: fd })).json();
-  const lines = r.lines || [];
-  $("orderout").innerHTML = lines.map(l => `<div class="match result"><b>${esc(l.qty ?? "")} ${esc(l.unit ?? "")} ${esc(l.asked)}</b> → ${l.pick
-      ? `${esc(l.pick.market)} · ${esc(l.pick.stall)} · ${esc(l.pick.price_text || "")}${l.line_total_gbp != null ? ` · <b>£${l.line_total_gbp.toFixed(2)}</b>` : ""}`
-      : `<small>${esc(l.note || "no match")}</small>`}</div>`).join("");
-});
-
-$("askform").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const q = $("q").value.trim(); if (!q) return;
-  $("answer").innerHTML = "<p>…</p>";
-  const fd = new FormData(); fd.append("question", q); if (run) fd.append("run", run);
-  const res = await (await fetch("/api/ask", { method: "POST", body: fd })).json();
-  $("answer").innerHTML = `<p>${esc(res.note || res.error || "")}</p>` + (res.matches || []).map(m =>
-    `<div class="match result"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small>
-      <button type="button" class="more" data-name="${esc(m.name)}" data-stall="${esc(m.stall)}" style="margin-left:8px;padding:4px 10px;font-size:13px">About this</button>
-      <div class="facts"></div></div>`).join("");
-});
+const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach(en => {
+  if (!en.isIntersecting) return;
+  en.target.classList.add("is-in"); io.unobserve(en.target);
+  en.target.querySelectorAll(".ev-num").forEach(countUp);
+}), { threshold: 0.12 }) : null;
+document.querySelectorAll(".reveal").forEach(el => io ? io.observe(el) : (el.classList.add("is-in"), el.querySelectorAll(".ev-num").forEach(countUp)));
 </script>
 </body>
 </html>
