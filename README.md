@@ -11,14 +11,14 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![ElevenLabs voice agent](https://img.shields.io/badge/voice-ElevenLabs-000000)
 
-[**GitHub**](https://github.com/thekashifnazir/stallwalk) · [**How it works**](#how) · [**Results**](#results) · [**Run it locally**](#run) · [**Demo script**](experiments/DEMO.md) · [**Voice agent**](voice/README.md)
+[**Live site**](https://stallwalk.kashifnazir.com) · [**Demo video (60 s)**](https://youtu.be/TyyTZYJPsbU) · [**How it works**](#how) · [**Results**](#results) · [**Run it locally**](#run) · [**Voice agent**](voice/README.md)
 
 </div>
 
 <p align="center">
-  <img src="docs/demo-preview.gif" width="720" alt="Silent preview: a market stock list, the voice widget, what's run out with web estimates, an order split across stalls, price cards, a misread price flagged, and the agent-ready export">
+  <a href="https://youtu.be/TyyTZYJPsbU"><img src="docs/demo-preview.gif" width="720" alt="Silent preview of the 60-second demo: the hook, the architecture diagram, and the live site next to a real voice-agent reply"></a>
   <br>
-  <sub>Silent preview, built from the demo's backup screenshots. The market data in it is made up. The office kitchen footage isn't in this repo or in this preview.</sub>
+  <sub>▶ Silent preview of the 60-second demo. <a href="https://youtu.be/TyyTZYJPsbU"><b>Watch the full video with sound</b></a> · <a href="https://stallwalk.kashifnazir.com"><b>Try the live site</b></a><br>The demo market's stalls and prices are made up.</sub>
 </p>
 
 > **In 30 seconds.** Someone walks past the stalls, or round a kitchen stock room, filming on a phone. stallwalk pulls frames from the video, has a vision model on Nebius Token Factory read each one, and then code merges the readings into one stock list per stall, with a stock level per item. Code owns every price: a price it can't read stays blank, and a price that differs across frames gets flagged, never averaged. From that list it works out what's run out, prices an order across the stalls, checks prices against UK supermarket websites, suggests end-of-day deals for the stallholder, and turns the list into product records an AI shopping agent can buy from. A voice agent sits on top and answers only from the app.
