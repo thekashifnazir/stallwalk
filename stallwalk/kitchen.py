@@ -169,3 +169,37 @@ def split_order(order, stocks: list[dict]) -> dict:
         if pick:
             by_market.setdefault(pick["market"], []).append(line)
     return {"lines": lines, "by_market": by_market, "unmatched": unmatched}
+
+
+# ── restock with web estimates (no card prices on an office kitchen shelf) ──
+
+# where on the shelf, not what it is ("Coca-Cola cans bottom right" -> "Coca-Cola cans")
+_PLACE_WORDS = r"\b(top|bottom|left|right|middle|centre|center|back|front|in|on|the|drawer|fridge|cupboard|counter|corner|row|rack)\b"
+
+
+def _search_name(match_name: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(_PLACE_WORDS, " ", match_name)).strip()
+
+
+def restock_with_estimates(stocks: list[dict], cache_path=None, max_items: int = 12) -> dict:
+    """restock_list() plus a web estimate of the usual UK price for each line, via
+    pricecheck.check_prices on UK grocer sites. Lines whose name is only shelf words
+    ("empty dispenser") aren't searched and get estimate None. Nothing here is a price."""
+    from .pricecheck import ESTIMATE_LABEL, check_prices
+
+    lines = restock_list(stocks)
+    search = [(ln, _search_name(clean_name(ln["name"]))) for ln in lines]
+    items = [{"name": q, "price_gbp": None, "price_text": None, "unit": None, "needs_check": [], "_line": n}
+             for n, (ln, q) in enumerate(search) if q]
+    checked = check_prices({"stalls": [{"stall": "restock", "items": items}]},
+                           max_items=max_items, cache_path=cache_path)
+    by_line = {i["_line"]: i.get("price_check") for i in checked["stalls"][0]["items"]}
+    out = []
+    for n, ln in enumerate(lines):
+        chk = by_line.get(n)
+        est = None
+        if chk and chk.get("verdict") == "estimate":
+            est = {k: chk.get(k) for k in ("typical_low", "typical_high", "unit", "quotes", "sources")}
+            est["label"] = ESTIMATE_LABEL
+        out.append({**ln, "search_name": search[n][1] or None, "estimate": est})
+    return {"lines": out}

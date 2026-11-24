@@ -115,3 +115,33 @@ def test_real_footage_restock_runs():
                                              ("onions", "Red Onions", True), ("lemon", "Lemons", True)])
 def test_matches(asked, offer, want):
     assert kitchen._matches(asked, offer) is want
+
+
+def test_restock_with_estimates(monkeypatch):
+    from stallwalk import pricecheck as pc
+    pc._CACHE.clear()
+    queries = []
+
+    def fake_search(q):
+        queries.append(q)
+        return {"results": [{"url": "https://www.tesco.com/coke", "title": "Coca-Cola", "content": "..."},
+                            {"url": "https://www.asda.com/coke", "title": "Coca-Cola", "content": "..."}]}
+
+    monkeypatch.setattr(pc, "tavily_search", fake_search)
+    monkeypatch.setattr(pc, "extract_quotes", lambda n, u, r: [{"price": 8.5, "unit": "pack", "source": 0},
+                                                               {"price": 9.0, "unit": "each", "source": 1}]
+                        if "coca" in n.lower() else [])
+    stocks = [_stock("k.mp4", [_i("Coca-Cola cans bottom right", "low"), _i("empty dispenser", "empty"),
+                               _i("corn flakes", "low"), _i("milk", "full")])]
+    out = kitchen.restock_with_estimates(stocks)["lines"]
+    by = {l["name"]: l for l in out}
+    assert set(by) == {"Coca-Cola cans bottom right", "empty dispenser", "corn flakes"}
+    coke = by["Coca-Cola cans bottom right"]
+    assert coke["search_name"] == "coca-cola cans" and coke["source_file"] == "k.mp4"
+    assert coke["estimate"] == {"typical_low": 8.5, "typical_high": 9.0, "unit": "each", "quotes": 2,
+                                "sources": ["https://www.tesco.com/coke", "https://www.asda.com/coke"],
+                                "label": "web estimate of the usual UK price, not read from a price card"}
+    assert by["empty dispenser"]["estimate"] is None and by["empty dispenser"]["search_name"] is None
+    assert by["corn flakes"]["estimate"] is None  # searched, no quotes
+    assert "price_gbp" not in coke  # an estimate is never a price
+    assert sorted(queries) == ["coca-cola cans price UK supermarket", "corn flakes price UK supermarket"]
