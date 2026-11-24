@@ -222,7 +222,7 @@ function render(stock) {
         ${i.price_check && i.price_check.verdict === "usual" ? `<span class="tag tag-have">usual UK price</span>` : ""}
         ${i.price_check && ["high", "low"].includes(i.price_check.verdict) ? `<span class="flag">price looks ${esc(i.price_check.verdict)} for the UK</span>` : ""}
         ${(i.needs_check || []).map(f => `<span class="flag">${esc(f)}</span>`).join("")}
-        <a href="#" class="enrich details-link" data-stall="${esc(s.stall)}" data-name="${esc(i.name)}" title="NVIDIA Catalog Enrichment writes a product entry">Catalogue entry</a>
+        ${i.has_photo === false ? "" : `<a href="#" class="enrich details-link" data-stall="${esc(s.stall)}" data-name="${esc(i.name)}" title="NVIDIA Catalog Enrichment writes a product entry">Catalogue entry</a>`}
         <span class="entry"></span></span>
         <span class="p price">${esc(i.price_text || "price not readable")}</span></div>`).join("")}
     </div>`).join("");

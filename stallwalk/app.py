@@ -105,6 +105,18 @@ def api_stock(run: str | None = None):
         return JSONResponse({"stalls": [], "source": None})
     stock = json.loads(p.read_text())
     stock["run"] = p.parent.name
+    # mark which items have a photo, so the page only offers a catalogue entry where one can be made
+    if (p.parent / "readings.json").exists():
+        for st in stock["stalls"]:
+            for i in st["items"]:
+                i["has_photo"] = True
+    else:
+        walked = RUNS / "synthetic_walk" / "stock.json"
+        seen = {(st["stall"], i["name"]) for st in json.loads(walked.read_text())["stalls"] for i in st["items"]} \
+            if walked.exists() else set()
+        for st in stock["stalls"]:
+            for i in st["items"]:
+                i["has_photo"] = (st["stall"], i["name"]) in seen
     score = p.parent / "score.json"
     if score.exists():
         stock["score"] = json.loads(score.read_text())
@@ -156,8 +168,7 @@ def api_enrich(stall: str = Form(...), name: str = Form(...), run: str | None = 
         if any(s["stall"] == stall and any(i["name"] == name for i in s["items"]) for s in walked_stock["stalls"]):
             run_dir = walked
         else:
-            return {"error": "A catalogue entry is made from a photo of the item. This stall in the demo market was typed in, "
-                             "not filmed, so there's no photo. Try an item from Billy's Fresh Fish or Patel's Fruit & Veg."}
+            return {"error": "No photo of this item yet."}
     try:
         out = enrich_item(run_dir, stall, item)
     except Exception as e:  # noqa: BLE001 - say what went wrong instead of a bare 500
