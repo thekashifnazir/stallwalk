@@ -380,6 +380,30 @@ def agent_what_goes_with(q: str, run: str = "meal_market"):
             "raw": r}
 
 
+@app.get("/api/agent/plan_meal")
+def agent_plan_meal(ingredients: str, run: str | None = None):
+    """One call for the whole meal flow, so the voice agent waits once instead of four times:
+    stockroom check (code) -> price what's low/out on the market (one model parse) -> web estimates
+    for anything the market doesn't have (Tavily searches run in parallel). ingredients: "2kg mussels, 1kg potatoes, ..."."""
+    t0 = time.time()
+    room = agent_stockroom(ingredients)
+    need_names = {n.lower() for n in room["need"]}
+    asked = [x.strip() for x in re.split(r",|\band\b", ingredients) if x.strip()]
+    from .walk import _same_item
+    to_buy = [a for a in asked if any(_same_item(kitchen.clean_name(a), n) or n in a.lower() or
+                                      kitchen.clean_name(a) in n for n in need_names)]
+    have = [a for a in asked if a not in to_buy]
+    order = agent_order(", ".join(to_buy), run) if to_buy else {"answer": "Nothing to buy on the market.", "missing": []}
+    web = agent_web_find(", ".join(order["missing"])) if order.get("missing") else None
+    answer = " ".join(x for x in [
+        f"Already in the stockroom: {', '.join(have)}." if have else "",
+        f"From the market: {order['answer']}" if to_buy else "",
+        web["answer"] if web else "",
+    ] if x)
+    return {"answer": answer, "have": have, "buy": to_buy, "market_missing": order.get("missing", []),
+            "seconds": round(time.time() - t0, 1)}
+
+
 @app.get("/api/frame/{run}/{frame}")
 def api_frame(run: str, frame: str):
     p = (RUNS / run / "frames" / Path(frame).name)
