@@ -51,14 +51,14 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 
 <br>
 
-Tonight it ran on Kash's Mac behind a Cloudflare quick tunnel. A hosted build on Cloudflare Containers is in progress and isn't live yet.
+For the demo it runs locally on Kash's Mac behind a Cloudflare quick tunnel. It's ready to deploy on Cloudflare Containers (Dockerfile and worker/ in the repo), but that isn't live.
 
 ```mermaid
 flowchart LR
     B["Phone or laptop browser"]
-    V["ElevenLabs voice agent<br/>7 webhook tools"]
+    V["ElevenLabs voice agent<br/>8 webhook tools"]
     T["Cloudflare quick tunnel<br/>trycloudflare.com<br/>URL changes on restart"]
-    H["Cloudflare Containers + Worker rate limit<br/>stallwalk.kashifnazir.com<br/>(in progress)"]
+    H["Cloudflare Containers + Worker<br/>ready to deploy, not live<br/>(Dockerfile + worker/)"]
     A["FastAPI app :8787<br/>on Kash's Mac<br/>stallwalk/app.py"]
     TF["Nebius Token Factory<br/>Nemotron 3.5 Super VL: frames<br/>Nemotron 3 Super: text<br/>Nemotron 3.5 Lightning: blueprint agents"]
     CE["NVIDIA Catalog Enrichment backend<br/>localhost:8000, not exposed"]
@@ -79,7 +79,7 @@ flowchart LR
     A --> TV
 ```
 
-- The voice agent's tools point at the tunnel URL. A quick tunnel gets a new URL each time it restarts, so `voice/setup_agent.py --public-url <new url>` re-points all seven tools in place.
+- The voice agent's tools point at the tunnel URL. A quick tunnel gets a new URL each time it restarts, so `voice/setup_agent.py --public-url <new url>` re-points all eight tools in place.
 - The Catalog Enrichment backend listens on localhost only. The catalogue entry runs on the local build only, and won't be in the hosted build.
 - The two Agentic Commerce agents run inside the app's process, with their prompts loaded from the blueprint's own config files.
 
@@ -118,7 +118,7 @@ flowchart LR
 
 <br>
 
-An ElevenLabs Conversational AI agent with seven read-only webhook tools: `find_item`, `list_stalls`, `whats_run_out`, `split_order`, `check_stockroom`, `web_find` and `what_goes_with`. Its prompt makes it call a tool before any answer about stock, prices, the stockroom or orders. It never says a price that isn't in a tool's answer, and it says "web estimate" when the tool does. For a meal, it checks the stockroom first, buys only what's low or out, prices that on the market and looks up the rest online. Setup and tests: [voice/README.md](voice/README.md).
+An ElevenLabs Conversational AI agent with eight read-only webhook tools: `plan_meal`, `find_item`, `list_stalls`, `whats_run_out`, `split_order`, `check_stockroom`, `web_find` and `what_goes_with`. Its prompt makes it call a tool before any answer about stock, prices, the stockroom or orders. It never says a price that isn't in a tool's answer, and it says "web estimate" when the tool does. For a meal, it says a short line while it works, builds the ingredient list, and makes one `plan_meal` call: the stockroom check, market prices for what's low or out, and online web estimates for the rest. If asked where to buy locally, it points to the supermarkets' own store finders and never names a branch. Setup and tests: [voice/README.md](voice/README.md).
 
 </details>
 
@@ -142,7 +142,7 @@ An ElevenLabs Conversational AI agent with seven read-only webhook tools: `find_
 | **NVIDIA Retail Catalog Enrichment blueprint** | Catalogue entry per item (backend on localhost:8000), and the shape of the ACP and UCP records |
 | **NVIDIA Retail Agentic Commerce blueprint** | Promotion agent (layers and margin check copied) and recommendation agent (pipeline imported unchanged) |
 | **ElevenLabs Conversational AI** | The voice agent |
-| **Cloudflare** | Quick tunnel tonight; Containers with a Worker rate limit in progress |
+| **Cloudflare** | Quick tunnel for the demo; ready to deploy on Containers (Dockerfile + worker/), not live |
 
 Model ids are the defaults in `stallwalk/tf.py`, `stallwalk/blueprint_promo.py` and `stallwalk/blueprint_reco.py`, and each can be changed by an environment variable.
 
@@ -232,7 +232,7 @@ Optional parts:
 
 - **Synthetic market.** The meal market, the stockroom and the three market stock lists in `fixtures/` are made up, and are labelled that way in the files. The real evidence is 3 office kitchen photos and 7 English Commons price-card photos, hand-checked about halfway through the set.
 - **The office footage isn't in the repo.** Only the text item lists the pipeline produced from it are, in `fixtures/real_kitchen/`.
-- **The quick tunnel is public and unauthenticated.** Anyone with the URL can use the app. It's rate-limited: per IP, 60 paid calls per 10 minutes, 400 in total, with a 429, a Retry-After header and an answer the voice agent can say. The hosted Containers build is in progress, and the catalogue entry won't be in it.
+- **The quick tunnel is public and unauthenticated.** Anyone with the URL can use the app. It's rate-limited: per IP, 60 paid calls per 10 minutes, 400 in total, with a 429, a Retry-After header and an answer the voice agent can say. The Containers build is ready to deploy but not live, and the catalogue entry runs on the local build only.
 - **No Docker on the build machine,** so the Shopping Assistant and Multi-Agent Intelligent Warehouse blueprints weren't run.
 - **Recommendation picks are weak on the small market.** The blueprint picks from a handful of items, so code removes what you already have and the rest is often obvious (for moules frites: garlic, potatoes, shallots).
 - **Web prices are online prices.** Tavily can't see local shops, stock or opening hours, so every answer says to check the local store. Pack sizes mix (a can against a multipack), and an estimate spread wider than 4x is dropped.
