@@ -1,0 +1,99 @@
+{
+  "stalls": [
+    {
+      "stall": "Patel's Fruit & Veg",
+      "items": [
+        {
+          "name": "Tomatoes",
+          "price_text": "\u00a31.80/kg",
+          "price_gbp": 1.8
+        },
+        {
+          "name": "Bananas",
+          "price_text": "5 for \u00a31",
+          "price_gbp": 0.2
+        },
+        {
+          "name": "Red Onions",
+          "price_text": "\u00a31.20/kg",
+          "price_gbp": 1.2
+        },
+        {
+          "name": "Coriander",
+          "price_text": "80p bunch",
+          "price_gbp": 0.8
+        },
+        {
+          "name": "Avocados",
+          "price_text": "\u00a31 each",
+          "price_gbp": 1.0
+        },
+        {
+          "name": "Strawberries",
+          "price_text": "\u00a32.50 punnet",
+          "price_gbp": 2.5
+        }
+      ]
+    },
+    {
+      "stall": "Billy's Fresh Fish",
+      "items": [
+        {
+          "name": "Cod Fillet",
+          "price_text": "\u00a314.99/kg",
+          "price_gbp": 14.99
+        },
+        {
+          "name": "Salmon Fillet",
+          "price_text": "\u00a318.50/kg",
+          "price_gbp": 18.5
+        },
+        {
+          "name": "King Prawns",
+          "price_text": "\u00a34 per 200g",
+          "price_gbp": 4.0
+        },
+        {
+          "name": "Mackerel",
+          "price_text": "\u00a33 each",
+          "price_gbp": 3.0
+        },
+        {
+          "name": "Mussels",
+          "price_text": "\u00a36/kg",
+          "price_gbp": 6.0
+        }
+      ]
+    },
+    {
+      "stall": "Rosa's Cheese & Deli",
+      "items": [
+        {
+          "name": "Mature Cheddar",
+          "price_text": "\u00a32.20 per 100g",
+          "price_gbp": 2.2
+        },
+        {
+          "name": "Halloumi",
+          "price_text": "\u00a33.50 each",
+          "price_gbp": 3.5
+        },
+        {
+          "name": "Olives",
+          "price_text": "\u00a32 per tub",
+          "price_gbp": 2.0
+        },
+        {
+          "name": "Sourdough",
+          "price_text": "\u00a34.20 loaf",
+          "price_gbp": 4.2
+        },
+        {
+          "name": "Feta",
+          "price_text": "\u00a32.80 each",
+          "price_gbp": 2.8
+        }
+      ]
+    }
+  ]
+}

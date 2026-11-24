@@ -1,0 +1,6 @@
+[project]
+name = "stallwalk"
+version = "0.1.0"
+description = "Walk a market with a phone, get every stall's stock and prices"
+requires-python = ">=3.11"
+dependencies = ["pillow>=10"]
