@@ -1,12 +1,32 @@
 # stallwalk demo: 3-minute script and claim ledger
 
-Lead angle (pending Kash's pick): walk a stock room, get a stock list and what's run out, then a priced restock order. The market price-card score is the second piece of evidence, and the "agents can buy it" export is the closer.
+Main flow: the **meal demo**, voice-led. A chef says what they want to cook, the agent checks the stockroom, buys only what's low or out from the walked market, and finds the rest online. The market price-card score is the evidence beat, and the "agents can buy it" export is the closer. The stock room walk flow is kept below as the fallback.
+
+All meal demo data is **made up** (fixtures/demo/stockroom.json and fixtures/demo/meal_market.json). Say so once, at the start.
 
 Credit, said on stage and shown on the last screen: **Inspired by Market Live, built by Team Nan at The Build Room Leicester 01.**
 
-App: http://localhost:8787 (phone: the trycloudflare link from the stallwalk session). Blueprint on :8000 stays up and isn't restarted.
+App: http://localhost:8787 (phone: the trycloudflare link from the stallwalk session). Blueprint on :8000 stays up and isn't restarted. Voice agent: agent_1801m87addxwfmfbaqw8kzj48qkj. Its first message: "Hi, I've walked the market. Tell me what you'd like to cook, or ask what's on the stalls."
 
-## Script
+## Script: meal demo (main)
+
+| Time | Beat | Say (roughly) | On screen | If the voice step fails |
+|---|---|---|---|---|
+| 0:00 to 0:15 | Hook | "A chef decides the menu at 4pm. Then someone checks the stockroom, walks the market and phones round for the rest. We do that in one conversation. Tonight's stockroom and market are made up for the demo." | App home with the voice widget | Nothing live yet |
+| 0:15 to 0:30 | Who it's for | "Restaurant and office kitchen managers. Kitchens pay; nobody wants to send a chef round three markets at 4am." | Same | Nothing live |
+| 0:30 to 0:50 | Ask | Say to the agent: "I want to make moules frites tonight." It lists the ingredients: mussels, potatoes, shallots, garlic, parsley, white wine, butter. | ElevenLabs widget, agent speaking | Read the list out yourself and carry on in the browser |
+| 0:50 to 1:10 | Check the stockroom | The agent calls check_stockroom and says what's low or out, so we only buy the gaps. | Widget; tool hits GET /api/agent/stockroom | Open http://localhost:8787/api/agent/stockroom?items=mussels,potatoes,shallots,garlic,parsley,white%20wine,butter in the browser, or the backup frame for this step in out/demo-backup/ |
+| 1:10 to 1:40 | Buy from the market | The agent calls split_order on the 6-stall market. "Mussels 2 kg, £12.00. Potatoes 1 kg, 90p. Shallots 200 g, 48p. Garlic 50p. Parsley 80p. Market total £14.68." "Code picks the stall and does the maths, grams to kilos included. The model never says a price the code didn't give it." | Widget; tool hits GET /api/agent/order | Open http://localhost:8787/api/agent/order?order=2kg%20mussels,%201kg%20potatoes,%20200g%20shallots,%20garlic,%20parsley,%20white%20wine,%20butter in the browser, or the backup frame. Totals are in the ledger below |
+| 1:40 to 2:00 | Not on the market today | "White wine and butter aren't on the market today, so it checks online UK supermarket prices. Nebius owns Tavily, so we use Tavily for the web checks." The agent says "web estimate, online price" and "check your local store". | Widget; tool hits GET /api/agent/web_find. Numbers: [TBC live] | Open http://localhost:8787/api/agent/web_find?items=white%20wine,butter in the browser (cached after the first run), or the backup frame. Don't claim any shop near here |
+| 2:00 to 2:30 | Evidence | "How did the market get read? Kash hand-checked it. Kitchen: 46 of 49 listed were right on 3 photos, missed about 10 small snack packs; caught the one empty dispenser but listed it twice. On 7 English market price-card photos, 29 of 30 items were right and 11 of 13 prices it read were right. It left a price blank rather than guess. And when a price is misread, the web check catches it." | experiments/RESULTS.md, then the Mussels £60/kg flag: **Check prices on the web** on the seeded run (out/pricecheck/seeded_v3.json), backup frame 09 in out/demo-backup/ | All cached, no live call. Fall back to the PRICECHECK.md seeded table |
+| 2:30 to 2:45 | Closer | "And the stock list is ready for AI shopping agents: one click turns it into ACP and UCP product records, and anything we're not sure of is marked not buyable." | **Make it buyable by AI agents** (GET /api/export) | Pure code, no live call. Fall back to the export test output |
+| 2:45 to 3:00 | Next and credit | "Next: real stall walks feeding the market every morning, and the order sent to the stalls. Inspired by Market Live, built by Team Nan at The Build Room Leicester 01." | Credit line on screen | |
+
+The live calls on stage are the voice conversation (ElevenLabs plus the app's tool endpoints through the tunnel) and, the first time only, the web_find search. Every other beat is a file, a fixture or a cached result.
+
+## Fallback flow: stock room walk
+
+Use this if the voice agent won't start. Same evidence and closer.
 
 | Time | Beat | Say (roughly) | On screen | If the live call fails |
 |---|---|---|---|---|
@@ -31,6 +51,13 @@ Every number or claim said on stage, and what backs it. Hashes are stallwalk com
 
 | Claim on stage | Backed by | Commit |
 |---|---|---|
+| Meal demo data is made up | fixtures/demo/meal_market.json and fixtures/demo/stockroom.json (made_up: true) | 01e2873 |
+| Agent first message and meal flow: stockroom first, buy only the gaps, web find for what the market lacks | voice setup prompt and tools (check_stockroom, web_find) | ab37e57 |
+| Stockroom check says have, low or out per ingredient | GET /api/agent/stockroom on fixtures/demo/stockroom.json | 01e2873, ab37e57 |
+| Market lines: mussels 2 kg £12.00, potatoes 1 kg £0.90, shallots 200 g £0.48, garlic £0.50, parsley £0.80, market total £14.68 (made-up prices) | kitchen.split_order on fixtures/demo/meal_market.json (mussels £6/kg at Billy's Fresh Fish; potatoes 90p/kg, shallots £2.40/kg, garlic 50p a bulb, parsley 80p bunch at Green's Veg); re-run offline from the fixture with the same lines, sum £14.68 | 01e2873, c41a587, 8f44b28 |
+| Shallots 200 g priced from a per-kg card (g to kg conversion) | kitchen.py g/kg and ml/litre conversion | c41a587 |
+| White wine and butter "not on the market today" (left out of the fixture on purpose, and the lines still come back unmatched) | meal_market.json note; kitchen.py keeps every ordered item as a line | 01e2873, c41a587 |
+| White wine and butter online prices, labelled "web estimate, online price" and "check your local store", no location claims | stallwalk/webfind.py via GET /api/agent/web_find (2-quote rule, spread check, 20-search cap) | b0321f2, 8f44b28; numbers [TBC live] |
 | Frames are read by Nemotron Super VL on Nebius Token Factory | stallwalk/tf.py (VISION_MODEL default nvidia/Nemotron-3.5-Super-VL), stallwalk/walk.py | 6f2c7b5 |
 | Nemotron Super VL picked over GLM-5.3-Flash and gemma-3-27b-it, with the rule written before the run | experiments/AB.md (100% on synthetic, 3.8 s for 16 frames; GLM 16.2 s; gemma 7 of 16 timed out) | 52eabe3 (rule), f07605c (results) |
 | The kitchen footage was filmed tonight, downstairs, at 16:53, and replayed on stage (not live) | out/real-frozen-v3 file names (20261124_165350 to 165526) | [TBC] frozen-run commit, out/ is gitignored |
