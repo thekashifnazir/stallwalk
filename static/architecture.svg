@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 560" width="1100" height="560" role="img" aria-labelledby="t d">
+  <title id="t">How stallwalk is built</title>
+  <desc id="d">A phone walk or a voice question goes to the stallwalk app on Google Cloud Run in London. The app calls Nebius Token Factory (NVIDIA Nemotron models), two NVIDIA blueprints and Tavily, and produces a stock list per stall, a meal plan and restock list, end-of-day deals, and ACP/UCP records AI agents can buy.</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/>
+    </marker>
+    <style>
+      text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1d1b18; }
+      .h { font-size: 19px; font-weight: 700; }
+      .b { font-size: 16px; }
+      .s { font-size: 16px; fill: #4a443d; }
+      .k { font-size: 16px; font-weight: 700; fill: #c2410c; letter-spacing: .04em; }
+      .box { fill: #ffffff; stroke: #1d1b18; stroke-width: 2; }
+      .hot { fill: #ffe4c7; stroke: #c2410c; stroke-width: 2.5; }
+      .out { fill: #ffffff; stroke: #2e7d32; stroke-width: 2; }
+      .ln { stroke: #c2410c; stroke-width: 2.5; fill: none; }
+    </style>
+  </defs>
+  <rect width="1100" height="560" fill="#fff6ec"/>
+
+  <!-- column labels -->
+  <text class="k" x="20" y="30">IN</text>
+  <text class="k" x="240" y="30">APP</text>
+  <text class="k" x="480" y="30">AI AND WEB</text>
+  <text class="k" x="840" y="30">OUT</text>
+
+  <!-- inputs -->
+  <rect class="box" x="20" y="130" width="180" height="90" rx="12"/>
+  <text class="h" x="36" y="166">Phone walk</text>
+  <text class="s" x="36" y="194">(video or photo)</text>
+  <rect class="box" x="20" y="270" width="180" height="90" rx="12"/>
+  <text class="h" x="36" y="306">Voice</text>
+  <text class="s" x="36" y="334">(ElevenLabs agent)</text>
+
+  <!-- app -->
+  <rect class="hot" x="240" y="150" width="200" height="190" rx="14"/>
+  <text class="h" x="256" y="186">stallwalk app</text>
+  <text class="b" x="256" y="214">on Google Cloud Run</text>
+  <text class="b" x="256" y="236">(London)</text>
+  <line x1="256" y1="254" x2="424" y2="254" stroke="#c2410c" stroke-width="1"/>
+  <text class="s" x="256" y="280">stock list per stall</text>
+  <text class="s" x="256" y="304">prices owned by code</text>
+
+  <!-- inputs to app -->
+  <path class="ln" d="M200,175 C220,175 220,215 238,215" marker-end="url(#ar)"/>
+  <path class="ln" d="M200,315 C220,315 220,275 238,275" marker-end="url(#ar)"/>
+
+  <!-- Nebius -->
+  <rect class="box" x="480" y="44" width="320" height="150" rx="12"/>
+  <text class="h" x="496" y="76">Nebius Token Factory</text>
+  <text class="b" x="496" y="104">Nemotron 3.5 Super VL reads frames</text>
+  <text class="b" x="496" y="128">Nemotron 3 Super for questions</text>
+  <text class="b" x="496" y="152">Nemotron 3.5 Lightning runs the</text>
+  <text class="b" x="496" y="174">NVIDIA blueprint agents</text>
+
+  <!-- NVIDIA blueprints -->
+  <rect class="box" x="480" y="210" width="320" height="150" rx="12"/>
+  <text class="h" x="496" y="242">NVIDIA blueprints</text>
+  <text class="b" x="496" y="270">Catalog Enrichment (on Cloud Run):</text>
+  <text class="s" x="512" y="292">product entries</text>
+  <text class="b" x="496" y="318">Agentic Commerce:</text>
+  <text class="s" x="512" y="340">recommendation + promotion agents</text>
+
+  <!-- Tavily -->
+  <rect class="box" x="480" y="376" width="320" height="86" rx="12"/>
+  <text class="h" x="496" y="408">Tavily</text>
+  <text class="b" x="496" y="436">web check on UK supermarket sites</text>
+
+  <!-- app to the three -->
+  <path class="ln" d="M440,215 C460,215 460,119 478,119" marker-end="url(#ar)"/>
+  <path class="ln" d="M440,245 L478,285" marker-end="url(#ar)"/>
+  <path class="ln" d="M440,300 C460,300 460,419 478,419" marker-end="url(#ar)"/>
+
+  <!-- outputs -->
+  <rect class="out" x="840" y="60" width="240" height="70" rx="12"/>
+  <text class="h" x="856" y="102">Stock list per stall</text>
+  <rect class="out" x="840" y="150" width="240" height="70" rx="12"/>
+  <text class="h" x="856" y="192">Meal plan + restock</text>
+  <rect class="out" x="840" y="240" width="240" height="70" rx="12"/>
+  <text class="h" x="856" y="282">End-of-day deals</text>
+  <rect class="out" x="840" y="330" width="240" height="90" rx="12"/>
+  <text class="h" x="856" y="364">ACP/UCP records</text>
+  <text class="b" x="856" y="392">AI agents can buy</text>
+
+  <!-- three to outputs -->
+  <path class="ln" d="M800,250 C820,250 820,95 838,95" marker-end="url(#ar)"/>
+  <path class="ln" d="M800,260 C820,260 820,185 838,185" marker-end="url(#ar)"/>
+  <path class="ln" d="M800,270 L838,275" marker-end="url(#ar)"/>
+  <path class="ln" d="M800,280 C820,280 820,375 838,375" marker-end="url(#ar)"/>
+
+  <!-- footnote -->
+  <rect x="20" y="486" width="1060" height="58" rx="10" fill="#ffe4c7"/>
+  <text class="b" x="36" y="510"><tspan font-weight="700" fill="#2e7d32">No GPU needed here:</tspan> all AI runs on Nebius Token Factory.</text>
+  <text class="b" x="36" y="533">Nebius AI Cloud only had B300 GPUs tonight, so the app runs on Cloud Run.</text>
+</svg>
