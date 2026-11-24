@@ -32,6 +32,8 @@ Rules:
 - unit: "kg", "each", "bunch", "punnet", "100g", "200g", "tub", "loaf", if written.
 - deal: multi-buy or offer text if written, else null.
 - If you can't read a price, set price_text and price_gbp to null. Never guess a price.
+- If one card shows two units (e.g. "£2.65 kg £1.20 lb"), keep both in price_text and set price_gbp and unit to the per-kg one.
+- For an empty slot, tray or dispenser, name the product it holds or is labelled for if you can tell, and set stock_level "empty".
 - stock_level: how much is left on its shelf, tray, dispenser or slot. "empty" if the labelled slot or dispenser has none left.
 - Products with no price card still count: list them with price_text and price_gbp null.
 - name: brand and product as printed on the pack (e.g. "Walkers Ready Salted crisps"). If no brand is readable, describe it briefly and set confidence low.
@@ -208,13 +210,58 @@ def _dedupe_across_stalls(out: dict) -> None:
     out["stalls"] = [s for s in out["stalls"] if s["items"]]
 
 
+DEDUPE_PROMPT = """These product names were read from overlapping photos of the same shelves, so some are the
+same product named differently (e.g. "Alpro almond drink carton" and "Alpro Deliciously Fresh Taste almond drink").
+
+{names}
+
+Return JSON only: {{"groups": [[ids of names that are the SAME product], ...]}}. Only group true duplicates:
+different flavours, sizes or brands stay separate. Leave singletons out."""
+
+
+def dedupe(stock: dict) -> dict:
+    """One text-model pass per stall to merge near-duplicate names the string match missed.
+    The model only groups ids; code does the merge and keeps the card prices it already had."""
+    for st in stock["stalls"]:
+        items = st["items"]
+        if len(items) < 3:
+            continue
+        names = "\n".join(f"{k}: {i['name']}" for k, i in enumerate(items))
+        try:
+            data = tf.parse_json(tf.chat(tf.TEXT_MODEL, DEDUPE_PROMPT.format(names=names), max_tokens=600,
+                                         extra=NO_THINKING))
+        except Exception:  # noqa: BLE001 - dedupe is a nicety; keep the list as it is
+            continue
+        drop = set()
+        for g in data.get("groups", []) if isinstance(data, dict) else []:
+            ids = sorted({k for k in g if isinstance(k, int) and 0 <= k < len(items) and k not in drop})
+            if len(ids) < 2:
+                continue
+            prices = {items[k]["price_gbp"] for k in ids if items[k]["price_gbp"] is not None}
+            if len(prices) > 1:
+                continue  # different prices: not safe to merge
+            keep = max(ids, key=lambda k: (items[k]["price_gbp"] is not None, items[k]["seen_in_frames"], len(items[k]["name"])))
+            for k in ids:
+                if k != keep:
+                    items[keep]["seen_in_frames"] += items[k]["seen_in_frames"]
+                    items[keep].setdefault("also_read_as", []).append(items[k]["name"])
+                    drop.add(k)
+            levels = [items[k].get("stock_level") for k in ids]
+            for lv in ("empty", "low"):
+                if lv in levels:
+                    items[keep]["stock_level"] = lv
+                    break
+        st["items"] = [i for k, i in enumerate(items) if k not in drop]
+    return stock
+
+
 def run(video: Path, out: Path, fps: float = 1.0, workers: int = 8) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     frames = extract_frames(video, out / "frames", fps=fps)
     with ThreadPoolExecutor(max_workers=workers) as ex:
         readings = list(ex.map(read_frame, frames))
     (out / "readings.json").write_text(json.dumps(readings, indent=2))
-    stock = merge(readings, drop_one_offs=not is_photo(video))
+    stock = dedupe(merge(readings, drop_one_offs=not is_photo(video)))
     stock["source"] = {"video": video.name, "frames": len(frames), "fps": fps,
                        "errors": [r["frame"] for r in readings if r.get("error")]}
     (out / "stock.json").write_text(json.dumps(stock, indent=2))

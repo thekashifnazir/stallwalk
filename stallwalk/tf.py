@@ -26,7 +26,7 @@ VISION_FALLBACK = os.environ.get("VISION_FALLBACK", "zai-org/GLM-5.3-Flash")
 TEXT_MODEL = os.environ.get("TEXT_MODEL", "nvidia/nemotron-3-super-120b-a12b")
 
 
-def chat(model: str, content, max_tokens: int = 2000, temperature: float = 0.0, timeout: int = 25,
+def chat(model: str, content, max_tokens: int = 2000, temperature: float = 0.0, timeout: int = 40,
          extra: dict | None = None) -> str:
     body = {
         "model": model,
