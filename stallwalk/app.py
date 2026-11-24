@@ -142,6 +142,55 @@ def api_restock(folder: str = "real-frozen-v3", estimates: bool = False):
     return {"lines": kitchen.restock_list(stocks)}
 
 
+# ---- voice agent tools (ElevenLabs webhook tools call these; short plain answers it can speak)
+@app.get("/api/agent/find")
+def agent_find(q: str, run: str | None = None):
+    p = _stock_path(run)
+    if not p or not p.exists():
+        return {"answer": "I haven't walked a market yet."}
+    r = ask(json.loads(p.read_text()), q)
+    if not r["matches"]:
+        return {"answer": r.get("note") or "Nothing on today's stalls matches that."}
+    parts = [f'{m["name"]} at {m["stall"]}, {m["price_text"] or "price not on the card"}' for m in r["matches"][:4]]
+    return {"answer": "; ".join(parts), "note": r.get("note", "")}
+
+
+@app.get("/api/agent/stalls")
+def agent_stalls(run: str | None = None):
+    p = _stock_path(run)
+    if not p or not p.exists():
+        return {"answer": "No walk yet."}
+    st = json.loads(p.read_text())
+    return {"answer": "; ".join(f'{s["stall"]}: {len(s["items"])} items, e.g. ' +
+                                ", ".join(i["name"] for i in s["items"][:4]) for s in st["stalls"])}
+
+
+@app.get("/api/agent/restock")
+def agent_restock(folder: str = "real-frozen-v3"):
+    base = RUNS / Path(folder).name
+    stocks = [json.loads(p.read_text()) for p in sorted(base.glob("*/stock.json"))]
+    r = kitchen.restock_with_estimates(stocks, cache_path=RUNS / "pricecheck" / "cache.json")
+    out = []
+    for l in r["lines"]:
+        e = l.get("estimate") or {}
+        est = (f', usually about £{e["typical_low"]:.2f} to £{e["typical_high"]:.2f} at UK supermarkets (web estimate)'
+               if e.get("typical_low") is not None and e.get("quotes", 0) >= 2 else "")
+        out.append(f'{l["name"]} is {l["stock_level"]}{est}')
+    return {"answer": "; ".join(out) or "Nothing has run out."}
+
+
+@app.get("/api/agent/order")
+def agent_order(order: str):
+    r = kitchen.split_order(order, _market_stocks())
+    parts = []
+    for l in r["lines"]:
+        pk = l.get("pick")
+        tot = f', £{l["line_total_gbp"]:.2f}' if l.get("line_total_gbp") is not None else ""
+        parts.append(f'{l["asked"]}: {pk["stall"]} at {pk["market"]}, {pk["price_text"]}{tot}' if pk
+                     else f'{l["asked"]}: {l.get("note") or "no match"}')
+    return {"answer": "; ".join(parts) + ". These market stock lists are made up for the demo."}
+
+
 @app.get("/api/frame/{run}/{frame}")
 def api_frame(run: str, frame: str):
     p = (RUNS / run / "frames" / Path(frame).name)
