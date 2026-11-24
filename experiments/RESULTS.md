@@ -9,9 +9,11 @@ Run: photos read whole plus 4 tiles (the 158-item pass, before the dedupe change
 | Photo | Listed | Right | Wrong | Missed (Kash's notes) |
 |---|---|---|---|---|
 | Snack cubbies (165350) | 13 | 11 | 2 | about 10: popcorn, Quavers, Hula Hoops, flapjacks, Double Decker, Mini Cheddars, cheesies, Haribo |
-| Cereal dispensers (165353) | 9 | 9 | 0 | none. Both empty dispensers caught |
+| Cereal dispensers (165353) | 9 | 8 | 1 | none. The one empty dispenser was caught, but listed twice (the duplicate counts as wrong) |
 | Drinks fridge (165405) | 27 | 27 | 0 | "a lot there, maybe more passes" |
-| **Total** | **49** | **47 (96%)** | **2** | small snack packs are the weak spot |
+| **Total** | **49** | **46 (94%)** | **3** | small snack packs are the weak spot |
+
+Empty dispensers caught: 1 of 1, listed twice (corrected 24 Nov ~17:45: Kash confirmed only one was empty).
 
 ## Price cards (Wikimedia Commons, English cards, 7 photos ticked)
 
