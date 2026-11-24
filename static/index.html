@@ -283,7 +283,8 @@ $("planform").addEventListener("submit", (e) => {
       const a = r.answer || "";
       const route = r.route || [];
       const total = r.market_total_gbp != null ? money(r.market_total_gbp) : null;
-      const web = splitAfter(a, "Tavily web check on UK supermarkets:", "Check your local store").concat(splitAfter(a, "Web estimate, online prices:", "Check your local store"));
+      const pickups = splitAfter(a, "For the rest,", "Source:").map(l => l.match(/pick up (.*?) from (.*?)(?: \((.*?)\))?$/i)).filter(Boolean);
+      const web = pickups.length ? [] : splitAfter(a, "Tavily web check on UK supermarkets:", "Check your local store").concat(splitAfter(a, "Web estimate, online prices:", "Check your local store"));
       const low = (a.match(/(?:^|\.\s*)([^.]*?) (?:is|are) low, so buy/) || [])[1];
       $("planout").innerHTML = `<div class="plan">
         ${(r.have || []).length ? `<div class="plan-have"><span class="tag tag-have">already in the stockroom</span> ${r.have.map(esc).join(", ")}: skip</div>` : ""}
@@ -292,9 +293,10 @@ $("planform").addEventListener("submit", (e) => {
           const m = l.match(/^(.*?) for (.*?)(?: \((£[\d.]+)\))?$/) || [null, l, "", ""];
           return `<div class="plan-line"><b>${k + 1}. ${esc(m[1])}</b><span>${esc(m[2])}</span><span class="price">${esc(m[3] || "")}</span></div>`; }).join("")}</div>` : ""}
         ${total && route.length ? `<div class="plan-total">Market total ${esc(total)} <span class="tag tag-made-up">made-up stalls</span></div>` : ""}
-        ${(r.market_missing || []).length ? `<div class="plan-web"><span class="tag tag-web">not on the market: Tavily web check on UK supermarkets</span>${web.map(l => `<div class="plan-line">${esc(l)}</div>`).join("")}
+        ${(r.market_missing || []).length ? `<div class="plan-web"><span class="tag tag-web">not on the market</span> <span class="tag tag-web">Tavily search</span>${pickups.map(m => `<div class="plan-line"><b>Pick up ${esc(m[1])}</b><span>at ${esc(m[2])}</span><span class="price">${esc(m[3] || "")}</span></div>`).join("")}${web.map(l => `<div class="plan-line">${esc(l)}</div>`).join("")}
+          <small class="muted">Online prices, so check your local store.</small>
           ${(r.store_finders || []).length ? `<small>Find a branch: ${r.store_finders.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.store)}</a>`).join(" · ")}</small>` : ""}</div>` : ""}
-        ${!route.length && !web.length ? `<p>${esc(a)}</p>` : ""}
+        ${!route.length && !web.length && !pickups.length ? `<p>${esc(a)}</p>` : ""}
         <small class="muted">${r.seconds ? `Planned in ${r.seconds}s.` : ""}</small></div>`;
     } catch (err) { fail($("planout"), err); }
   });
