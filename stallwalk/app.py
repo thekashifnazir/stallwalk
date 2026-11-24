@@ -3,6 +3,7 @@
   uv run uvicorn stallwalk.app:app --port 8787
 """
 import json
+import os
 import re
 import shutil
 import threading
@@ -185,9 +186,12 @@ def agent_id():
 
 
 # ---- voice agent tools (ElevenLabs webhook tools call these; short plain answers it can speak)
+AGENT_RUN = os.environ.get("STALLWALK_AGENT_RUN", "synthetic_walk")  # the market the voice agent talks about
+
+
 @app.get("/api/agent/find")
 def agent_find(q: str, run: str | None = None):
-    p = _stock_path(run)
+    p = _stock_path(run or AGENT_RUN)
     if not p or not p.exists():
         return {"answer": "I haven't walked a market yet."}
     r = ask(json.loads(p.read_text()), q)
@@ -199,7 +203,7 @@ def agent_find(q: str, run: str | None = None):
 
 @app.get("/api/agent/stalls")
 def agent_stalls(run: str | None = None):
-    p = _stock_path(run)
+    p = _stock_path(run or AGENT_RUN)
     if not p or not p.exists():
         return {"answer": "No walk yet."}
     st = json.loads(p.read_text())
