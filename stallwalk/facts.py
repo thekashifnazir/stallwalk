@@ -1,6 +1,6 @@
 """Item facts from the web, for shoppers: what it is, how to use it, what to look for. With sources.
 
-Tavily search (Nebius-owned; it also powers the Catalog Enrichment blueprint's web search stage),
+Tavily search (Nebius bought Tavily; the open-source Catalog Enrichment repo itself uses Exa for web research),
 then Nemotron writes 2-3 short facts only from the snippets it was given. Cached per item name.
 Never touches prices: those come from the stall's own card.
 """

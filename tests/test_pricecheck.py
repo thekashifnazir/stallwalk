@@ -1,4 +1,5 @@
 import copy
+import json
 
 import pytest
 
@@ -160,3 +161,44 @@ def test_cache_rejudges_new_price(offline):
     assert _item(first, "Salmon Fillet")["price_check"]["verdict"] == "high"
     assert _item(second, "Salmon Fillet")["price_check"]["verdict"] == "usual"
     assert offline["tavily"].count("Salmon Fillet price per kg UK") == 1
+
+
+def test_seeded_misread_flags_with_sources(monkeypatch):
+    """The demo moment: £1.20/kg onions misread as £12/kg get flagged, with where the usual price came from."""
+    res = [{"url": "https://www.tesco.com/groceries/en-GB/products/red-onions", "title": "Tesco Red Onions",
+            "content": "Tesco Red Onions Loose £1.10/kg"},
+           {"url": "https://www.sainsburys.co.uk/gol-ui/product/red-onions", "title": "Sainsbury's Red Onions",
+            "content": "£1.25 / kg"}]
+    monkeypatch.setattr(pc, "tavily_search", lambda q: {"results": res})
+    monkeypatch.setattr(pc, "extract_typical",
+                        lambda n, u, r: {"typical_low": 1.10, "typical_high": 1.25, "unit": "kg"})
+    stock = {"stalls": [{"stall": "Patel's Fruit & Veg", "items": [
+        {"name": "Red Onions", "price_gbp": 12.0, "price_text": "£12/kg", "unit": "kg",
+         "deal": None, "seen_in_frames": 1, "needs_check": []}]}]}
+    onions = pc.check_prices(stock)["stalls"][0]["items"][0]
+    assert onions["price_gbp"] == 12.0  # flagged, never corrected
+    assert onions["price_check"]["verdict"] == "high"
+    assert onions["needs_check"] == ["about 10x the usual UK price (usual £1.10-£1.25 per kg)"]
+    assert onions["price_check"]["sources"][0].startswith("https://www.tesco.com/")
+
+
+def test_search_body_limits_to_grocers(monkeypatch):
+    sent = {}
+
+    class Resp:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def read(self): return b'{"results": []}'
+
+    def fake_urlopen(req, timeout):
+        sent["body"] = json.loads(req.data)
+        sent["auth"] = req.get_header("Authorization")
+        sent["timeout"] = timeout
+        return Resp()
+
+    monkeypatch.setattr(pc.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setenv("TAVILY_API_KEY", "test-key")
+    pc.tavily_search("Red Onions price per kg UK")
+    assert sent["body"]["include_domains"] == pc.GROCERS
+    assert "tesco.com" in pc.GROCERS
+    assert sent["auth"] == "Bearer test-key" and sent["timeout"] == pc.TIMEOUT

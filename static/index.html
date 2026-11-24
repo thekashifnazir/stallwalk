@@ -56,7 +56,7 @@
   </section>
 
   <section class="panel">
-    <div class="row"><button type="button" id="exportbtn">Make it buyable by AI agents</button><span id="exportstatus"></span></div>
+    <div class="row"><button type="button" id="checkbtn">Check prices on the web</button><button type="button" id="exportbtn">Make it buyable by AI agents</button><span id="exportstatus"></span></div>
     <pre id="exportout" style="display:none;max-height:260px;overflow:auto;font-size:12px;background:#f3efe8;padding:10px;border-radius:8px"></pre>
   </section>
 
@@ -80,7 +80,10 @@ function render(stock) {
   $("stalls").innerHTML = (stock.stalls || []).map(s => `
     <div class="panel stall"><h3>${esc(s.stall)}</h3>
       ${s.items.map(i => `<div class="item"><span>${esc(i.name)}${i.deal ? ` · <small>${esc(i.deal)}</small>` : ""}
-        ${i.needs_check.map(f => `<span class="flag">${esc(f)}</span>`).join("")}</span>
+        ${i.price_check && i.price_check.verdict === "usual" ? `<span class="flag" style="color:var(--accent)">usual UK price</span>` : ""}
+        ${i.needs_check.map(f => `<span class="flag">${esc(f)}</span>`).join("")}
+        <a href="#" class="enrich" data-stall="${esc(s.stall)}" data-name="${esc(i.name)}" style="font-size:12px">catalogue entry</a>
+        <span class="entry"></span></span>
         <span class="p">${esc(i.price_text || "price not readable")}</span></div>`).join("")}
     </div>`).join("");
 }
@@ -124,6 +127,28 @@ $("livebtn").addEventListener("click", async () => {
       } finally { if (live) live.inflight--; }
     }, "image/jpeg", 0.8);
   }, 1200);
+});
+
+$("checkbtn").addEventListener("click", async () => {
+  $("exportstatus").textContent = "Checking prices on the web…";
+  const fd = new FormData(); if (run) fd.append("run", run);
+  const stock = await (await fetch("/api/pricecheck", { method: "POST", body: fd })).json();
+  render(stock);
+  const all = (stock.stalls || []).flatMap(s => s.items).filter(i => i.price_check);
+  const odd = all.filter(i => ["high", "low"].includes(i.price_check.verdict)).length;
+  const usual = all.filter(i => i.price_check.verdict === "usual").length;
+  $("exportstatus").textContent = `${all.length} prices checked: ${usual} usual, ${odd} look odd, ${all.length - usual - odd} couldn't tell`;
+});
+
+document.addEventListener("click", async (e) => {
+  const a = e.target.closest("a.enrich"); if (!a) return;
+  e.preventDefault();
+  const box = a.nextElementSibling; box.innerHTML = "<small> NVIDIA blueprint working…</small>";
+  const fd = new FormData(); fd.append("stall", a.dataset.stall); fd.append("name", a.dataset.name); if (run) fd.append("run", run);
+  const r = await (await fetch("/api/enrich", { method: "POST", body: fd })).json();
+  box.innerHTML = r.error ? `<small>${esc(r.error)}</small>` :
+    `<div style="display:flex;gap:8px;margin-top:6px">${r.crop ? `<img src="/api/frame/${encodeURIComponent(r.run)}/${encodeURIComponent(r.crop)}" style="width:72px;height:72px;object-fit:cover;border-radius:6px">` : ""}
+     <small><b>${esc(r.title)}</b><br>${esc(r.description)}<br><i>${esc((r.tags || []).slice(0, 6).join(", "))}</i></small></div>`;
 });
 
 $("exportbtn").addEventListener("click", async () => {

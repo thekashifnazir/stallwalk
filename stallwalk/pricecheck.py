@@ -23,13 +23,16 @@ TAVILY_URL = "https://api.tavily.com/search"
 TIMEOUT = 10
 HIGH_X = 2.0   # price above 2x typical_high -> "high"
 LOW_X = 0.5    # price below 0.5x typical_low -> "low"
+GROCERS = ["tesco.com", "sainsburys.co.uk", "asda.com", "morrisons.com", "ocado.com",
+           "waitrose.com", "aldi.co.uk", "trolley.co.uk"]
 MAX_SEARCHES = 50  # hard cap per run, whatever max_items says, so a loop can't burn credits
 
 EXTRACT_PROMPT = """Below are web search snippets about the UK retail price of "{name}", per {unit}.
 Return JSON only: {{"typical_low": number or null, "typical_high": number or null, "unit": string or null}}
 Rules:
 - Prices in pounds as numbers (80p -> 0.8). Only use prices stated in the snippets. Never guess.
-- Only use prices quoted per {unit}. If the snippets only give another unit, set "unit" to that unit as written.
+- Only use prices quoted per {unit}. If you use them, set "unit" to exactly "{unit}".
+- If the snippets only give another unit (e.g. per pack, per 500g), set "unit" to that unit as written.
 - typical_low and typical_high: the lowest and highest per-{unit} prices the snippets state for ordinary UK shops.
 - If no usable price is stated, all three are null.
 
@@ -61,9 +64,10 @@ def _num(v) -> float | None:
     return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 else None
 
 
-def tavily_search(query: str) -> dict:
-    """One Tavily search. Bearer auth, basic depth, 5 results."""
-    body = {"query": query, "max_results": 5, "search_depth": "basic"}
+def tavily_search(query: str, include_domains: list[str] | None = None) -> dict:
+    """One Tavily search, UK grocers only by default. Bearer auth, basic depth, 5 results."""
+    body = {"query": query, "max_results": 5, "search_depth": "basic",
+            "include_domains": GROCERS if include_domains is None else include_domains}
     req = urllib.request.Request(
         TAVILY_URL, data=json.dumps(body).encode(),
         headers={"Authorization": f"Bearer {os.environ.get('TAVILY_API_KEY', '')}",

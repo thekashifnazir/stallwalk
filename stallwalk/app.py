@@ -16,6 +16,8 @@ from . import walk
 from .ask import ask
 from .export import export_stock
 from .facts import item_facts
+from .enrich import enrich_item
+from .pricecheck import check_prices
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "out"
@@ -83,6 +85,37 @@ def api_export(run: str | None = None):
 def api_facts(name: str, stall: str = ""):
     """Web facts for one item (Tavily + Nemotron), with sources. Cached per item."""
     return item_facts(name, stall)
+
+
+def _stock_path(run: str | None) -> Path | None:
+    return RUNS / run / "stock.json" if run else _latest()
+
+
+@app.post("/api/enrich")
+def api_enrich(stall: str = Form(...), name: str = Form(...), run: str | None = Form(None)):
+    """One item's catalogue entry from the NVIDIA Catalog Enrichment blueprint (crop of the item, card price kept)."""
+    p = _stock_path(run)
+    if not p or not p.exists():
+        return JSONResponse({"error": "no stock list yet"}, status_code=400)
+    stock = json.loads(p.read_text())
+    item = next((i for s in stock["stalls"] if s["stall"] == stall for i in s["items"] if i["name"] == name), None)
+    if not item:
+        return JSONResponse({"error": "item not in stock list"}, status_code=404)
+    out = enrich_item(p.parent, stall, item)
+    out["run"] = p.parent.name
+    return out
+
+
+@app.post("/api/pricecheck")
+def api_pricecheck(run: str | None = Form(None)):
+    """Tavily + Nemotron: flag prices far from the usual UK price. Adds flags only; prices stay the card's."""
+    p = _stock_path(run)
+    if not p or not p.exists():
+        return JSONResponse({"error": "no stock list yet"}, status_code=400)
+    checked = check_prices(json.loads(p.read_text()), max_items=12, cache_path=RUNS / "pricecheck" / "cache.json")
+    p.write_text(json.dumps(checked, indent=2))
+    checked["run"] = p.parent.name
+    return checked
 
 
 @app.get("/api/frame/{run}/{frame}")
