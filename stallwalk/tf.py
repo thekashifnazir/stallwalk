@@ -26,7 +26,7 @@ VISION_FALLBACK = os.environ.get("VISION_FALLBACK", "zai-org/GLM-5.3-Flash")
 TEXT_MODEL = os.environ.get("TEXT_MODEL", "nvidia/nemotron-3-super-120b-a12b")
 
 
-def chat(model: str, content, max_tokens: int = 2000, temperature: float = 0.0, timeout: int = 90,
+def chat(model: str, content, max_tokens: int = 2000, temperature: float = 0.0, timeout: int = 25,
          extra: dict | None = None) -> str:
     body = {
         "model": model,
@@ -41,14 +41,18 @@ def chat(model: str, content, max_tokens: int = 2000, temperature: float = 0.0, 
         headers={"Authorization": f"Bearer {KEY}", "Content-Type": "application/json"},
     )
     last = None
-    for attempt in range(3):
+    for attempt in range(2):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 d = json.load(r)
             return d["choices"][0]["message"]["content"] or ""
-        except (urllib.error.URLError, TimeoutError) as e:
+        except TimeoutError as e:  # a slow model stays slow: don't burn the demo retrying it
+            raise RuntimeError(f"Token Factory timed out after {timeout}s for {model}") from e
+        except urllib.error.URLError as e:
+            if isinstance(getattr(e, "reason", None), TimeoutError):
+                raise RuntimeError(f"Token Factory timed out after {timeout}s for {model}") from e
             last = e
-            time.sleep(1.5 * (attempt + 1))
+            time.sleep(1.0 * (attempt + 1))
     raise RuntimeError(f"Token Factory call failed for {model}: {last}")
 
 

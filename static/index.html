@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stallwalk</title>
+<style>
+  :root { --bg:#f6f3ee; --ink:#1d1b18; --muted:#6b655c; --card:#fff; --line:#e3ddd3; --accent:#2e7d32; --warn:#b26a00; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.45 -apple-system, system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+  header { padding:20px 16px 8px; max-width:980px; margin:auto; }
+  h1 { margin:0; font-size:28px; letter-spacing:-.5px; }
+  header p { margin:4px 0 0; color:var(--muted); }
+  main { max-width:980px; margin:auto; padding:8px 16px 40px; display:grid; gap:16px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  input[type=text] { flex:1; min-width:200px; padding:12px; font-size:16px; border:1px solid var(--line); border-radius:8px; }
+  button, label.btn { background:var(--ink); color:#fff; border:0; border-radius:8px; padding:12px 16px; font-size:15px; cursor:pointer; }
+  label.btn input { display:none; }
+  .stats { display:flex; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:14px; }
+  .stats b { color:var(--ink); font-size:20px; display:block; }
+  .stalls { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); }
+  .stall h3 { margin:0 0 8px; font-size:17px; }
+  .item { display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-top:1px solid var(--line); font-size:15px; }
+  .item .p { font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .flag { color:var(--warn); font-size:12px; display:block; }
+  .match { padding:10px 0; border-top:1px solid var(--line); }
+  .match small { color:var(--muted); }
+  #status { color:var(--muted); font-size:14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>stallwalk</h1>
+  <p>Walk the market with your phone. Shoppers see every stall's stock and prices.</p>
+</header>
+<main>
+  <section class="panel">
+    <div class="row">
+      <label class="btn">Upload a walk video<input id="video" type="file" accept="video/*" capture="environment"></label>
+      <span id="status"></span>
+    </div>
+    <div class="stats" id="stats" style="margin-top:12px"></div>
+  </section>
+
+  <section class="panel">
+    <form class="row" id="askform">
+      <input type="text" id="q" placeholder="e.g. fresh coriander under £1" autocomplete="off">
+      <button>Ask</button>
+    </form>
+    <div id="answer"></div>
+  </section>
+
+  <section class="stalls" id="stalls"></section>
+</main>
+<script>
+let run = null;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function render(stock) {
+  run = stock.run || null;
+  const src = stock.source || {};
+  const n = (stock.stalls || []).reduce((a, s) => a + s.items.length, 0);
+  const flagged = (stock.stalls || []).reduce((a, s) => a + s.items.filter(i => i.needs_check.length).length, 0);
+  let stats = `<div><b>${(stock.stalls||[]).length}</b>stalls</div><div><b>${n}</b>items</div><div><b>${flagged}</b>need a check</div>`;
+  if (src.frames) stats += `<div><b>${src.frames}</b>frames read</div>`;
+  if (src.seconds) stats += `<div><b>${src.seconds}s</b>to read</div>`;
+  if (stock.score) stats += `<div><b>${stock.score.items_found}/${stock.score.items_in_hand_count}</b>found vs hand count</div><div><b>${stock.score.prices_right}/${stock.score.items_in_hand_count}</b>prices right</div>`;
+  $("stats").innerHTML = stats;
+  $("stalls").innerHTML = (stock.stalls || []).map(s => `
+    <div class="panel stall"><h3>${esc(s.stall)}</h3>
+      ${s.items.map(i => `<div class="item"><span>${esc(i.name)}${i.deal ? ` · <small>${esc(i.deal)}</small>` : ""}
+        ${i.needs_check.map(f => `<span class="flag">${esc(f)}</span>`).join("")}</span>
+        <span class="p">${esc(i.price_text || "price not readable")}</span></div>`).join("")}
+    </div>`).join("");
+}
+
+fetch("/api/stock").then(r => r.json()).then(render);
+
+$("video").addEventListener("change", async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  $("status").textContent = "Reading the stalls…";
+  const fd = new FormData(); fd.append("video", f);
+  const r = await fetch("/api/walk", { method: "POST", body: fd });
+  const stock = await r.json();
+  $("status").textContent = r.ok ? "Done." : "Something went wrong.";
+  render(stock);
+});
+
+$("askform").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const q = $("q").value.trim(); if (!q) return;
+  $("answer").innerHTML = "<p>…</p>";
+  const fd = new FormData(); fd.append("question", q); if (run) fd.append("run", run);
+  const res = await (await fetch("/api/ask", { method: "POST", body: fd })).json();
+  $("answer").innerHTML = `<p>${esc(res.note || res.error || "")}</p>` + (res.matches || []).map(m =>
+    `<div class="match"><b>${esc(m.name)}</b> · ${esc(m.price_text || "price not readable")}<br><small>${esc(m.stall)}</small></div>`).join("");
+});
+</script>
+</body>
+</html>
