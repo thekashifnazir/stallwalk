@@ -50,8 +50,10 @@ async def paid_rate_limit(request: Request, call_next):
     if request.method != "GET" and request.method != "POST" or not path.startswith(PAID):
         return await call_next(request)
     fwd = request.headers.get("x-forwarded-for", "").split(",")[0].strip()  # Railway and other proxies
-    ip = request.headers.get("cf-connecting-ip") or fwd or (request.client.host if request.client else "?")
-    if ip in ("127.0.0.1", "::1") and "cf-connecting-ip" not in request.headers and not fwd:
+    ip = (request.headers.get("x-stallwalk-client-ip") or request.headers.get("cf-connecting-ip") or fwd
+          or (request.client.host if request.client else "?"))  # x-stallwalk-client-ip: set by our domain proxy
+    if ip in ("127.0.0.1", "::1") and "cf-connecting-ip" not in request.headers and not fwd \
+            and "x-stallwalk-client-ip" not in request.headers:
         return await call_next(request)  # the laptop itself
     now = time.time()
     with _hits_lock:

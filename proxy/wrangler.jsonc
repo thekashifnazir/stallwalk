@@ -1,0 +1,9 @@
+{
+  // Thin proxy: stallwalk.kashifnazir.com -> the app on Google Cloud Run. Free Workers plan.
+  "name": "stallwalk-proxy",
+  "main": "index.js",
+  "compatibility_date": "2026-11-01",
+  "routes": [{ "pattern": "stallwalk.kashifnazir.com", "custom_domain": true }],
+  // ORIGIN (the Cloud Run URL) is a Worker secret: `wrangler secret put ORIGIN`, kept out of the repo
+  "observability": { "enabled": true }
+}
