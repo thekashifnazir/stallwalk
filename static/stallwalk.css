@@ -1359,3 +1359,6 @@ html, body { overflow-x: clip; }
 .try-btn { font-size: 1.1rem; padding: var(--ds-spacing-4) var(--ds-spacing-5); }
 .try-out:not(:empty) { margin-top: var(--ds-spacing-4); animation: sw-rise .4s both; }
 .market-intro { font-size: 1.1rem; margin: 0 0 var(--ds-spacing-2); }
+
+.why-card, .rm-col, .try { padding: 20px 22px; }
+.why-card b { margin-bottom: 4px; }
