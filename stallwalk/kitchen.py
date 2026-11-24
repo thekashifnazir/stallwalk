@@ -15,7 +15,7 @@ ORDER_PROMPT = """Turn this kitchen order into JSON lines. Return JSON only:
 {{"lines": [{{"item": string, "qty": number or null, "unit": string or null}}]}}
 Rules:
 - One line per product. item: the product name only, singular or plural as written, no quantity.
-- qty: the number asked for, else null. unit: "kg", "g", "each", "bunch", "punnet", "dozen", "pack", "box", "litre" if written, else null.
+- qty: the number exactly as written, else null ("2 dozen eggs" -> qty 2, unit "dozen"). unit: "kg", "g", "each", "bunch", "punnet", "dozen", "pack", "box", "litre" if written, else null.
 - Don't add products that aren't in the order.
 
 Order:
@@ -31,6 +31,7 @@ _UNITS = {"kg": "kg", "kilo": "kg", "kilos": "kg", "kgs": "kg", "each": "each", 
           "litre": "litre", "litres": "litre", "l": "litre"}
 
 _LEVEL_RANK = {"empty": 2, "low": 1}
+MAX_SPREAD = 4  # web estimate high/low above this is too loose to show (a can vs a multipack)
 
 
 def clean_name(name: str) -> str:
@@ -87,6 +88,25 @@ def restock_list(stocks: list[dict]) -> list[dict]:
 
 # ── order parsing (the only model call) ──
 
+_QTY_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(kg|kgs|kilos?|g|dozen|bunch(?:es)?|punnets?|packs?|box(?:es)?|litres?|l|each)?\b\s*(?:of\s+)?$")
+
+
+def _qty_from_text(order_text: str, item: str) -> tuple[float | None, str | None] | None:
+    """Code owns quantities: find "<number> <unit>" written just before the item in the order
+    text ("2 dozen eggs" -> (2, "dozen"), "30 lemons" -> (30, None)). None if not found."""
+    words = [w for w in re.findall(r"[a-z]+", item.lower()) if len(w) > 2]
+    if not words:
+        return None
+    text = order_text.lower()
+    for m in re.finditer(re.escape(words[0][:-1] if words[0].endswith("s") else words[0]), text):
+        before = re.split(r"[,;\n]| and ", text[:m.start()])[-1]
+        q = _QTY_RE.search(before.strip() + " ") or _QTY_RE.search(before.strip())
+        if q:
+            n = float(q.group(1))
+            return (int(n) if n.is_integer() else n), (q.group(2) or None)
+    return None
+
+
 def parse_order(order_text: str) -> list[dict]:
     reply = tf.chat(tf.TEXT_MODEL, ORDER_PROMPT.format(order=order_text), max_tokens=800,
                     extra={"chat_template_kwargs": {"enable_thinking": False}})
@@ -96,9 +116,13 @@ def parse_order(order_text: str) -> list[dict]:
     for ln in lines if isinstance(lines, list) else []:
         if isinstance(ln, dict) and isinstance(ln.get("item"), str) and ln["item"].strip():
             qty = ln.get("qty")
-            out.append({"item": ln["item"].strip(),
-                        "qty": qty if isinstance(qty, (int, float)) and not isinstance(qty, bool) else None,
-                        "unit": ln.get("unit") if isinstance(ln.get("unit"), str) else None})
+            line = {"item": ln["item"].strip(),
+                    "qty": qty if isinstance(qty, (int, float)) and not isinstance(qty, bool) else None,
+                    "unit": ln.get("unit") if isinstance(ln.get("unit"), str) else None}
+            written = _qty_from_text(order_text, line["item"])
+            if written:  # the order text wins over the model's reading ("2 dozen", not "24 dozen")
+                line["qty"], line["unit"] = written[0], written[1] or line["unit"]
+            out.append(line)
     return out
 
 
@@ -217,8 +241,13 @@ def restock_with_estimates(stocks: list[dict], cache_path=None, max_items: int =
     for n, ln in enumerate(lines):
         chk = by_line.get(n)
         est = None
+        note = None
         if chk and chk.get("verdict") == "estimate":
-            est = {k: chk.get(k) for k in ("typical_low", "typical_high", "unit", "quotes", "sources")}
-            est["label"] = ESTIMATE_LABEL
-        out.append({**ln, "search_name": search[n][1] or None, "estimate": est})
+            lo, hi = chk.get("typical_low"), chk.get("typical_high")
+            if lo and hi and hi / lo > MAX_SPREAD:
+                note = "quotes too spread (can vs multipack?)"
+            else:
+                est = {k: chk.get(k) for k in ("typical_low", "typical_high", "unit", "quotes", "sources")}
+                est["label"] = ESTIMATE_LABEL
+        out.append({**ln, "search_name": search[n][1] or None, "estimate": est, "estimate_note": note})
     return {"lines": out}

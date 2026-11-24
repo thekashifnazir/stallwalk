@@ -160,3 +160,32 @@ def test_dozen_converts_both_ways():
 def test_count_with_no_unit_totals_per_each_multibuy():
     line = kitchen.split_order([{"item": "lemons", "qty": 30, "unit": None}], MARKETS)["lines"][0]
     assert line["pick"]["price_text"] == "5 for £1" and line["line_total_gbp"] == 6.0
+
+
+def test_agent_order_text_dozen_eggs(monkeypatch):
+    """/api/agent/order?order=10kg potatoes, 2 dozen eggs once came back £67.20: the model read 24 dozen."""
+    monkeypatch.setattr(kitchen.tf, "chat", lambda *a, **k: json.dumps({"lines": [
+        {"item": "potatoes", "qty": 10, "unit": "kg"}, {"item": "eggs", "qty": 24, "unit": "dozen"}]}))
+    out = kitchen.split_order("10kg potatoes, 2 dozen eggs", MARKETS)
+    potatoes, eggs = out["lines"]
+    assert potatoes["line_total_gbp"] == 9.0
+    assert (eggs["qty"], eggs["unit"]) == (2, "dozen") and eggs["line_total_gbp"] == 5.6
+
+
+@pytest.mark.parametrize("text,item,want", [("10kg potatoes, 2 dozen eggs", "eggs", (2, "dozen")),
+                                           ("10kg potatoes, 2 dozen eggs", "potatoes", (10, "kg")),
+                                           ("30 lemons and 3 kg salmon", "lemons", (30, None)),
+                                           ("30 lemons and 3 kg salmon", "salmon", (3, "kg")),
+                                           ("some saffron", "saffron", None)])
+def test_qty_from_text(text, item, want):
+    assert kitchen._qty_from_text(text, item) == want
+
+
+def test_restock_spread_estimate_dropped(monkeypatch):
+    from stallwalk import pricecheck as pc
+    pc._CACHE.clear()
+    monkeypatch.setattr(pc, "tavily_search", lambda q: {"results": [{"url": "https://a"}, {"url": "https://b"}]})
+    monkeypatch.setattr(pc, "extract_quotes", lambda n, u, r: [{"price": 0.6, "unit": "each", "source": 0},
+                                                               {"price": 2.9, "unit": "each", "source": 1}])
+    out = kitchen.restock_with_estimates([_stock("k.mp4", [_i("Coca-Cola cans", "low")])])["lines"][0]
+    assert out["estimate"] is None and out["estimate_note"] == "quotes too spread (can vs multipack?)"
