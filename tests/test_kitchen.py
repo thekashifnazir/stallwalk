@@ -248,3 +248,32 @@ def test_garlic_cloves_price_as_bulbs(monkeypatch, text, reply, want_qty):
     garlic = [l for l in kitchen.split_order(text, [MEAL])["lines"] if "garlic" in l["asked"].lower()]
     assert len(garlic) == 1
     assert garlic[0]["qty"] == want_qty and garlic[0]["line_total_gbp"] == round(0.5 * want_qty, 2)
+
+
+@pytest.mark.parametrize("reply", [
+    # model reads everything
+    [{"item": "mussels", "qty": 2, "unit": "kg"}, {"item": "potatoes", "qty": 1, "unit": "kg"},
+     {"item": "parsley", "qty": None, "unit": None}, {"item": "garlic cloves", "qty": 4, "unit": None}],
+    # model drops garlic (added back from the text, then the cloves guard)
+    [{"item": "mussels", "qty": 2, "unit": "kg"}, {"item": "potatoes", "qty": 1, "unit": "kg"},
+     {"item": "parsley", "qty": None, "unit": None}],
+])
+def test_smoke_order_total_14_20(monkeypatch, reply):
+    monkeypatch.setattr(kitchen.tf, "chat", lambda *a, **k: json.dumps({"lines": reply}))
+    out = kitchen.split_order("2kg mussels, 1kg potatoes, parsley, 4 garlic cloves", [MEAL])
+    by = {l["asked"].lower(): l for l in out["lines"]}
+    assert set(by) == {"mussels", "potatoes", "parsley", "garlic"}
+    assert by["parsley"]["line_total_gbp"] == 0.8 and by["parsley"]["note"] == "assumed 1"
+    assert by["garlic"]["qty"] == 1 and by["garlic"]["line_total_gbp"] == 0.5
+    assert round(sum(l.get("line_total_gbp") or 0 for l in out["lines"]), 2) == 14.20
+
+
+def test_a_bunch_of_parsley(monkeypatch):
+    monkeypatch.setattr(kitchen.tf, "chat", lambda *a, **k: json.dumps({"lines": [
+        {"item": "a bunch of parsley", "qty": None, "unit": None}]}))
+    line = kitchen.split_order("a bunch of parsley", [MEAL])["lines"][0]
+    assert line["pick"] and line["pick"]["name"] == "Flat-leaf Parsley"
+    assert (line["qty"], line["line_total_gbp"]) == (1, 0.8)
+    assert kitchen._order_parts("a bunch of parsley, one bottle of white wine") == ["parsley", "white wine"]
+    assert kitchen._qty_from_text("a bunch of parsley", "parsley") == (1, "bunch")
+    assert kitchen._qty_from_text("a nice salmon", "salmon") is None

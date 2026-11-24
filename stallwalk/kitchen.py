@@ -34,6 +34,7 @@ _UNITS = {"kg": "kg", "kilo": "kg", "kilos": "kg", "kgs": "kg", "each": "each", 
           "bulb": "each", "bulbs": "each", "head": "each", "heads": "each", "loaf": "loaf", "loaves": "loaf"}
 
 _LEVEL_RANK = {"empty": 2, "low": 1}
+_COUNTABLE = {"each", "bunch", "loaf", "pack", "punnet", "box", "dozen"}
 MAX_SPREAD = 4  # web estimate high/low above this is too loose to show (a can vs a multipack)
 
 
@@ -112,7 +113,7 @@ def restock_list(stocks: list[dict]) -> list[dict]:
 
 # ── order parsing (the only model call) ──
 
-_QTY_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|box(?:es)?|bottles?|bulbs?|heads?|litres?|l|each)?\b\s*(?:of\s+)?$")
+_QTY_RE = re.compile(r"(\d+(?:\.\d+)?|\ba\b|\ban\b|\bone\b)\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|box(?:es)?|bottles?|bulbs?|heads?|loaf|loaves|litres?|l|each)?\b\s*(?:of\s+)?$")
 
 
 def _qty_from_text(order_text: str, item: str) -> tuple[float | None, str | None] | None:
@@ -126,7 +127,9 @@ def _qty_from_text(order_text: str, item: str) -> tuple[float | None, str | None
         before = re.split(r"[,;\n]| and ", text[:m.start()])[-1]
         q = _QTY_RE.search(before.strip() + " ") or _QTY_RE.search(before.strip())
         if q:
-            n = float(q.group(1))
+            n = 1.0 if q.group(1) in ("a", "an", "one") else float(q.group(1))
+            if q.group(1) in ("a", "an", "one") and not q.group(2):
+                continue  # "a" alone isn't a quantity ("a nice salmon")
             return (int(n) if n.is_integer() else n), (q.group(2) or None)
     return None
 
@@ -140,20 +143,21 @@ def parse_order(order_text: str) -> list[dict]:
     for ln in lines if isinstance(lines, list) else []:
         if isinstance(ln, dict) and isinstance(ln.get("item"), str) and ln["item"].strip():
             qty = ln.get("qty")
-            line = {"item": ln["item"].strip(),
+            line = {"item": _LEAD_QTY.sub("", ln["item"].strip()).strip() or ln["item"].strip(),
                     "qty": qty if isinstance(qty, (int, float)) and not isinstance(qty, bool) else None,
                     "unit": ln.get("unit") if isinstance(ln.get("unit"), str) else None}
             written = _qty_from_text(order_text, line["item"])
             if written:  # the order text wins over the model's reading ("2 dozen", not "24 dozen")
                 line["qty"], line["unit"] = written[0], written[1] or line["unit"]
             out.append(line)
-    _garlic_cloves_to_bulbs(order_text, out)
+    _garlic_cloves_to_bulbs(order_text, out)  # before the gap fill, so "cloves of garlic" counts as covered
     # the model sometimes drops items (white wine, butter): every part of the order text gets a line
     for part in _order_parts(order_text):
         if not any(_matches(ln["item"], part) or _matches(part, ln["item"]) for ln in out):
             written = _qty_from_text(order_text, part)
             out.append({"item": part, "qty": written[0] if written else None,
                         "unit": written[1] if written else None})
+    _garlic_cloves_to_bulbs(order_text, out)  # last, so lines added above are covered too
     return out
 
 
@@ -173,8 +177,7 @@ def _garlic_cloves_to_bulbs(order_text: str, lines: list[dict]) -> None:
             ln["item"] = "garlic"
 
 
-_LEAD_QTY = re.compile(r"^\s*\d+(?:\.\d+)?\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|"
-                       r"box(?:es)?|bottles?|bulbs?|heads?|litres?|l|each)?\b\s*(?:of\s+)?", re.I)
+_LEAD_QTY = re.compile(r"^\s*(?:\d+(?:\.\d+)?|a|an|one)\s*(kg|kgs|kilos?|g|grams?|ml|dozen|bunch(?:es)?|punnets?|packs?|box(?:es)?|bottles?|bulbs?|heads?|loaf|loaves|litres?|l|each)?\b\s*(?:of\s+)?", re.I)
 
 
 def _order_parts(order_text: str) -> list[str]:
@@ -259,6 +262,8 @@ def split_order(order, stocks: list[dict]) -> dict:
             if ln.get(k):
                 line[k] = ln[k]
         f = per_asked.get(id(pick)) if pick else None
+        if pick and line["qty"] is None and _unit(pick["unit"]) in _COUNTABLE:
+            line["qty"], f, line["note"] = 1, 1.0, "assumed 1"  # "parsley" -> one bunch
         if pick and isinstance(line["qty"], (int, float)) and f is not None:
             line["line_total_gbp"] = round(line["qty"] * f * pick["price_gbp"], 2)
         if not found:
