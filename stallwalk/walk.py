@@ -20,7 +20,7 @@ Return JSON only, in this shape:
 {"signs": [string],
  "items": [{"name": string, "stall_sign": string or null, "price_text": string or null,
             "price_gbp": number or null, "unit": string or null, "deal": string or null,
-            "confidence": "high"|"medium"|"low"}]}
+            "stock_level": "full"|"low"|"empty"|"unknown", "confidence": "high"|"medium"|"low"}]}
 
 Rules:
 - signs: every stall name sign visible in this frame, left to right, exactly as written.
@@ -31,6 +31,9 @@ Rules:
 - unit: "kg", "each", "bunch", "punnet", "100g", "200g", "tub", "loaf", if written.
 - deal: multi-buy or offer text if written, else null.
 - If you can't read a price, set price_text and price_gbp to null. Never guess a price.
+- stock_level: how much is left on its shelf, tray, dispenser or slot. "empty" if the labelled slot or dispenser has none left.
+- Products with no price card still count: list them with price_text and price_gbp null.
+- name: brand and product as printed on the pack (e.g. "Walkers Ready Salted crisps"). If no brand is readable, describe it briefly and set confidence low.
 - confidence low = partly hidden or blurry.
 """
 
@@ -41,9 +44,18 @@ def extract_frames(video: Path, out_dir: Path, fps: float = 1.0, width: int = 12
     out_dir.mkdir(parents=True, exist_ok=True)
     for old in out_dir.glob("f_*.jpg"):
         old.unlink()
-    if video.suffix.lower() in (".jpg", ".jpeg", ".png", ".heic", ".webp"):  # a single photo is a one-frame walk
-        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(video), "-vf", f"scale='min({width},iw)':-2",
-                        "-frames:v", "1", "-q:v", "3", str(out_dir / "f_0001.jpg")], check=True)
+    if is_photo(video):  # a photo: read it whole, then as 4 overlapping tiles at full detail
+        from PIL import Image
+        img = Image.open(video).convert("RGB")
+        W, H = img.size
+        whole = img.copy()
+        whole.thumbnail((1600, 1600))
+        whole.save(out_dir / "f_0001.jpg", quality=88)
+        tw, th = int(W * 0.58), int(H * 0.58)
+        for k, (x, y) in enumerate([(0, 0), (W - tw, 0), (0, H - th), (W - tw, H - th)], start=2):
+            tile = img.crop((x, y, x + tw, y + th))
+            tile.thumbnail((1600, 1600))
+            tile.save(out_dir / f"f_{k:04d}.jpg", quality=88)
         return sorted(out_dir.glob("f_*.jpg"))
     subprocess.run(
         ["ffmpeg", "-loglevel", "error", "-y", "-i", str(video),
@@ -51,6 +63,10 @@ def extract_frames(video: Path, out_dir: Path, fps: float = 1.0, width: int = 12
         check=True,
     )
     return sorted(out_dir.glob("f_*.jpg"))
+
+
+def is_photo(path: Path) -> bool:
+    return path.suffix.lower() in (".jpg", ".jpeg", ".png", ".heic", ".webp")
 
 
 def read_frame(frame: Path) -> dict:
@@ -113,7 +129,7 @@ def _same_item(a: str, b: str) -> bool:
     return len(na) >= 4 and len(nb) >= 4 and (na in nb or nb in na)
 
 
-def merge(readings: list[dict]) -> dict:
+def merge(readings: list[dict], drop_one_offs: bool = True) -> dict:
     signs = canonical_signs(readings)
     current = "Unknown stall"
     order: list[str] = []
@@ -161,10 +177,12 @@ def merge(readings: list[dict]) -> dict:
                 "price_text": max((x["price_text"] for x in seen if x.get("price_text") and (price is None or round(x.get("price_gbp") or -1, 2) == price)), key=len, default=best.get("price_text")),
                 "unit": best.get("unit"),
                 "deal": next((x["deal"] for x in seen if x.get("deal")), None),
+                "stock_level": Counter(x.get("stock_level") or "unknown" for x in seen).most_common(1)[0][0],
                 "seen_in_frames": len({x["frame"] for x in seen}),
                 "needs_check": flags,
             })
-        keep = [i for i in items if not (i["seen_in_frames"] == 1 and "only seen blurry or partly hidden" in i["needs_check"])]
+        keep = [i for i in items if not (drop_one_offs and i["seen_in_frames"] == 1
+                                         and "only seen blurry or partly hidden" in i["needs_check"])]
         out.setdefault("possible", []).extend({**i, "stall": s} for i in items if i not in keep)
         if keep:
             out["stalls"].append({"stall": s, "items": sorted(keep, key=lambda i: i["name"].lower())})
@@ -194,7 +212,7 @@ def run(video: Path, out: Path, fps: float = 1.0, workers: int = 8) -> dict:
     with ThreadPoolExecutor(max_workers=workers) as ex:
         readings = list(ex.map(read_frame, frames))
     (out / "readings.json").write_text(json.dumps(readings, indent=2))
-    stock = merge(readings)
+    stock = merge(readings, drop_one_offs=not is_photo(video))
     stock["source"] = {"video": video.name, "frames": len(frames), "fps": fps,
                        "errors": [r["frame"] for r in readings if r.get("error")]}
     (out / "stock.json").write_text(json.dumps(stock, indent=2))
