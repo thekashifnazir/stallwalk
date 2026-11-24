@@ -60,6 +60,21 @@
     <pre id="exportout" style="display:none;max-height:260px;overflow:auto;font-size:12px;background:#f3efe8;padding:10px;border-radius:8px"></pre>
   </section>
 
+  <section class="panel">
+    <h3 style="margin:0 0 8px">Kitchen: restock and order</h3>
+    <div class="row">
+      <button type="button" id="restockbtn">What's run out (office kitchen walk)</button>
+      <button type="button" id="restockest">…with web price estimates</button>
+    </div>
+    <div id="restockout"></div>
+    <form class="row" id="orderform" style="margin-top:12px">
+      <input type="text" id="order" value="10kg potatoes, 30 lemons, 3kg salmon, 2 dozen eggs">
+      <button>Split across markets</button>
+    </form>
+    <small style="color:var(--muted)">Market stock lists for the order split are made up for the demo.</small>
+    <div id="orderout"></div>
+  </section>
+
   <section class="stalls" id="stalls"></section>
 </main>
 <script>
@@ -168,6 +183,30 @@ document.addEventListener("click", async (e) => {
     ? `<ul style="margin:6px 0 0 18px;padding:0">${f.facts.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` +
       `<small>Sources: ${(f.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a>`).join(" · ")}</small>`
     : `<small>${esc(f.error || "Nothing useful found.")}</small>`;
+});
+
+async function showRestock(est) {
+  $("restockout").innerHTML = "<p>…</p>";
+  const r = await (await fetch(`/api/restock?estimates=${est}`)).json();
+  const lines = r.lines || [];
+  $("restockout").innerHTML = lines.length ? lines.map(l => {
+    const e = l.estimate;
+    const price = e && e.typical_low != null ? `£${e.typical_low.toFixed(2)}–£${(e.typical_high ?? e.typical_low).toFixed(2)}${e.unit ? " per " + esc(e.unit) : ""} <small>(${esc(e.label || "web estimate")})</small>` : (est ? "<small>no web estimate</small>" : "");
+    return `<div class="match"><b>${esc(l.name)}</b> · <span class="flag" style="display:inline">${esc(l.stock_level)}</span> ${price}<br><small>${esc(l.source_file || "")}</small></div>`;
+  }).join("") : "<p>Nothing low or empty.</p>";
+}
+$("restockbtn").addEventListener("click", () => showRestock(false));
+$("restockest").addEventListener("click", () => showRestock(true));
+
+$("orderform").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("orderout").innerHTML = "<p>…</p>";
+  const fd = new FormData(); fd.append("order", $("order").value);
+  const r = await (await fetch("/api/order", { method: "POST", body: fd })).json();
+  const lines = r.lines || [];
+  $("orderout").innerHTML = lines.map(l => `<div class="match"><b>${esc(l.qty ?? "")} ${esc(l.unit ?? "")} ${esc(l.asked)}</b> → ${l.pick
+      ? `${esc(l.pick.market)} · ${esc(l.pick.stall)} · ${esc(l.pick.price_text || "")}${l.line_total_gbp != null ? ` · <b>£${l.line_total_gbp.toFixed(2)}</b>` : ""}`
+      : `<small>${esc(l.note || "no match")}</small>`}</div>`).join("");
 });
 
 $("askform").addEventListener("submit", async (e) => {

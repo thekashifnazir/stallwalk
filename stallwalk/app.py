@@ -18,6 +18,7 @@ from .export import export_stock
 from .facts import item_facts
 from .enrich import enrich_item
 from .pricecheck import check_prices
+from . import kitchen
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "out"
@@ -116,6 +117,29 @@ def api_pricecheck(run: str | None = Form(None)):
     p.write_text(json.dumps(checked, indent=2))
     checked["run"] = p.parent.name
     return checked
+
+
+MARKETS = ROOT / "fixtures" / "markets"
+
+
+def _market_stocks() -> list[dict]:
+    return [json.loads(p.read_text()) for p in sorted(MARKETS.glob("*.json"))]
+
+
+@app.post("/api/order")
+def api_order(order: str = Form(...)):
+    """Kitchen order text -> split across the (made-up) market stock lists, cheapest comparable priced offer."""
+    return kitchen.split_order(order, _market_stocks())
+
+
+@app.get("/api/restock")
+def api_restock(folder: str = "real-frozen-v3", estimates: bool = False):
+    """Low and empty items across a folder of runs (e.g. the office kitchen footage)."""
+    base = (RUNS / Path(folder).name)
+    stocks = [json.loads(p.read_text()) for p in sorted(base.glob("*/stock.json"))]
+    if estimates and hasattr(kitchen, "restock_with_estimates"):
+        return kitchen.restock_with_estimates(stocks, cache_path=RUNS / "pricecheck" / "cache.json")
+    return {"lines": kitchen.restock_list(stocks)}
 
 
 @app.get("/api/frame/{run}/{frame}")
