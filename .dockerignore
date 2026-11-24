@@ -1,0 +1,17 @@
+# Build context for the Cloudflare Containers image: never ship secrets or real footage
+.env
+.env.*
+.venv
+.git
+**/__pycache__
+node_modules
+.wrangler
+experiments
+tests
+out
+!out/pricecheck/cache.json
+!out/synthetic_walk/stock.json
+!out/synthetic_walk/readings.json
+!out/synthetic_walk/score.json
+!out/synthetic_walk/enriched.json
+!out/synthetic_walk/frames

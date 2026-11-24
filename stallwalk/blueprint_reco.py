@@ -25,9 +25,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BLUEPRINT = Path(
-    "/Users/kash/Code/sandbox/innovators-guild/blueprints/Retail-Agentic-Commerce/src/agents"
-)
+BLUEPRINT = Path(os.environ.get("AGENTIC_COMMERCE_DIR", "/Users/kash/Code/sandbox/innovators-guild/blueprints/Retail-Agentic-Commerce")) / "src/agents"
 CONFIG = BLUEPRINT / "commerce_agents" / "configs" / "recommendation.yml"
 RUNS = Path(__file__).resolve().parent.parent / "out"
 DEFAULT_RUN = "synthetic_walk"

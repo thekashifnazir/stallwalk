@@ -1,0 +1,4 @@
+Vendored from NVIDIA-AI-Blueprints/Retail-Agentic-Commerce (https://github.com/NVIDIA-AI-Blueprints/Retail-Agentic-Commerce),
+commit 83c5f221baa8ec95bf4104d62b076c43199a13cd, licensed under Apache-2.0 (see LICENSE). Files copied unmodified:
+src/agents/commerce_agents/__init__.py, recommendation.py, configs/promotion.yml, configs/recommendation.yml.
+Used only by the hosted container image (stallwalk/blueprint_promo.py and stallwalk/blueprint_reco.py).

@@ -1,0 +1,29 @@
+{
+  // Hosted copy of stallwalk: a thin Worker in front of one Cloudflare Container running the FastAPI app.
+  // Secrets (wrangler secret put): TOKENFACTORY_API_KEY, TOKENFACTORY_BASE_URL, TAVILY_API_KEY.
+  "$schema": "https://unpkg.com/wrangler@4.168.0/config-schema.json",
+  "name": "stallwalk",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-24",
+  "account_id": "55312931f69440a9d2ef1e2bcef87dea",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "routes": [{ "pattern": "stallwalk.kashifnazir.com", "custom_domain": true }],
+  "containers": [
+    {
+      "class_name": "StallwalkContainer",
+      "scheduling_policy": "durable_object",
+      "images": { "base": { "dockerfile": "./Dockerfile" } }
+    }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "STALLWALK", "class_name": "StallwalkContainer" }]
+  },
+  "exports": {
+    "StallwalkContainer": { "type": "durable-object", "storage": "sqlite" }
+  },
+  // The public URL spends paid API credits: 60 /api/* requests per minute per IP, per Cloudflare location
+  "ratelimits": [
+    { "name": "API_LIMIT", "namespace_id": "8787", "simple": { "limit": 60, "period": 60 } }
+  ]
+}
