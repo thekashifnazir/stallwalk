@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>stallwalk: market stalls, online</title>
-<link rel="icon" href="/static/favicon.svg">
-<link rel="stylesheet" href="/static/stallwalk.css">
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=1">
+<link rel="stylesheet" href="/static/stallwalk.css?v=0145570">
 </head>
 <body>
 <header class="hero">
@@ -377,6 +377,7 @@ $("checkbtn").addEventListener("click", (e) => {
 
 // ---- selling: end-of-day deals (NVIDIA promotion agent)
 const MADE_UP_LEFT = [30, 4, 12, 25, 2, 18, 40, 6];
+const human = (t) => String(t).replace(/DISCOUNT_(\d+)_PCT/g, "$1% off").replace(/NO_PROMO/g, "no deal").replace(/FREE_SHIPPING/g, "free delivery").replace(/([A-Z]+)_([A-Z_]+)/g, (m) => m.replace(/_/g, " ").toLowerCase());
 $("dealbtn").addEventListener("click", (e) => {
   const stall = $("dealstall").value; if (!stall) return;
   $("dealout").innerHTML = `<p class="progress">Asking the promotion agent</p>`;
@@ -391,8 +392,9 @@ $("dealbtn").addEventListener("click", (e) => {
         const cut = d.deal_price_gbp < d.card_price_gbp;
         return `<div class="deal-row result"><b>${esc(d.item)}</b> <small class="muted">${esc(d.stock_left)} left</small>
           <span class="price">${cut ? `<s class="was">${money(d.card_price_gbp)}</s> <b class="now">${money(d.deal_price_gbp)}</b>` : money(d.card_price_gbp)}</span>
-          <span class="tag ${cut ? "tag-low" : "tag-have"}">${cut ? esc(String(d.action).replace("DISCOUNT_", "").replace("_PCT", "% off")) : "keep the price"}</span>
-          ${d.reasoning ? `<br><small class="muted">${esc(d.reasoning)}</small>` : ""}</div>`;
+          <span class="tag ${cut ? "tag-low" : "tag-have"}">${cut ? esc(human(d.action)) : "keep the price"}</span>
+          ${d.reasoning ? `<br><small class="muted">${esc(human(d.reasoning))}</small>` : ""}
+          ${d.follows_table === false ? `<br><span class="flag">Code check: NVIDIA's own rule table says ${esc((d.table_expects || []).map(human).join(" or "))} here, so this pick is flagged.</span>` : ""}</div>`;
       }).join("") || "<p>No deals for this stall.</p>";
     } catch (err) { fail($("dealout"), err); }
   });
