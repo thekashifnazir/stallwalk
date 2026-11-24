@@ -51,26 +51,27 @@ _Innovators Guild hackathon (Fresha × Nebius) · Retail Commerce track · 24 No
 
 <br>
 
-For the demo it runs locally on Kash's Mac behind a Cloudflare quick tunnel. It's ready to deploy on Cloudflare Containers (Dockerfile and worker/ in the repo), but that isn't live.
+It's hosted on Google Cloud Run at https://stallwalk-442338018346.europe-west2.run.app, and the voice agent's tools point there. The Catalog Enrichment backend runs on Cloud Run too, on a private URL. For local development the app runs on a laptop behind a Cloudflare quick tunnel. The Cloudflare Containers config (Dockerfile and worker/) is ready but needs Workers Paid, so it isn't deployed.
 
 ```mermaid
 flowchart LR
     B["Phone or laptop browser"]
     V["ElevenLabs voice agent<br/>8 webhook tools"]
-    T["Cloudflare quick tunnel<br/>trycloudflare.com<br/>URL changes on restart"]
-    H["Cloudflare Containers + Worker<br/>ready to deploy, not live<br/>(Dockerfile + worker/)"]
-    A["FastAPI app :8787<br/>on Kash's Mac<br/>stallwalk/app.py"]
+    CR["Google Cloud Run<br/>stallwalk app (public URL)<br/>rate-limited"]
+    T["Local dev: Cloudflare quick tunnel<br/>to a laptop :8787<br/>URL changes on restart"]
+    H["Cloudflare Containers + Worker<br/>config ready, needs Workers Paid<br/>(Dockerfile + worker/)"]
+    A["FastAPI app<br/>stallwalk/app.py"]
     TF["Nebius Token Factory<br/>Nemotron 3.5 Super VL: frames<br/>Nemotron 3 Super: text<br/>Nemotron 3.5 Lightning: blueprint agents"]
-    CE["NVIDIA Catalog Enrichment backend<br/>localhost:8000, not exposed"]
+    CE["NVIDIA Catalog Enrichment backend<br/>Cloud Run, private URL"]
     AC["NVIDIA Agentic Commerce agents<br/>promotion + recommendation<br/>in-process"]
     TV["Tavily search<br/>UK grocer sites only"]
 
-    B --> T
-    V -- "GET /api/agent/*" --> T
-    T --> A
-    B -.-> H
-    V -.-> H
-    H -.-> A
+    B --> CR
+    V -- "GET /api/agent/*" --> CR
+    CR --> A
+    B -. "local dev" .-> T
+    T -.-> A
+    H -. "not deployed" .-> A
     A --> TF
     A --> CE
     CE --> TF
@@ -79,7 +80,7 @@ flowchart LR
     A --> TV
 ```
 
-- The voice agent's tools point at the tunnel URL. A quick tunnel gets a new URL each time it restarts, so `voice/setup_agent.py --public-url <new url>` re-points all eight tools in place.
+- The voice agent's tools point at the Cloud Run URL. `voice/setup_agent.py --public-url <url>` re-points all eight tools in place, for example at a quick tunnel during local development.
 - The Catalog Enrichment backend listens on localhost only. The catalogue entry runs on the local build only, and won't be in the hosted build.
 - The two Agentic Commerce agents run inside the app's process, with their prompts loaded from the blueprint's own config files.
 
@@ -139,10 +140,11 @@ An ElevenLabs Conversational AI agent with eight read-only webhook tools: `plan_
 | **GLM-5.3-Flash** (`zai-org/GLM-5.3-Flash`) | Fallback frame reader |
 | **Nebius Token Factory** | Serves all of the above |
 | **Tavily** | Price check and web find, limited to UK supermarket sites |
-| **NVIDIA Retail Catalog Enrichment blueprint** | Catalogue entry per item (backend on localhost:8000), and the shape of the ACP and UCP records |
+| **NVIDIA Retail Catalog Enrichment blueprint** | Catalogue entry per item (backend on Cloud Run with a private URL, or localhost:8000 locally), and the shape of the ACP and UCP records |
 | **NVIDIA Retail Agentic Commerce blueprint** | Promotion agent (layers and margin check copied) and recommendation agent (pipeline imported unchanged) |
 | **ElevenLabs Conversational AI** | The voice agent |
-| **Cloudflare** | Quick tunnel for the demo; ready to deploy on Containers (Dockerfile + worker/), not live |
+| **Google Cloud Run** | Hosts the app (public URL) and the Catalog Enrichment backend (private URL) |
+| **Cloudflare** | Quick tunnel for local development; Containers config ready, needs Workers Paid |
 
 Model ids are the defaults in `stallwalk/tf.py`, `stallwalk/blueprint_promo.py` and `stallwalk/blueprint_reco.py`, and each can be changed by an environment variable.
 
@@ -232,7 +234,7 @@ Optional parts:
 
 - **Synthetic market.** The meal market, the stockroom and the three market stock lists in `fixtures/` are made up, and are labelled that way in the files. The real evidence is 3 office kitchen photos and 7 English Commons price-card photos, hand-checked about halfway through the set.
 - **The office footage isn't in the repo.** Only the text item lists the pipeline produced from it are, in `fixtures/real_kitchen/`.
-- **The quick tunnel is public and unauthenticated.** Anyone with the URL can use the app. It's rate-limited: per IP, 60 paid calls per 10 minutes, 400 in total, with a 429, a Retry-After header and an answer the voice agent can say. The Containers build is ready to deploy but not live, and the catalogue entry runs on the local build only.
+- **The public demo is unauthenticated.** Anyone with the Cloud Run URL can use it. It's rate-limited: per IP, 60 paid calls per 10 minutes, 400 in total, with a 429, a Retry-After header and an answer the voice agent can say. The Cloudflare Containers config is ready but needs Workers Paid, so it isn't deployed.
 - **No Docker on the build machine,** so the Shopping Assistant and Multi-Agent Intelligent Warehouse blueprints weren't run.
 - **Recommendation picks are weak on the small market.** The blueprint picks from a handful of items, so code removes what you already have and the rest is often obvious (for moules frites: garlic, potatoes, shallots).
 - **Web prices are online prices.** Tavily can't see local shops, stock or opening hours, so every answer says to check the local store. Pack sizes mix (a can against a multipack), and an estimate spread wider than 4x is dropped.
