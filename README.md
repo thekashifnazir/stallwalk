@@ -245,7 +245,7 @@ Optional parts:
 
 ## <a name="credits"></a>6. 🙏 Credits and licences
 
-The starting point was [Market Live](https://thebuildroom.uk/showcase/leicester-01/market-live/), built by Team Nan at The Build Room Leicester 01, where it won the Startup Challenge: it shows shoppers what market stalls have in stock. stallwalk goes further. It reads a filmed walk into a stock list, hand-checked on real footage, checks prices against UK supermarkets, runs two NVIDIA blueprints on Nebius Token Factory, plans a meal across the stalls and a stockroom, suggests end-of-day deals for stallholders, and runs as a hosted app with a voice agent.
+**Inspired by Market Live, built by Team Nan at The Build Room Leicester 01.**
 
 <details>
 <summary><b>Blueprints, photos and code</b></summary>
