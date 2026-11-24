@@ -145,3 +145,18 @@ def test_restock_with_estimates(monkeypatch):
     assert by["corn flakes"]["estimate"] is None  # searched, no quotes
     assert "price_gbp" not in coke  # an estimate is never a price
     assert sorted(queries) == ["coca-cola cans price UK supermarket", "corn flakes price UK supermarket"]
+
+
+def test_dozen_converts_both_ways():
+    out = kitchen.split_order([{"item": "eggs", "qty": 24, "unit": "each"},
+                               {"item": "eggs", "qty": 2, "unit": "dozen"},
+                               {"item": "lemons", "qty": 2, "unit": "dozen"}], MARKETS)
+    by_each, by_dozen, lemons = out["lines"]
+    assert by_each["pick"]["price_gbp"] == 2.80 and by_each["line_total_gbp"] == 5.6
+    assert by_dozen["line_total_gbp"] == 5.6
+    assert lemons["pick"]["price_gbp"] == 0.20 and lemons["line_total_gbp"] == 4.8
+
+
+def test_count_with_no_unit_totals_per_each_multibuy():
+    line = kitchen.split_order([{"item": "lemons", "qty": 30, "unit": None}], MARKETS)["lines"][0]
+    assert line["pick"]["price_text"] == "5 for £1" and line["line_total_gbp"] == 6.0

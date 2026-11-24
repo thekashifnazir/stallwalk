@@ -46,6 +46,17 @@ def _unit(u) -> str | None:
     return _UNITS.get(s, s)
 
 
+_PER = {("dozen", "each"): 12.0, ("each", "dozen"): 1 / 12}
+
+
+def _factor(asked_unit, offer_unit) -> float | None:
+    """How many offer units make one asked unit (1 dozen = 12 each), or None if they don't convert."""
+    a, o = _unit(asked_unit), _unit(offer_unit)
+    if a is None or o is None:
+        return None
+    return 1.0 if a == o else _PER.get((a, o))
+
+
 def _market_name(stock: dict, n: int) -> str:
     return stock.get("market") or (stock.get("source") or {}).get("video") or f"market {n + 1}"
 
@@ -138,7 +149,9 @@ def split_order(order, stocks: list[dict]) -> dict:
     Returns {"lines": [...], "by_market": {market: [lines]}, "unmatched": [asked, ...]}.
     Each line: asked, qty, unit, pick (cheapest priced comparable offer, or None) and
     alternatives (the other matching offers). line_total_gbp is only set when the order's
-    unit is the offer's unit, so it's a straight multiply of a price read off a card.
+    unit is the offer's unit or converts exactly (dozen = 12 each; a count with no unit
+    is "each"), so it's a straight multiply of a price read off a card. Multi-buys
+    ("5 for £1") are already a per-each price_gbp from walk.merge.
     """
     offers = _offers(stocks)
     lines, by_market, unmatched = [], {}, []
@@ -146,17 +159,23 @@ def split_order(order, stocks: list[dict]) -> dict:
         asked = ln.get("asked") or ln["item"]
         found = [o for o in offers if _matches(ln["item"], o["name"])]
         want = _unit(ln.get("unit"))
-        comparable = [o for o in found if want is None or _unit(o["unit"]) == want]
+        if want is None:  # "30 lemons": any unit can be picked, totals only for "each"
+            comparable = found
+            per_asked = {id(o): (1.0 if _unit(o["unit"]) == "each" else None) for o in found}
+        else:
+            comparable = [o for o in found if _factor(want, o["unit"]) is not None]
+            per_asked = {id(o): _factor(want, o["unit"]) for o in comparable}
         priced = sorted((o for o in comparable if isinstance(o["price_gbp"], (int, float))),
-                        key=lambda o: o["price_gbp"])
+                        key=lambda o: o["price_gbp"] * (per_asked[id(o)] or 1))
         pick = priced[0] if priced else None
         line = {"asked": asked, "qty": ln.get("qty"), "unit": ln.get("unit"), "pick": pick,
                 "alternatives": [o for o in found if o is not pick]}
         for k in ("stock_level", "source_file"):
             if ln.get(k):
                 line[k] = ln[k]
-        if pick and isinstance(line["qty"], (int, float)) and want and _unit(pick["unit"]) == want:
-            line["line_total_gbp"] = round(line["qty"] * pick["price_gbp"], 2)
+        f = per_asked.get(id(pick)) if pick else None
+        if pick and isinstance(line["qty"], (int, float)) and f is not None:
+            line["line_total_gbp"] = round(line["qty"] * f * pick["price_gbp"], 2)
         if not found:
             line["note"] = "not on any stock list"
             unmatched.append(asked)
