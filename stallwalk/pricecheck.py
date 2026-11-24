@@ -25,7 +25,8 @@ HIGH_X = 2.0   # price above 2x typical_high -> "high"
 LOW_X = 0.5    # price below 0.5x typical_low -> "low"
 GROCERS = ["tesco.com", "sainsburys.co.uk", "asda.com", "morrisons.com", "ocado.com",
            "waitrose.com", "aldi.co.uk", "trolley.co.uk"]
-MAX_SEARCHES = 50  # hard cap per run, whatever max_items says, so a loop can't burn credits
+MAX_SEARCHES = 50
+CACHE_VERSION = 2  # bump when the search or prompt changes, so old lookups are dropped  # hard cap per run, whatever max_items says, so a loop can't burn credits
 
 EXTRACT_PROMPT = """Below are web search snippets about the UK retail price of "{name}", per {unit}.
 Return JSON only: {{"typical_low": number or null, "typical_high": number or null, "unit": string or null}}
@@ -110,7 +111,7 @@ def _lookup(name: str, unit: str) -> dict | None:
     if key in _CACHE:
         return _CACHE[key]
     try:
-        res = tavily_search(f"{name} price per {unit} UK").get("results") or []
+        res = tavily_search(f"{name} price per {unit} UK supermarket").get("results") or []
         typical = extract_typical(name, unit, res)
     except Exception:  # noqa: BLE001 - a failed lookup is "unknown", never a guess
         return None  # not cached, so a later run can retry
@@ -146,9 +147,11 @@ def check_prices(stock: dict, max_items: int = 12, workers: int = 6,
     """
     out = copy.deepcopy(stock)
     if cache_path and Path(cache_path).exists():
-        for k, v in json.loads(Path(cache_path).read_text()).items():
-            n, u = k.split("|", 1)
-            _CACHE.setdefault((n, u), v)
+        saved = json.loads(Path(cache_path).read_text())
+        if isinstance(saved, dict) and saved.get("version") == CACHE_VERSION:
+            for k, v in saved.get("items", {}).items():
+                n, u = k.split("|", 1)
+                _CACHE.setdefault((n, u), v)
     items = [i for s in out.get("stalls", []) for i in s.get("items", [])]
     priced = [i for i in items if isinstance(i.get("price_gbp"), (int, float)) and i.get("unit")]
     picked = ([i for i in priced if not i.get("needs_check")]
@@ -162,5 +165,7 @@ def check_prices(stock: dict, max_items: int = 12, workers: int = 6,
         if flag:
             item["needs_check"] = list(item.get("needs_check") or []) + [flag]
     if cache_path:
-        Path(cache_path).write_text(json.dumps({f"{n}|{u}": v for (n, u), v in _CACHE.items()}, indent=2))
+        Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(cache_path).write_text(json.dumps(
+            {"version": CACHE_VERSION, "items": {f"{n}|{u}": v for (n, u), v in _CACHE.items()}}, indent=2))
     return out

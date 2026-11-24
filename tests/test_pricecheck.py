@@ -5,6 +5,8 @@ import pytest
 
 from stallwalk import pricecheck as pc
 
+REAL_SEARCH = pc.tavily_search  # saved before the offline fixture swaps it out
+
 STOCK = {"stalls": [
     {"stall": "Patel's Fruit & Veg", "items": [
         {"name": "Tomatoes", "price_gbp": 1.8, "price_text": "£1.80/kg", "unit": "kg",
@@ -103,7 +105,7 @@ def test_cap_prefers_clean_items(offline):
     out = pc.check_prices(STOCK, max_items=4)
     assert "price_check" not in _item(out, "Cod Fillet")  # the only flagged priced item goes last
     assert len(offline["tavily"]) == 4
-    assert offline["tavily"][0] == "Tomatoes price per kg UK"
+    assert offline["tavily"][0] == "Tomatoes price per kg UK supermarket"
 
 
 def test_failure_is_unknown(monkeypatch):
@@ -160,7 +162,7 @@ def test_cache_rejudges_new_price(offline):
     second = pc.check_prices(cheaper)
     assert _item(first, "Salmon Fillet")["price_check"]["verdict"] == "high"
     assert _item(second, "Salmon Fillet")["price_check"]["verdict"] == "usual"
-    assert offline["tavily"].count("Salmon Fillet price per kg UK") == 1
+    assert offline["tavily"].count("Salmon Fillet price per kg UK supermarket") == 1
 
 
 def test_seeded_misread_flags_with_sources(monkeypatch):
@@ -198,7 +200,15 @@ def test_search_body_limits_to_grocers(monkeypatch):
 
     monkeypatch.setattr(pc.urllib.request, "urlopen", fake_urlopen)
     monkeypatch.setenv("TAVILY_API_KEY", "test-key")
-    pc.tavily_search("Red Onions price per kg UK")
+    REAL_SEARCH("Red Onions price per kg UK supermarket")
     assert sent["body"]["include_domains"] == pc.GROCERS
     assert "tesco.com" in pc.GROCERS
     assert sent["auth"] == "Bearer test-key" and sent["timeout"] == pc.TIMEOUT
+
+
+def test_old_cache_format_ignored(offline, tmp_path):
+    path = tmp_path / "cache.json"
+    path.write_text(json.dumps({"tomato|kg": {"typical_low": 99, "typical_high": 99, "unit": "kg", "sources": []}}))
+    out = pc.check_prices(STOCK, cache_path=path)
+    assert _item(out, "Tomatoes")["price_check"]["typical_high"] == 3.0  # fresh lookup, not the stale entry
+    assert json.loads(path.read_text())["version"] == pc.CACHE_VERSION
