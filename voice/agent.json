@@ -1,0 +1,14 @@
+{
+  "tool_ids": {
+    "find_item": "tool_5401m87add77fbv851q8prkjy73r",
+    "list_stalls": "tool_8501m87addcwfn2taqh9zh4ywty3",
+    "whats_run_out": "tool_6501m87addj5f1csqt8ceya2rq1g",
+    "split_order": "tool_1001m87addqce7d9s0rdyffmdec1"
+  },
+  "agent_id": "agent_1801m87addxwfmfbaqw8kzj48qkj",
+  "public_url": "https://asus-relatively-related-obtaining.trycloudflare.com",
+  "test_ids": {
+    "stallwalk: looks up a price with a tool": "test_9401m87adg90eg0a02tndjeggrav",
+    "stallwalk: won't invent a price": "test_7701m87adgdxf0ht0qkejjadmv8g"
+  }
+}
