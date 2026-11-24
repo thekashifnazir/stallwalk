@@ -19,19 +19,28 @@ def _hit(name: str, names: list[str]) -> str | None:
     return next((n for n in names if norm(n) == m[0]), None) if m else None
 
 
+METHOD = ("fuzzy, no model: names lower-cased, punctuation and plural s removed; a match is equal names, "
+          "or difflib ratio >= 0.85, or one name contained in the other (4+ chars), else difflib close match "
+          "with cutoff 0.6. 'exact' counts equal normalised names only. Every pair is listed so a person can audit it.")
+
+
 def score_dir(runs: Path, truth: dict) -> dict:
-    per, tf_, tm, te = {}, 0, 0, 0
+    per, tf_, tm, te, tx = {}, 0, 0, 0, 0
     for stem, real in truth.items():
         p = runs / stem / "stock.json"
         got = [i["name"] for s in json.loads(p.read_text())["stalls"] for i in s["items"]] if p.exists() else []
-        found = [t for t in real if _hit(t, got)]
+        pairs = {t: _hit(t, got) for t in real}
+        found = [t for t, g in pairs.items() if g]
+        exact = [t for t in real if any(norm(t) == norm(g) for g in got)]
         extras = [g for g in got if not _hit(g, real)]
-        per[stem] = {"real": len(real), "found": len(found), "missed": [t for t in real if t not in found],
-                     "listed": len(got), "extras": extras}
-        tf_ += len(found); tm += len(real) - len(found); te += len(extras)
+        per[stem] = {"real": len(real), "found": len(found), "found_exact": len(exact),
+                     "missed": [t for t in real if t not in found], "listed": len(got), "extras": extras,
+                     "matched_pairs": {t: g for t, g in pairs.items() if g}}
+        tf_ += len(found); tm += len(real) - len(found); te += len(extras); tx += len(exact)
     total = tf_ + tm
-    return {"files": per, "total_real": total, "found": tf_, "missed": tm, "extras": te,
-            "found_pct": round(100 * tf_ / total) if total else 0}
+    return {"match_method": METHOD, "files": per, "total_real": total, "found": tf_, "found_exact": tx,
+            "missed": tm, "extras": te, "found_pct": round(100 * tf_ / total) if total else 0,
+            "found_exact_pct": round(100 * tx / total) if total else 0}
 
 
 if __name__ == "__main__":
