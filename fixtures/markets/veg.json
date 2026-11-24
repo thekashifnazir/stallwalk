@@ -1,0 +1,131 @@
+{
+  "market": "New Covent Garden-style veg market (made up)",
+  "made_up": true,
+  "note": "MADE UP for testing. Not a real market, stall or price list.",
+  "stalls": [
+    {
+      "stall": "Veg stall A (made up)",
+      "items": [
+        {
+          "name": "Red Onions",
+          "price_gbp": 1.2,
+          "price_text": "£1.20/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Tomatoes",
+          "price_gbp": 1.8,
+          "price_text": "£1.80/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Lemons",
+          "price_gbp": 0.2,
+          "price_text": "5 for £1",
+          "unit": "each",
+          "currency": "GBP",
+          "deal": "5 for £1",
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Coriander",
+          "price_gbp": 0.8,
+          "price_text": "80p bunch",
+          "unit": "bunch",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Bananas",
+          "price_gbp": 0.2,
+          "price_text": "5 for £1",
+          "unit": "each",
+          "currency": "GBP",
+          "deal": "5 for £1",
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Veg stall B (made up)",
+      "items": [
+        {
+          "name": "Potatoes",
+          "price_gbp": 0.9,
+          "price_text": "90p/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Carrots",
+          "price_gbp": 0.7,
+          "price_text": "70p/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Free Range Eggs",
+          "price_gbp": 2.8,
+          "price_text": "£2.80 dozen",
+          "unit": "dozen",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Apples",
+          "price_gbp": 0.35,
+          "price_text": "35p each",
+          "unit": "each",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Milk",
+          "price_gbp": 1.45,
+          "price_text": "£1.45 4 pints",
+          "unit": "each",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        }
+      ]
+    }
+  ],
+  "source": {
+    "video": "fixtures/markets/veg.json",
+    "made_up": true
+  }
+}

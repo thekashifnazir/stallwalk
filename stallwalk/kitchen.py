@@ -1,0 +1,171 @@
+"""Kitchen ordering: split one order (or a restock list) across the markets that were walked.
+
+Nemotron only turns free order text into lines [{item, qty, unit}]. Everything after that
+is code: match each line against the stock lists (walk._same_item), keep comparable units,
+pick the cheapest priced option, and group the picks by market. Prices only ever come
+from a stock list; nothing is estimated, and lines that don't match are listed as
+unmatched rather than forced onto something close.
+"""
+import re
+
+from . import tf
+from .walk import _same_item, norm
+
+ORDER_PROMPT = """Turn this kitchen order into JSON lines. Return JSON only:
+{{"lines": [{{"item": string, "qty": number or null, "unit": string or null}}]}}
+Rules:
+- One line per product. item: the product name only, singular or plural as written, no quantity.
+- qty: the number asked for, else null. unit: "kg", "g", "each", "bunch", "punnet", "dozen", "pack", "box", "litre" if written, else null.
+- Don't add products that aren't in the order.
+
+Order:
+{order}
+"""
+
+# words that describe the shelf, not the product ("cereal dispenser, empty" -> "cereal")
+_SHELF_WORDS = r"\b(empty|emptied|low|nearly|almost|half|full|running|out|of|dispensers?|slots?|shelf|shelves|trays?|tubs?|jars?|containers?|bins?|left|none|no|some|few)\b"
+
+_UNITS = {"kg": "kg", "kilo": "kg", "kilos": "kg", "kgs": "kg", "each": "each", "item": "each",
+          "items": "each", "bunch": "bunch", "bunches": "bunch", "punnet": "punnet", "punnets": "punnet",
+          "dozen": "dozen", "pack": "pack", "packs": "pack", "box": "box", "boxes": "box",
+          "litre": "litre", "litres": "litre", "l": "litre"}
+
+_LEVEL_RANK = {"empty": 2, "low": 1}
+
+
+def clean_name(name: str) -> str:
+    s = re.sub(r"[^\w\s&'-]", " ", (name or "").lower())
+    s = re.sub(_SHELF_WORDS, " ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _unit(u) -> str | None:
+    if not u or not isinstance(u, str):
+        return None
+    s = re.sub(r"^(/|per\s+|a\s+)", "", u.strip().lower()).strip()
+    return _UNITS.get(s, s)
+
+
+def _market_name(stock: dict, n: int) -> str:
+    return stock.get("market") or (stock.get("source") or {}).get("video") or f"market {n + 1}"
+
+
+# ── restock ──
+
+def restock_list(stocks: list[dict]) -> list[dict]:
+    """Low or empty items across one or more stock lists, worst first, one line per item."""
+    best: dict[str, dict] = {}
+    order: list[str] = []
+    for n, stock in enumerate(stocks):
+        src = (stock.get("source") or {}).get("video") or stock.get("market") or f"stock {n + 1}"
+        for stall in stock.get("stalls", []):
+            for it in stall.get("items", []):
+                level = it.get("stock_level")
+                if level not in _LEVEL_RANK or not it.get("name"):
+                    continue
+                key = clean_name(it["name"]) or it["name"].lower()
+                same = next((k for k in order if _same_item(k, key)), None)
+                line = {"name": it["name"], "match_name": key, "stock_level": level, "source_file": src}
+                if same is None:
+                    order.append(key)
+                    best[key] = line
+                elif _LEVEL_RANK[level] > _LEVEL_RANK[best[same]["stock_level"]]:
+                    best[same] = line
+    return sorted((best[k] for k in order), key=lambda x: -_LEVEL_RANK[x["stock_level"]])
+
+
+# ── order parsing (the only model call) ──
+
+def parse_order(order_text: str) -> list[dict]:
+    reply = tf.chat(tf.TEXT_MODEL, ORDER_PROMPT.format(order=order_text), max_tokens=800,
+                    extra={"chat_template_kwargs": {"enable_thinking": False}})
+    data = tf.parse_json(reply)
+    lines = data.get("lines") if isinstance(data, dict) else data
+    out = []
+    for ln in lines if isinstance(lines, list) else []:
+        if isinstance(ln, dict) and isinstance(ln.get("item"), str) and ln["item"].strip():
+            qty = ln.get("qty")
+            out.append({"item": ln["item"].strip(),
+                        "qty": qty if isinstance(qty, (int, float)) and not isinstance(qty, bool) else None,
+                        "unit": ln.get("unit") if isinstance(ln.get("unit"), str) else None})
+    return out
+
+
+def _as_lines(order) -> list[dict]:
+    if isinstance(order, str):
+        return parse_order(order)
+    lines = []
+    for ln in order or []:  # a restock list, or lines already parsed
+        if "item" in ln:
+            lines.append({"item": ln["item"], "qty": ln.get("qty"), "unit": ln.get("unit")})
+        else:
+            lines.append({"item": ln.get("match_name") or clean_name(ln["name"]), "qty": None, "unit": None,
+                          "asked": ln["name"], "stock_level": ln.get("stock_level"),
+                          "source_file": ln.get("source_file")})
+    return lines
+
+
+# ── matching and splitting (pure code) ──
+
+def _offers(stocks: list[dict]) -> list[dict]:
+    out = []
+    for n, stock in enumerate(stocks):
+        market = _market_name(stock, n)
+        for stall in stock.get("stalls", []):
+            for it in stall.get("items", []):
+                if not it.get("name"):
+                    continue
+                if (it.get("currency") or "GBP") != "GBP":
+                    continue  # never compare across currencies
+                out.append({"market": market, "stall": stall.get("stall") or "Unknown stall",
+                            "name": it["name"], "price_gbp": it.get("price_gbp"),
+                            "price_text": it.get("price_text"), "unit": it.get("unit")})
+    return out
+
+
+def _matches(item: str, offer_name: str) -> bool:
+    """Same item (walk._same_item), or every asked word is in the offer and the last word,
+    the thing itself, is the same: "eggs" -> "Free Range Eggs", but not "chicken" -> "Chicken Thighs"."""
+    if _same_item(item, offer_name) or _same_item(clean_name(item), clean_name(offer_name)):
+        return True
+    a, b = norm(clean_name(item)).split(), norm(clean_name(offer_name)).split()
+    return bool(a) and bool(b) and a[-1] == b[-1] and set(a) <= set(b)
+
+
+def split_order(order, stocks: list[dict]) -> dict:
+    """order: free text (parsed by the model), a restock_list(), or [{item, qty, unit}].
+
+    Returns {"lines": [...], "by_market": {market: [lines]}, "unmatched": [asked, ...]}.
+    Each line: asked, qty, unit, pick (cheapest priced comparable offer, or None) and
+    alternatives (the other matching offers). line_total_gbp is only set when the order's
+    unit is the offer's unit, so it's a straight multiply of a price read off a card.
+    """
+    offers = _offers(stocks)
+    lines, by_market, unmatched = [], {}, []
+    for ln in _as_lines(order):
+        asked = ln.get("asked") or ln["item"]
+        found = [o for o in offers if _matches(ln["item"], o["name"])]
+        want = _unit(ln.get("unit"))
+        comparable = [o for o in found if want is None or _unit(o["unit"]) == want]
+        priced = sorted((o for o in comparable if isinstance(o["price_gbp"], (int, float))),
+                        key=lambda o: o["price_gbp"])
+        pick = priced[0] if priced else None
+        line = {"asked": asked, "qty": ln.get("qty"), "unit": ln.get("unit"), "pick": pick,
+                "alternatives": [o for o in found if o is not pick]}
+        for k in ("stock_level", "source_file"):
+            if ln.get(k):
+                line[k] = ln[k]
+        if pick and isinstance(line["qty"], (int, float)) and want and _unit(pick["unit"]) == want:
+            line["line_total_gbp"] = round(line["qty"] * pick["price_gbp"], 2)
+        if not found:
+            line["note"] = "not on any stock list"
+            unmatched.append(asked)
+        elif not pick and comparable:
+            line["note"] = "on a stock list, but no price was read"
+        elif not pick:
+            units = sorted({o["unit"] or "unknown unit" for o in found})
+            line["note"] = f"only sold per {', '.join(units)}"
+        lines.append(line)
+        if pick:
+            by_market.setdefault(pick["market"], []).append(line)
+    return {"lines": lines, "by_market": by_market, "unmatched": unmatched}

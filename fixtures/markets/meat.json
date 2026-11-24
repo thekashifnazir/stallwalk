@@ -1,0 +1,111 @@
+{
+  "market": "Smithfield-style meat market (made up)",
+  "made_up": true,
+  "note": "MADE UP for testing. Not a real market, stall or price list.",
+  "stalls": [
+    {
+      "stall": "Butcher A (made up)",
+      "items": [
+        {
+          "name": "Chicken Thighs",
+          "price_gbp": 6.5,
+          "price_text": "£6.50/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Beef Mince",
+          "price_gbp": 8.99,
+          "price_text": "£8.99/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Lamb Shoulder",
+          "price_gbp": 12.5,
+          "price_text": "£12.50/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Free Range Eggs",
+          "price_gbp": 3.2,
+          "price_text": "£3.20 dozen",
+          "unit": "dozen",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Butcher B (made up)",
+      "items": [
+        {
+          "name": "Chicken Thighs",
+          "price_gbp": 5.8,
+          "price_text": "£5.80/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Pork Belly",
+          "price_gbp": 9.5,
+          "price_text": "£9.50/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Streaky Bacon",
+          "price_gbp": 2.4,
+          "price_text": "£2.40 pack",
+          "unit": "pack",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Chicken Breast",
+          "price_gbp": null,
+          "price_text": null,
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": [
+            "price not readable"
+          ]
+        }
+      ]
+    }
+  ],
+  "source": {
+    "video": "fixtures/markets/meat.json",
+    "made_up": true
+  }
+}

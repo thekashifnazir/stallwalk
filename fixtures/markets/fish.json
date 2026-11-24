@@ -1,0 +1,98 @@
+{
+  "market": "Billingsgate-style fish market (made up)",
+  "made_up": true,
+  "note": "MADE UP for testing. Not a real market, stall or price list.",
+  "stalls": [
+    {
+      "stall": "Fishmonger A (made up)",
+      "items": [
+        {
+          "name": "Salmon Fillet",
+          "price_gbp": 17.0,
+          "price_text": "£17/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Cod Loin",
+          "price_gbp": 15.5,
+          "price_text": "£15.50/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Mussels",
+          "price_gbp": 5.5,
+          "price_text": "£5.50/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Lemons",
+          "price_gbp": 0.3,
+          "price_text": "30p each",
+          "unit": "each",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        }
+      ]
+    },
+    {
+      "stall": "Fishmonger B (made up)",
+      "items": [
+        {
+          "name": "Salmon Fillet",
+          "price_gbp": 18.5,
+          "price_text": "£18.50/kg",
+          "unit": "kg",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "King Prawns",
+          "price_gbp": 4.0,
+          "price_text": "£4 per 200g",
+          "unit": "200g",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        },
+        {
+          "name": "Mackerel",
+          "price_gbp": 3.0,
+          "price_text": "£3 each",
+          "unit": "each",
+          "currency": "GBP",
+          "deal": null,
+          "stock_level": "full",
+          "seen_in_frames": 2,
+          "needs_check": []
+        }
+      ]
+    }
+  ],
+  "source": {
+    "video": "fixtures/markets/fish.json",
+    "made_up": true
+  }
+}
