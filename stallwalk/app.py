@@ -21,6 +21,7 @@ from .facts import item_facts
 from .enrich import enrich_item
 from .pricecheck import check_prices
 from . import kitchen
+from . import webfind
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "out"
@@ -275,6 +276,13 @@ def agent_stockroom(items: str):
             need.append(hit["name"])
     return {"answer": "; ".join(said) + (f". Buy: {', '.join(need)}." if need else ". Nothing to buy.")
                       + " Stockroom is made up for the demo.", "need": need}
+
+
+@app.get("/api/agent/web_find")
+def agent_web_find(items: str):
+    """Web fallback for what the market doesn't have: UK supermarket web estimates (Tavily), labelled as such."""
+    r = webfind.web_find(webfind.split_items(items), cache_path=RUNS / "pricecheck" / "cache.json")
+    return {"answer": r["answer"], "items": r["items"]}
 
 
 @app.get("/api/frame/{run}/{frame}")
